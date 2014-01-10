@@ -1,0 +1,1 @@
+mysql --defaults-extra-file=~/.myngbwalpha.cnf ngbwalpha < ./ngbwalpha.sql

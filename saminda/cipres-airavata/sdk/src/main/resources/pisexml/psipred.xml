@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE pise SYSTEM "http://www.phylo.org/dev/rami/PARSER/pise.dtd">
+
+<!-- To be Validated -->
+
+	<!-- Created for Swami by Rami Rifaieh-->
+<pise>
+
+
+
+
+<head>
+   <title>PSIPRED</title>
+   <version>2.3</version>
+   <description>Predict Secondary Structure (PSIPRED)</description>
+   <authors></authors>
+   <reference>Jones, D.T. (1999) Protein secondary structure prediction based on
+position-specific scoring matrices. J. Mol. Biol. 292:195-202.</reference>
+   <category>Protein Sequence</category>
+</head>
+
+<command>psipred</command>
+<!-- PSIPRED is a  simple and reliable secondary structure prediction method, incorporating two feed-forward neural networks which perform an analysis on output obtained from PSI-BLAST (Position Specific Iterated - BLAST). -->
+	
+<!--
+SEQUENCE DATA BANK
+==================
+
+It is important to ensure than the sequence data bank used with PSI-BLAST
+has been filtered to remove low-complexity regions, transmembrane regions,
+and coiled-coil segments. If this is not done, then it is essential that
+the PSI-BLAST output for the target sequence is checked by-eye to ensure
+that no spurious sequences have been included in the PSI-BLAST alignment.
+A program called "pfilt" is included which will filter FASTA files before
+using the formatdb command to generate the encoded BLAST data bank files.
+
+For example:
+
+tcsh% pfilt nr.fasta > filtnr
+
+tcsh% formatdb -t filtnr -i filtnr
+
+tcsh% cp filtnr.p?? $BLASTDB
+
+
+	-->
+
+<parameters>
+
+    <parameter ismandatory="1" issimple="1" isinput="1" type="InFile"> 
+	<name>sequence</name>
+	<attributes>
+		<prompt>Input sequence (single letter code)</prompt>
+		<format>
+			<language>perl</language>
+			<code>"runSWAMIpsipred sequence"</code>
+		</format>
+		<!-- SWAMI Has a modified version of runpsipred script given by original psipred developers -->
+		<!--
+			Here are the modification:
+			#!/bin/tcsh
+			# This is a modified script which will carry out all of the basic steps
+			# required to make a PSIPRED V2 prediction.
+			# The name of the BLAST data bank set to UNIPROT
+			set dbname = UNIPROT
+			# Where the NCBI programs have been installed
+			set ncbidir = /fs/swami/contrib/tools/BIN/ia32/
+			# Where the PSIPRED V2 programs have been installed
+			set execdir = /fs/swami/contrib/tools/psipred/2.4/bin
+			# Where the PSIPRED V2 data files have been installed
+			set datadir = /fs/swami/contrib/tools/psipred/2.4/data
+			# The name of the BLAST data bank set to Uniprot by default
+			set dbname = UNIPROT
+			# Where the NCBI programs have been installed
+			set ncbidir = /fs/swami/contrib/tools/BIN/ia32/
+			# Where the PSIPRED V2 programs have been installed
+			set execdir = /fs/swami/contrib/tools/psipred/2.4/bin
+			# Where the PSIPRED V2 data files have been installed
+			set datadir = /fs/swami/contrib/tools/psipred/2.4/data
+			set basename = $1:r
+			set rootname = $basename:t
+			set outname = $basename.chk
+			\cp -f $1 psitmp.fasta
+			echo "Running PSI-BLAST with sequence" $1 "..."
+			$ncbidir/blastpgp -b 0 -j 3 -h 0.001 -d $dbname -i psitmp.fasta -C psitmp.chk >& $rootname.blast
+			echo "Predicting secondary structure..."
+			echo psitmp.chk > psitmp.pn
+			echo psitmp.fasta > psitmp.sn
+			$ncbidir/makemat -P psitmp
+			echo Pass1 ...
+			$execdir/psipred psitmp.mtx $datadir/weights.dat $datadir/weights.dat2 $datadir/weights.dat3 $datadir/weights.dat4 > $rootname.ss
+			echo Pass2 ... will be completed through the XML description below
+			echo "Finished."
+			-->
+		<filenames>sequence</filenames>	
+		<group>0</group>
+		<comment>
+			<value>AMINO ACID sequence</value>
+			<value>Input Sequence: This tool only accepts protein sequences. 
+					Note that there is an upper limit to the length of sequences which can be submitted.
+					For mGenTHREADER that limit is 1000 residues. For the other methods, the limit is 1500 residues.
+					If your sequence is longer than this, try breaking it into likely domains before submitting it. </value>
+			<value>The current DB that is being used with PSIBLAST is UNIPROT</value>
+		</comment>
+		<seqfmt>
+			<value>8</value>
+			<!-- fasta -->
+		</seqfmt>
+	</attributes>
+	</parameter>
+	
+	
+	<parameter ishidden="1" type="String">
+		<name>psipass2</name>
+			<attributes>
+				<format>
+					<language>perl</language>
+					<code> "; psipass2 weights_p2.dat" </code>
+					<!-- weights_p2.dat env variable to point to ./data of psipred-->
+				</format>
+				<group>1</group>
+			</attributes>
+	</parameter>
+
+
+	<parameter type="Integer">
+      <name>filter_iterations</name>
+      <attributes>
+		<prompt>Number of Filter Iterations</prompt>
+		<format>
+		  <language>perl</language>
+		  <code>" $value"</code>
+		</format>
+		<comment>
+			<value>Number of filter iterations: This controls the amount of "smoothing" that is carried out on the final
+				prediction. The recommended setting is 1, but it may be worth trying
+				higher values to increase the level of smoothing.</value>
+		</comment>
+		<group>2</group>
+		<vdef><value>1</value></vdef>
+		<ctrls>
+			<ctrl>
+		     <message>Positive Integer is required for Number of Filter Iterations</message>
+			 <language>perl</language>
+			 <code>$value &lt; 0</code>
+		   </ctrl>
+		 </ctrls>
+      </attributes>
+    </parameter>
+	
+	<parameter type="Float">
+      <name>helix</name>
+      <attributes>
+		<prompt>Helix Constant</prompt>
+		<format>
+		  <language>perl</language>
+		  <code>" $value"</code>
+		</format>
+		<comment>
+			<value>Helix/Strand Decision constants control the bias for helix (Arg3) and strand (Arg4) predictions.
+				Normally these are set to 1.0 which applies no helix or strand bias. However, sometimes bias parameters can be useful.
+				FOr examples, if you know your protein is mostly comprised of beta strands, you can increase the bias
+				towards beta strand prediction.
+				Chpoosing the calues helix=1.0; strand=1.5 increases the bias towards beta strand prediction by 50%.</value>
+		</comment>
+		<group>3</group>
+		<vdef><value>1.0</value></vdef>
+      </attributes>
+    </parameter>
+	
+	<parameter type="Float">
+      <name>strand</name>
+      <attributes>
+		<prompt>Strand Constant</prompt>
+		<format>
+		  <language>perl</language>
+		  <code>" $value"</code>
+		</format>
+		<group>4</group>
+		<vdef><value>1.0</value></vdef>
+      </attributes>
+    </parameter>
+	
+	<parameter type="OutFile">
+      <name>outputfile</name>
+      <attributes>
+		 <format>
+			<language>perl</language>
+			<code> " sequence.ss2 sequence.ss &gt; output.horiz" </code>
+	      </format>
+		<filenames>output.horiz</filenames>
+		<group>5</group>
+      </attributes>
+	 </parameter>
+	
+</parameters>
+
+</pise>

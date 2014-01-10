@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE pise SYSTEM "http://www.phylo.org/dev/rami/PARSER/pise.dtd"[
+<!ENTITY Path_Ppsearch_DB SYSTEM "http://www.phylo.org/dev/rami/XMLDIR/Path_Ppsearch_DB.xml">
+]>
+<!-- To be Validated -->
+
+<pise>
+
+
+<!-- Created for Swami by Rami Rifaieh-->
+
+<head>
+	<title>PPSearch</title>
+	<version>Unspecified</version>
+	<description>Search PS for motifs in PROSITE DB</description>
+	<authors>R. Fuchs</authors>
+	<reference>R. Fuchs (1994) "Predicting protein function: a  versatile tool for the Apple Macintosh" Comput. Appl. Biosci. 10, 171-181</reference>
+	<category>Protein Sequence</category>
+</head>
+
+<command>ppsearch</command>
+
+<!-- 	
+Usage: ppsearch -p indexdir -i inputfile -o outputfile [-s]
+           indexdir:   Directory with PROSITE index files
+           inputfile:  Input file name
+           outputfile: Output file name
+           -s:         Include abundant patterns (/skip-flag set)
+	-->
+<parameters>
+
+  <parameter ismandatory="1" issimple="1" isinput="1" type="InFile"> 
+	<name>inputfile</name>
+	<attributes>
+		<prompt>Input file name</prompt>
+		<format>
+			<language>perl</language>
+			&Path_Ppsearch_DB;
+		</format>	
+		<filenames>infile</filenames>	
+		<group>0</group>
+	</attributes>
+	</parameter>
+	
+	 <parameter type="OutFile">
+      <name>outputfile</name>
+      <attributes>
+		 <format>
+			<language>perl</language>
+			<code> " -o outfile" </code>
+	      </format>
+		<filenames>outfile</filenames>
+		<group>1</group>
+      </attributes>
+	 </parameter>
+		  
+    <parameter issimple="1" type="Switch">
+      <name>abundant_patterns</name>
+      <attributes>
+		<prompt>Include abundant patterns (/skip-flag set) -s</prompt>
+		<format>
+		  <language>perl</language>
+		  <code> ($value)?" -s":""</code>
+		</format>
+		<vdef><value>0</value></vdef>
+		<group>2</group>
+      </attributes>
+    </parameter>	
+
+</parameters>
+</pise>

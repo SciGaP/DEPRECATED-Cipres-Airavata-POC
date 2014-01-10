@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# Can't run module command (I think it's a bash fn) without sourcing bashrc
+source $HOME/.bashrc
+source /etc/profile.d/modules.sh
+export MODULEPATH=/home/diag/jpg/modulefiles/gordon/applications:$MODULEPATH
+export LD_LIBRARY_PATH=/home/pfeiffer/BEAGLE/lib:$LD_LIBRARY_PATH
+
+
+#run with openmpi, not mvapich2
+module unload mvapich2_ib
+module load openmpi_ib
+
+#mb 3.1.2 is run batch from the paramfile, first argument
+paramfile=$1
+
+
+echo "CIPRES_THREADSPP=$CIPRES_THREADSPP"
+echo "CIPRES_NP=$CIPRES_NP"
+echo "paramfile=$1"
+echo "running:"
+echo "mpirun -hostfile $PBS_NODEFILE -np $CIPRES_NP /home/pfeiffer/gordon/MrBayes-3.2.1/mb < $paramfile"
+
+# Don't allow files greater than 1 gig (specified in 1024 byte blocks)
+# ulimit -f 1048576
+# Don't allow files greater than 8 gig (specified in 1024 byte blocks)
+ulimit -f 8388608 
+
+#this is currently run form waynes directory, it should be changed
+mpirun -hostfile $PBS_NODEFILE  -np $CIPRES_NP /home/pfeiffer/gordon/MrBayes-3.2.1/mb < $paramfile

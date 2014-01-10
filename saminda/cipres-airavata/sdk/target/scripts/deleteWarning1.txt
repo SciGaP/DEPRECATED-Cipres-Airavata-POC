@@ -1,0 +1,9 @@
+Dear CIPRES Science Gateway User,
+
+This is a courtesy notice to let you know that you have a CIPRES Science Gateway account that you haven't used in over a year.  Unfortunately, we must set limits on the amount of data we store and can't continue to store your data if you don't appear to be using it.   If you want us to continue storing your data, please log into your account at http://www.phylo.org/portal2.  If for some reason you're unable to log in, you can instead send email to customerservice@phylo.org.  Please include your CIPRES username and registered email address in your message if possible.
+
+If you take no action, all your stored tasks and data will be deleted in 30 days from the date of this email.
+
+
+Sincerely,
+Mark Miller

@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE pise SYSTEM "http://www.phylo.org/dev/rami/PARSER/pise.dtd" [
+<!ENTITY Path_Rpsblast_DB SYSTEM "http://www.phylo.org/dev/rami/XMLDIR/Path_Rpsblast_DB.xml">
+<!ENTITY protDBrpsblast SYSTEM "http://www.phylo.org/dev/rami/XMLDIR/protDBrpsblast.xml">
+]>
+<!-- To be validated -->
+
+<!-- Created for Swami by Rami Rifaieh-->
+	
+<!-- Not exposed
+   -p  if query sequence protein (if FALSE 6 frame franslation will be
+                                  conducted as in blastx program)
+
+   -P  0 for multiple hits 1-pass, 1 for single hit 1-pass [Integer]
+    default = 0
+
+  -z  Effective length of the database (use zero for the real size) (optional) [Real]
+    default = 0  implies  length is actual length of profile library adjusted for end effects,  -1 = length given via -z option to makemat
+
+  -Y  Effective length of the search space (use zero for the real size) [Real] default = 0
+
+  -T  Produce HTML output [T/F] default = F
+
+  -U  Use lower case filtering of FASTA sequence [T/F]  Optional
+    default = F
+
+  -L  Range restriction on query sequence (Format: start,stop) blastp only
+      0 in 'start' refers to the beginning of the sequence
+      0 in 'stop' refers to the end of the sequence [String]  Optional
+    default = 0,0
+-->
+	
+<pise>
+
+<head>
+   <title>RPSBlast</title>
+   <version>2.2.14</version>
+   <description>Compare PS to a DB of Conserved Domains</description>
+   <authors>Sergei Shavirin</authors>
+   <category>Protein Sequence</category>
+</head>
+
+<command>rpsblast</command>
+
+<parameters>
+
+    <parameter ishidden="1" iscommand="1" type="String">
+		<name>rpsblast</name>
+		<attributes>
+			<format>
+				<language>perl</language>
+				<code>"rpsblast"</code>
+			</format>
+			<group>0</group>
+		  </attributes>
+	</parameter>
+
+    <parameter ismandatory="1" issimple="1" isinput="1" type="Sequence">
+		<name>query</name>
+		<attributes>
+			<prompt>Sequence File (-i)</prompt>
+			<format>
+				<language>perl</language>
+				<code>" -i query.fasta" </code>
+			</format>
+			<group>1</group>
+			<seqfmt>
+				<value>8</value>
+			</seqfmt>
+			<pipe>
+				<pipetype>seqfile</pipetype>
+					<language>perl</language>
+					<code>1</code>
+			</pipe>
+			<filenames>query.fasta</filenames>
+		</attributes>
+    </parameter>
+
+	<parameter ismandatory="1" type="Excl">
+		<name>protein_db</name>
+		<attributes>
+			<prompt>protein db (-d )</prompt>
+			<format>
+				<language>perl</language>
+				&Path_Rpsblast_DB;
+			</format>
+			<vdef>
+				<value>Smart</value>
+			</vdef>
+			<group>2</group>
+			&protDBrpsblast;
+			<comment>
+
+<value> RPS-BLAST (Reverse PSI-BLAST) searches a query sequence against a database of profiles.  This is the opposite of PSI-BLAST that searches a profile against a database of sequences, hence the 'Reverse'. RPS-BLAST	uses a BLAST-like algorithm, finding single- or double-word hits and then performing an ungapped extension on these candidate matches. If a sufficiently high-scoring ungapped alignment is produced, a gapped extension is performed and those (gapped) alignments with sufficiently low expect value are reported.  This procedure is in contrast to IMPALA that performs a Smith-Waterman calculation between the query and each profile, rather than using a word-hit approach to identify matches that should be extended.</value>
+
+<value>	RPS-BLAST uses a BLAST database, but also has some other files that contain a precomputed lookup table for the profiles to allow the search to proceed faster.  Unfortunately it was not possible to make this lookup table architecture independent (like the BLAST databases themselves) and one cannot take a RPS-BLAST databases prepared on a big-endian system (e.g., Solaris Sparc) and run it on a small-endian system (e.g., NT).  The RPS-BLAST database must be prepared again for the small-endian system.</value>
+			</comment>
+			<comment>
+<value>CDD - is a superset including NCBI-curated domains and data imported from Pfam, SMART, COG, and PRK. </value>
+			</comment>
+			<comment>
+<value>Pfam - a mirror of a recent Pfam-A database of curated seed alignments. Pfam version numbers do change with incremental updates. As with SMART, families describing very short motifs or peptides may be missing from the mirror. An HMM-based search engine is offered on the Pfam site. </value>
+			</comment>
+			<comment>
+<value>SMART - a mirror of a recent SMART set of domain alignments. Note that some SMART families may be missing from the mirror due to update delays or because they describe very short conserved peptides and/or motifs, which would be difficult to detect using the CD-Search service. You may want to try the HMM-based search service offered on the SMART site. Note also that some SMART domains are not mirrored in CD because they represent "superfamilies" encompassing several individual, but related, domains; the corresponding seed alignments may not be available from the
+source database in these cases. Note also that SMART version numbers do not change with incremental updates of the source database (and the mirrored CD-Search database). </value>
+			</comment>
+			<comment>
+<value>COG - a mirror of the current COG database of orthologous protein families focusing on prokaryotes. Seed alignments have been generated by an automated process. An alternative search engine, "Cognitor", which runs protein-BLAST against a database of COG-assigned sequences, is offered on the COG site.</value>
+			</comment>
+			<comment>
+<value>KOG is a eukaryotic counterpart to the COG database. KOGs are not included in the CDD superset, but are searchable as a separate data set. </value>
+			</comment>
+		</attributes>
+	</parameter>
+
+	<parameter type="Float">
+		<name>Expect</name>
+		<attributes>
+			<prompt>Expectation Value (-e)</prompt>
+			<format>
+				<language>perl</language>
+				<code>(defined $value &amp;&amp; $value != $vdef)? " -e $value":""</code>
+			</format>
+			<vdef>
+				<value>10.0</value>
+			</vdef>
+			<group>3</group>
+		</attributes>
+	</parameter>
+	  
+	<parameter type="Excl">
+		<name>view_alignments</name>
+		<attributes>
+			<prompt>Alignment view options (-m)</prompt>
+			<format>
+				<language>perl</language>
+				<code>($value)? " -m $value" : "" </code>
+			</format>
+			<vdef>
+				<value>0</value>
+			</vdef>
+			<group>4</group>
+			<vlist>
+				<value>0</value>
+				<label>0: pairwise</label>
+				<value>1</value>
+				<label>1: query-anchored showing identities</label>
+				<value>2</value>
+				<label>2: query-anchored no identities</label>
+				<value>3</value>
+				<label>3: flat query-anchored, show identities</label>
+				<value>4</value>
+				<label>4: flat query-anchored, no identities</label>
+				<value>5</value>
+				<label>5: query-anchored no identities and blunt ends</label>
+				<value>6</value>
+				<label>6: flat query-anchored, no identities and blunt ends</label>
+				<value>7</value>
+				<label>7: XML Blast output</label>
+				<value>8</value>
+				<label>8: Tabular output</label>
+<!-- not exposed
+			9 = tabular output with comments [Integer]
+			default = 0
+		-->
+			</vlist>
+	    </attributes>
+	</parameter>
+	  
+	<parameter type="Results">
+		<name>output</name>
+			<attributes>
+				<format>
+					<language>perl</language>
+					<code>" -o rpsblast.output" </code>
+				</format>
+				<group>5</group>
+				<filenames>rpsblast.output</filenames>
+			</attributes>
+    </parameter>
+	
+	 <parameter type="Float">
+	    <name>dropoff_y</name>
+	    <attributes>
+	      <prompt>Dropoff for blast ungapped extensions in bits (-y)</prompt>
+	      <format>
+		<language>perl</language>
+		<code>(defined $value &amp;&amp; $value != $vdef)? " -y $value" : ""</code>
+	      </format>
+	      <vdef><value>7.0</value></vdef>
+	      <comment>
+		<value>This parameter controls the dropoff at ungapped extension stage. See also the -X parameter.</value>
+	      </comment>
+		  <group>6</group>
+	    </attributes>
+	  </parameter>
+	  
+	<parameter type="Integer">
+		<name>dropoff</name>
+		<attributes>
+			<prompt>X dropoff value for gapped alignment (in bits) (-X)</prompt>
+			<format>
+				<language>perl</language>
+				<code>(defined $value &amp;&amp; $value != $vdef)? " -X $value":""</code>
+			</format>
+			<vdef>
+				<value>15</value>
+			</vdef>
+			<comment>
+<value>This value controls the path graph region explored by Blast during a gapped extension (Xg in the NAR paper).</value>
+			</comment>
+			<group>7</group>
+		</attributes>
+	</parameter>
+	
+	<parameter type="Switch">
+		<name>filter</name>
+		<attributes>
+			<prompt>Filter query sequence with SEG (-F)</prompt>
+			<format>
+				<language>perl</language>
+				<code>($value) ? " -F T" : ""</code>
+			</format>
+			<vdef>
+				<value>0</value>
+			</vdef>
+			<group>8</group>
+		</attributes>
+	</parameter>
+	  
+	<parameter type="Float">
+		<name>trigger</name>
+		<attributes>
+			<prompt>Number of bits to trigger gapping (-N)</prompt>
+			<format>
+				<language>perl</language>
+				<code>(defined $value &amp;&amp; $value != $vdef)? " -N $value" : ""</code>
+			</format>
+			<vdef>
+				<value>22.0</value>
+			</vdef>
+			<group>9</group>
+			<comment>
+<value>Blast first performs an ungapped extension of the hit to make an HSP. The gapped extension is triggered when the HSP score reaches this value (Sg in the NAR paper).</value>
+			</comment>
+		</attributes>
+	</parameter>
+	  
+	 <parameter ishidden="1" type="Integer">
+		  <name>nb_proc</name>
+		  <attributes>
+			<format>
+			  <language>perl</language>
+			  <code>" -a 2"</code>
+			</format>
+			<group>10</group>
+		  </attributes>
+    </parameter>
+	
+	<!-- ** SWAMI databases does not use GI ** -->
+	  <!--
+	  <parameter type="Switch">
+	    <name>show_gi</name>
+	    <attributes>
+	      <prompt>Show GI's in deflines (-I)</prompt>
+	      <format>
+		<language>perl</language>
+		<code>($value)? " -I" : "" </code>
+	      </format>
+	      <vdef><value>0</value></vdef>
+	      <group>11</group>
+	      <comment>
+		<value>Causes NCBI gi identifiers to be shown in the output along with the accession and/or locus name. </value>
+		<value>Warning: not yet implemented on this server.</value>
+	      </comment>
+	    </attributes>
+	  </parameter>
+	  -->
+	<parameter type="Switch">
+		<name>believe</name>
+		<attributes>
+			<prompt>Believe the query defline (-J)</prompt>
+			<format>
+				<language>perl</language>
+				<code>($value)? " -J":""</code>
+			</format>
+			<vdef>
+				<value>0</value>
+			</vdef>
+			<group>12</group>
+		</attributes>
+	</parameter>
+	
+	<parameter type="OutFile">
+		<name>seqalign_file</name>
+		<attributes>
+			<prompt>SeqAlign file (-J option must be true) (-O)</prompt>
+			<format>
+				<language>perl</language>
+				<code>" -O seqalign_file.asn1" </code>
+			</format>
+			<group>13</group>
+			<comment>
+<value>SeqAlign is in ASN.1 format so it can be read with NCBI tools (such as sequin). This allows one to view the results in different formats.</value>
+			</comment>
+			<precond>
+				<language>perl</language>
+				<code>$believe</code>
+			</precond>
+			<filenames>seqalign_file.asn1</filenames> 
+	
+	    </attributes>
+	</parameter>
+	  
+	<parameter type="Integer">
+		<name>dropoff_z</name>
+		<attributes>
+			<prompt>X dropoff value for final gapped alignment (in bits) (-Z)</prompt>
+			<format>
+				<language>perl</language>
+				<code>(defined $value &amp;&amp; $value != $vdef)? " -Z $value" : ""</code>
+			</format>
+			<vdef>
+				<value>25</value>
+			</vdef>
+			<comment>
+<value>This parameter controls the dropoff for the final reported alignment. See also the -X parameter.</value>
+			</comment>
+			<group>14</group>
+	    </attributes>
+	</parameter>
+	  
+	<parameter type="Integer">
+	    <name>Alignments</name>
+	    <attributes>
+	      <prompt>How many alignments? (-b)</prompt>
+	      <format>
+		<language>perl</language>
+		<code>(defined $value &amp;&amp; $value != $vdef)? " -b $value":""</code>
+	      </format>
+	      <vdef><value>250</value></vdef>
+	      <group>15</group>
+	      <comment>
+		<value>Maximum number of database sequences for which high-scoring segment pairs will be reported (-b).</value>
+	      </comment>
+	    </attributes>
+	</parameter>
+
+	<parameter type="Integer">
+		<name>Descriptions</name>
+		<attributes>
+			<prompt>How many short descriptions? (-v)</prompt>
+			<format>
+				<language>perl</language>
+				<code>(defined $value &amp;&amp; $value != $vdef)? " -v $value":""</code>
+			</format>
+			<vdef>
+				<value>500</value>
+			</vdef>
+			<group>16</group>
+			<comment>
+<value>Maximum number of database sequences for which one-line descriptions will be reported (-v).</value>
+			</comment>
+		</attributes>
+	</parameter>
+
+
+  </parameters>
+</pise> 
+

@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# Can't run module command (I think it's a bash fn) without sourcing bashrc
+source $HOME/.bashrc
+
+module load mafft
+
+echo "CIPRES_THREADSPP=$CIPRES_THREADSPP" 1>&2
+echo "CIPRES_NP=$CIPRES_NP" 1>&2
+echo "running:" 1>&2
+echo "mafft-linsi $*" 1>&2
+
+
+mafft-linsi $*

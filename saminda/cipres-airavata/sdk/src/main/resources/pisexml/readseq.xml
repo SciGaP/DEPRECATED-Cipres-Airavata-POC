@@ -1,0 +1,733 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE pise SYSTEM "http://www.phylo.org/dev/rami/PARSER/pise.dtd" [
+<!ENTITY runtime SYSTEM "http://www.phylo.org/dev/rami/XMLDIR/triton_run_time.xml">
+]>
+
+<pise>
+
+<head>
+	<title>Readseq</title>
+	<version>2.2</version>
+	<description>Readseq: biological sequence format interconversion utility</description>
+	<authors>Don Gilbert</authors>
+	<reference></reference>
+	<category>Nucleic Acid Sequence, Protein Sequence, Phylogeny / Alignment</category>
+	<doclink>http://iubio.bio.indiana.edu/soft/molbio/readseq/java/</doclink>
+</head>
+
+<command>readseq</command>
+							  
+<!-- Created for CIPRES2 Portal by mamiller  around 11/07/2008  -->
+<!--  Read & reformat biosequences, Java command-line version. 
+  
+Usage: java -cp readseq.jar run [options] input-file(s)
+In SWAMI, we used a redirect: readseq invokes /usr/local/apps/java-1.5/bin/java -cp readseq-2.1.26-cipres.jar run $@ || exit 1
+
+For more details: java -cp readseq.jar help more
+
+Options
+    -a[ll]              					select All sequences
+    -c[aselower]        				change to lower case
+    -C[ASEUPPER]					change to UPPER CASE
+    -ch[ecksum]						calculate & print checksum of sequences
+    -degap[=-]							remove gap symbols
+    -f[ormat=]#						Format number for output,  or
+    -f[ormat=]Name					Format name for output
+          see Formats				list below for names and numbers
+    -inform[at]=#						input format number,  or
+    -inform[at]=Name				input format name.  Assume input data is this format
+    -i[tem=2,3,4]						select Item number(s) from several
+    -l[ist]									List sequences only
+    -o[utput=]out.seq   			redirect Output
+    -p[ipe]								Pipe (command line, < stdin, > stdout)
+    -r[everse]							reverse-complement of input sequence
+    -t[ranslate=]io					translate input symbol [i] to output symbol [o]
+    use several -tio to translate several symbols
+	
+    -v[erbose]         		 			Verbose progress
+	-compare=1        				Compare to sequence files, reporting differences
+		
+   Documentation and Feature Table extraction:
+
+    -feat[ures]=exon,CDS...   					extract sequence of selected features
+    -nofeat[ures]=repeat_region,intron... 	remove sequence of selected features 
+    -field=AC,ID...      								include selected document fields in output
+    -nofield=COMMENT,... 						remove selected document fields from output 
+    
+    -extract=1000..9999 							* extract all features, sequence from given base range
+    -subrange=-1000..10  						* extract subrange of sequence for feature locations
+    -subrange=1..end      
+    -subrange=end-10..end+99  
+    -pair=1             									* combine features (fff,gff) and sequence files to one output
+    -unpair=1            								* split features,sequence from one input to two files
+                             
+
+   Pretty format options:
+    -wid[th]=#            sequence line width
+    -tab=#                left indent
+    -col[space]=#         column space within sequence line on output
+    -gap[count]           count gap chars in sequence numbers
+    -nameleft, -nameright[=#]   name on left/right side [=max width]
+    -nametop              name at top/bottom
+    -numleft, -numright   seq index on left/right side
+    -numtop, -numbot      index on top/bottom
+    -match[=.]            use match base for 2..n species
+    -inter[line=#]        blank line(s) between sequence blocks
+
+This program requires a Java runtime (java or jre) program, version 1.1.x, 1.2 or later
+The leading '-' on option is optional if '=' is present.  All non-options
+(no leading '-' or embedded '=') are used as input file names.
+These options and call format are compatible with the classic readseq (v.1992)
+* New experimental feature handling options, may not yet work as desired.
+To test readseq, use: java -cp readseq.jar test													 -->
+  
+
+<parameters>
+	&runtime;
+
+<!-- this parameter just sets the invocation line -->
+    <parameter ismandatory="1" issimple="1" ishidden="1" type="String"> 
+	<name>intiation_string</name>
+		<attributes>
+			<format>
+				<language>perl</language>
+				<code>"readseq"</code>
+			</format>
+			<group>-10</group>
+			<comment>
+<value></value>
+			</comment>
+		</attributes>
+	</parameter>
+
+<!-- this parameter  sets the input file as the last delivered part of the command line-->	
+	<parameter ismandatory="1" issimple="1" isinput="1" type="Sequence"> 
+	<name>sequence</name>
+		<attributes>
+			<prompt>Entry sequence file:</prompt>
+			<format>
+				<language>perl</language>
+				<code>"input.sequence"</code>
+			</format>
+			<filenames>input.sequence</filenames>	
+			<group>0</group>
+			<comment>
+<value></value>
+			</comment>
+		</attributes>
+	</parameter>
+	
+<!-- this parameter sets the input format using numbers      -inform[at]=#input format number -->
+	<parameter ismandatory="1" issimple="1" type="Excl"> 
+	<name>input_type</name>
+		<attributes>
+			<prompt>Choose the Input Format</prompt>
+			<format>
+				<language>perl</language>
+					<code>"-inform=$value"</code>
+			</format>
+			<vdef>
+				<value>8</value>
+			</vdef>
+			<vlist>
+				<value>8</value>
+				<label>FASTA</label>
+				<value>22</value>
+				<label>Clustal</label>
+				<value>12</value>
+				<label>Phylip</label>
+				<value>17</value>
+				<label>NEXUS</label>
+				<value>15</value>
+				<label>MSF</label>
+				<value>5</value>
+				<label>GCG</label>
+<!--			<value>19</value>
+				<label>XML</label> -->
+				<value>13</value>
+				<label>Plain/Raw</label>
+				<value>11</value>
+				<label>Phylip 3.2</label>
+				<value>6</value>
+				<label>DNA Strider</label>
+				<value>14</value>
+				<label>PIR | CODATA</label>
+				<value>20</value>
+				<label>BLAST</label>
+				<value>21</value>
+				<label>SCF</label>
+				<value>23</value>
+				<label>FlatFeat</label>
+				<value>24</value>
+				<label>GFF</label>
+				<value>25</value>
+				<label>ACEDB</label>
+				<value>1</value>
+				<label>IG|Stanford</label>
+				<value>2</value>
+				<label>GenBank</label>
+				<value>3</value>
+				<label>NBRF</label>
+				<value>4</value>
+				<label>EMBL</label>
+			</vlist>
+			<group>-9</group>
+			<comment>
+<value></value>
+			</comment>
+		</attributes>
+	</parameter>
+	
+<!-- this parameter sets the output format using numbers  -f[ormat=]#	 Format number for output -->
+	<parameter ismandatory="1" issimple="1" type="Excl"> 
+	<name>output_type</name>
+		<attributes>
+			<prompt>Choose the Output format</prompt>
+			<format>
+				<language>perl</language>
+					<code>"-f=$value"</code>
+			</format>
+			<vdef>
+				<value>17</value>
+			</vdef>
+						<vlist>
+				<value>8</value>
+				<label>FASTA</label>
+				<value>22</value>
+				<label>Clustal</label>
+				<value>12</value>
+				<label>Phylip</label>
+				<value>17</value>
+				<label>NEXUS</label>
+				<value>15</value>
+				<label>MSF</label>
+				<value>5</value>
+				<label>GCG</label>
+				<!--<value>19</value>
+				<label>XML</label>-->
+				<value>13</value>
+				<label>Plain/Raw</label>
+				<value>11</value>
+				<label>Phylip 3.2</label>
+				<value>6</value>
+				<label>DNA Strider</label>
+				<value>14</value>
+				<label>PIR | CODATA</label>
+				<value>18</value>
+				<label>Pretty</label>
+				<value>23</value>
+				<label>FlatFeat</label>
+				<value>24</value>
+				<label>GFF</label>
+				<value>25</value>
+				<label>ACEDB</label>
+				<value>1</value>
+				<label>IG|Stanford</label>
+				<value>2</value>
+				<label>GenBank</label>
+				<value>3</value>
+				<label>NBRF</label>
+				<value>4</value>
+				<label>EMBL</label>
+			</vlist>
+			<group>-9</group>
+			<comment>
+<value></value>
+			</comment>
+		</attributes>
+	</parameter>
+<!--  All pretty format options commented out because it can lead to icky errors. -->
+<!--  Pretty format options: -wid[th]=#   sequence line width  -->
+     
+    <parameter type="Integer"> 
+		<name>pretty_seqwidth</name>
+		<attributes>
+			<prompt>Sequence Line Width</prompt>
+			<precond>
+				<language>perl</language>
+				<code>$output_type eq "18"</code>
+			</precond>
+			<vdef>
+				<value>60</value>
+			</vdef>
+			<format>
+				<language>perl</language>
+				<code> " -wid=$value" </code>
+			</format>
+			<group>-8</group>
+		</attributes>
+	 </parameter>
+	 
+<!--    Pretty format options:  -tab=#  left indent  -->
+	<parameter type="Integer"> 
+		<name>pretty_leftindent</name>
+		<attributes>
+			<prompt>Left Indent</prompt>
+			 <precond>
+				<language>perl</language>
+				<code>$output_type eq "18"</code>
+			</precond>
+			<vdef>
+				<value>2</value>
+			</vdef>
+			<format>
+				<language>perl</language>
+				<code> " -tab=$value" </code>
+			</format>
+			<group>-7</group>
+		</attributes>
+	 </parameter>
+	 
+<!--    Pretty format options:  -col[space]=#  column space within sequence line on output 	   -->
+	<parameter type="Integer">
+		<name>pretty_colspace</name>
+		<attributes>
+			<prompt>Column space within sequence line on output</prompt>
+			<vdef>
+				<value>0</value>
+			</vdef>
+			 <precond>
+				<language>perl</language>
+				<code>$output_type eq "18"</code>
+			</precond>
+			<format>
+				<language>perl</language>
+				<code> " -col=$value" </code>
+			</format>
+			<group>-6</group>
+		</attributes>
+	 </parameter>
+	 
+<!--    Pretty format options:    -gap[count]           count gap chars in sequence numbers -->
+
+	 <parameter type="Switch"> 
+		<name>pretty_countgap</name>
+		<attributes>
+			<prompt>Count gap characters in sequence width</prompt>
+			<vdef>
+				<value>1</value>
+			</vdef>
+			 <precond>
+				<language>perl</language>
+				<code>$output_type eq "18"</code>
+			</precond>
+			<format>
+				<language>perl</language>
+				<code>($value)? " -gap":"" </code>
+			</format>
+			<group>-5</group>
+		</attributes>
+	</parameter> 
+	
+    <!--    Pretty format options:   -nameleft, -nameright[=#]   name on left/right side [=max width] -->
+	 <parameter type="Switch"> 
+		<name>pretty_nameright</name>
+		<attributes>
+			<prompt>Put sequence name on right</prompt>
+			<vdef>
+				<value>0</value>
+			</vdef>
+			 <precond>
+				<language>perl</language>
+				<code>$output_type eq "18"</code>
+			</precond>
+			<format>
+				<language>perl</language>
+				<code>($value) ? " -nameright=15":"-nameleft=15" </code>
+			</format>
+			<group>-4</group>
+		</attributes>
+	</parameter>
+
+    <!--    Pretty format options:
+    -numleft, -numright   seq index on left/right sides  -->
+	 <parameter type="Switch"> 
+		<name>pretty_indexright</name>
+		<attributes>
+			<prompt>Put index on right</prompt>
+			<vdef>
+				<value>0</value>
+			</vdef>
+			 <precond>
+				<language>perl</language>
+				<code>$output_type eq "18"</code>
+			</precond>
+			<format>
+				<language>perl</language>
+				<code>($value) ? "-nametop -numright -numtop":"-nametop -numleft -numtop" </code>
+			</format>
+			<group>-3</group>
+		</attributes>
+	</parameter> 
+
+	<!--   Pretty format options:    -nametop              name at top/bottom
+    -numtop, -numbot      index on top/bottom  -->
+
+	
+    <!--    Pretty format options:
+    -match[=.]            use match base for 2..n species -->
+
+<!-- not supported right now	 <parameter type="Switch"> 
+		<name>pretty_matchbase</name>
+		<attributes>
+			<prompt>Use Match base for 2...n species</prompt>
+			<vdef>
+				<value>0</value>
+			</vdef>
+			 <precond>
+				<language>perl</language>
+				<code>$output_type eq "18"</code>
+			</precond>
+			<format>
+				<language>perl</language>
+				<code>($value) ? " -match":"" </code>
+			</format>
+			<group>-2</group>
+		</attributes>
+	</parameter>    -->
+    
+    <!--    Pretty format options:    -inter[line=#]  blank line(s) between sequence blocks  -->
+    
+	 <parameter type="Integer"> 
+		<name>pretty_interlinet</name>
+		<attributes>
+			<prompt>How many lines between blocks</prompt>
+			<vdef>
+				<value>1</value>
+			</vdef>
+			 <precond>
+				<language>perl</language>
+				<code>$output_type eq "18"</code>
+			</precond>
+			<format>
+				<language>perl</language>
+				<code>" -inter=$value"</code>
+			</format>
+			<group>-2</group>
+		</attributes>
+	</parameter> 
+    
+ <!-- [   this parameter sets the output file name  -o[utput=]out.seq  redirect Output	
+we have implemented a separate instance for each of this paramater for each type of output  -->
+
+	<parameter type="OutFile"> 
+		<name>outputfile_nexus</name>
+		<attributes>
+			 <precond>
+				<language>perl</language>
+				<code>$output_type eq "17"</code>
+			</precond>
+			<format>
+				<language>perl</language>
+				<code> " -o=outfile.nex" </code>
+			</format>
+			<filenames>outfile.nex</filenames>
+			<group>-1</group>
+		</attributes>
+	 </parameter>
+	 
+	 <parameter type="OutFile"> 
+		<name>outputfile_fasta</name>
+		<attributes>
+			 <precond>
+				<language>perl</language>
+				<code>$output_type eq "8"</code>
+			</precond>
+			<format>
+				<language>perl</language>
+				<code> " -o=outfile.fasta" </code>
+			</format>
+			<filenames>outfile.fasta</filenames>
+			<group>-1</group>
+		</attributes>
+	 </parameter>
+	 
+	 <parameter type="OutFile"> 
+		<name>outputfile_clustal</name>
+		<attributes>
+			 <precond>
+				<language>perl</language>
+				<code>$output_type eq "22"</code>
+			</precond>
+			<format>
+				<language>perl</language>
+				<code> " -o=outfile.aln" </code>
+			</format>
+			<filenames>outfile.aln</filenames>
+			<group>-1</group>
+		</attributes>
+	 </parameter>
+	 
+	 <parameter type="OutFile"> 
+		<name>outputfile_phy</name>
+		<attributes>
+			 <precond>
+				<language>perl</language>
+				<code>$output_type eq "12"</code>
+			</precond>
+			<format>
+				<language>perl</language>
+				<code> " -o=outfile.phy" </code>
+			</format>
+			<filenames>outfile.phy</filenames>
+			<group>-1</group>
+		</attributes>
+	 </parameter>
+	 
+	 <parameter type="OutFile"> 
+		<name>outputfile_msf</name>
+		<attributes>
+			 <precond>
+				<language>perl</language>
+				<code>$output_type eq "15"</code>
+			</precond>
+			<format>
+				<language>perl</language>
+				<code> " -o=outfile.msf" </code>
+			</format>
+			<filenames>outfile.msf</filenames>
+			<group>-1</group>
+		</attributes>
+	 </parameter>
+	 
+	 <parameter type="OutFile"> 
+		<name>outputfile_gcg</name>
+		<attributes>
+			 <precond>
+				<language>perl</language>
+				<code>$output_type eq "5"</code>
+			</precond>
+			<format>
+				<language>perl</language>
+				<code> " -o=outfile.gcg" </code>
+			</format>
+			<filenames>outfile.gcg</filenames>
+			<group>-1</group>
+		</attributes>
+	 </parameter>
+	 
+	 <parameter type="OutFile"> 
+		<name>outputfile_xml</name>
+		<attributes>
+			 <precond>
+				<language>perl</language>
+				<code>$output_type eq "19"</code>
+			</precond>
+			<format>
+				<language>perl</language>
+				<code> " -o=outfile.xml" </code>
+			</format>
+			<filenames>outfile.xml</filenames>
+			<group>-1</group>
+		</attributes>
+	 </parameter>
+
+	<parameter type="OutFile"> 
+		<name>outputfile_plain</name>
+		<attributes>
+			 <precond>
+				<language>perl</language>
+				<code>$output_type eq "13"</code>
+			</precond>
+			<format>
+				<language>perl</language>
+				<code> " -o=outfile.txt" </code>
+			</format>
+			<filenames>outfile.txt</filenames>
+			<group>-1</group>
+		</attributes>
+	 </parameter>
+	 
+	 <parameter type="OutFile"> 
+		<name>outputfile_phylip32</name>
+		<attributes>
+			 <precond>
+				<language>perl</language>
+				<code>$output_type eq "11"</code>
+			</precond>
+			<format>
+				<language>perl</language>
+				<code> " -o=outfile.phy" </code>
+			</format>
+			<filenames>outfile.phy</filenames>
+			<group>-1</group>
+		</attributes>
+	 </parameter>
+	 
+	 <parameter type="OutFile"> 
+		<name>outputfile_dnastrider</name>
+		<attributes>
+			 <precond>
+				<language>perl</language>
+				<code>$output_type eq "6"</code>
+			</precond>
+			<format>
+				<language>perl</language>
+				<code> " -o=outfile.strider" </code>
+			</format>
+			<filenames>outfile.strider</filenames>
+			<group>-1</group>
+		</attributes>
+	 </parameter>
+	 
+	 <parameter type="OutFile"> 
+		<name>outputfile_pir_codata</name>
+		<attributes>
+			 <precond>
+				<language>perl</language>
+				<code>$output_type eq "14"</code>
+			</precond>
+			<format>
+				<language>perl</language>
+				<code> " -o=outfile.pir" </code>
+			</format>
+			<filenames>outfile.pir</filenames>
+			<group>-1</group>
+		</attributes>
+	 </parameter>
+	 
+	 <parameter type="OutFile"> 
+		<name>outputfile_prettyprint</name>
+		<attributes>
+			 <precond>
+				<language>perl</language>
+				<code>$output_type eq "18"</code>
+			</precond>
+			<format>
+				<language>perl</language>
+				<code> " -o=outfile.pretty" </code>
+			</format>
+			<filenames>outfile.pretty</filenames>
+			<group>-1</group>
+		</attributes>
+	 </parameter>
+	 
+	 <parameter type="OutFile"> 
+		<name>outputfile_flatfeat</name>
+		<attributes>
+			 <precond>
+				<language>perl</language>
+				<code>$output_type eq "23"</code>
+			</precond>
+			<format>
+				<language>perl</language>
+				<code> " -o=outfile.fff" </code>
+			</format>
+			<filenames>outfile.fff</filenames>
+			<group>-1</group>
+		</attributes>
+	 </parameter>
+	 
+	 <parameter type="OutFile"> 
+		<name>outputfile_gff</name>
+		<attributes>
+			 <precond>
+				<language>perl</language>
+				<code>$output_type eq "24"</code>
+			</precond>
+			<format>
+				<language>perl</language>
+				<code> " -o=outfile.gff" </code>
+			</format>
+			<filenames>outfile.gff</filenames>
+			<group>-1</group>
+		</attributes>
+	</parameter>
+	 
+	<parameter type="OutFile"> 
+		<name>outputfile_acedb</name>
+		<attributes>
+			 <precond>
+				<language>perl</language>
+				<code>$output_type eq "25"</code>
+			</precond>
+			<format>
+				<language>perl</language>
+				<code> " -o=outfile.ace" </code>
+			</format>
+			<filenames>outfile.ace</filenames>
+			<group>-1</group>
+		</attributes>
+	</parameter>
+	 
+	<parameter type="OutFile"> 
+		<name>outputfile_stanford</name>
+		<attributes>
+			 <precond>
+				<language>perl</language>
+				<code>$output_type eq "1"</code>
+			</precond>
+			<format>
+				<language>perl</language>
+				<code> " -o=outfile.ig" </code>
+			</format>
+			<filenames>outfile.ig</filenames>
+			<group>-1</group>
+		</attributes>
+	</parameter>
+	 
+	<parameter type="OutFile"> 
+		<name>outputfile_genbank</name>
+		<attributes>
+			 <precond>
+				<language>perl</language>
+				<code>$output_type eq "2"</code>
+			</precond>
+			<format>
+				<language>perl</language>
+				<code> " -o=outfile.gb" </code>
+			</format>
+			<filenames>outfile.gb</filenames>
+			<group>-1</group>
+		</attributes>
+	</parameter>
+	 
+	<parameter type="OutFile"> 
+		<name>outputfile_nbrf</name>
+		<attributes>
+			 <precond>
+				<language>perl</language>
+				<code>$output_type eq "3"</code>
+			</precond>
+			<format>
+				<language>perl</language>
+				<code> " -o=outfile.nbrf" </code>
+			</format>
+			<filenames>outfile.nbrf</filenames>
+			<group>-1</group>
+		</attributes>
+	</parameter>
+	 
+	<parameter type="OutFile"> 
+		<name>outputfile_embl</name>
+		<attributes>
+			 <precond>
+				<language>perl</language>
+				<code>$output_type eq "4"</code>
+			</precond>
+			<format>
+				<language>perl</language>
+				<code> " -o=outfile.embl" </code>
+			</format>
+			<filenames>outfile.embl</filenames>
+			<group>-1</group>
+		</attributes>
+	</parameter>
+	 
+<!--	not needed any more <parameter type="Results">
+		<name>all_output</name>
+		<attributes>
+			<filenames>*</filenames>
+		</attributes>
+	</parameter>  -->
+	 
+	<parameter type="Results">
+		<name>return_input</name>
+		<attributes>
+			<filenames>*.sequence</filenames>
+		</attributes>
+	</parameter> 
+
+</parameters>
+	
+</pise>

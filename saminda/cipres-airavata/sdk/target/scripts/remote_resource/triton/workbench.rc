@@ -1,0 +1,9 @@
+PATH=$PATH:$HOME/bin
+export PATH
+
+export BOXDIR=/projects/mmiller-group/contrib/tools/boxshade/3.31/src
+export CIPRES_BIN=$HOME/ngbw/contrib/tools/bin
+export CIPRES_SCRIPT=$HOME/ngbw/contrib/scripts
+export CIPRES_TOOLS_BIN=/projects/mmiller-group/contrib/tools/bin/x86_64
+export PATH=$CIPRES_BIN:$CIPRES_TOOLS_BIN:$PATH
+

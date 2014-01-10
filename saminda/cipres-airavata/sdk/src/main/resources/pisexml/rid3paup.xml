@@ -1,0 +1,1161 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE pise SYSTEM "http://www.phylo.org/dev/rami/PARSER/pise.dtd">
+<!--
+	This is for running a rid3/paup  tree improvement using the CIPRES framework
+	as we do on the original cipres portal
+-->
+
+<pise>	
+	<head>
+		<title>RID3Paup</title>
+		<version>r5011</version>
+		<description>Recursive-Iterative-DCM3 algorithm with Paup parsimony search.</description>
+		<authors>Terri Liebowitz, Mark Holder, Usman Roshan.  David Swofford is the author of PAUP.</authors>
+		<reference>
+		U. Roshan, B. M. E. Moret, T. L. Williams, T. Warnow, Rec-I-DCM3: A Fast Algorithmic Technique for Reconstructing Large Phylogenetic Trees, Proceedings of the IEEE Computational Systems Bioinformatics conference (CSB) 2004
+		</reference>
+		<category>Phylogeny / Alignment</category>
+		<doclink>http://www.cs.njit.edu/~usman/RecIDCM3.html</doclink>
+	</head>
+	<command>rid3paup</command>
+	
+	<parameters>
+
+		<!-- Input nexus file is selected outside of this gui -->
+		<parameter ismandatory="1" issimple="1" isinput="1" type="InFile">
+			<name>infile</name>
+			<attributes>
+				<group>0</group>
+				<filenames>data.nex</filenames>
+			</attributes>
+		</parameter>
+
+		<!-- Create the hardcoded parameter file that's used for inferring a starting tree if necessary -->
+		<parameter type="String" ishidden="1">
+			<name>infer_parameter_file</name>
+			<attributes>
+				<paramfile>stepwise_addition_paup_infer_co.xml</paramfile>
+				<group>0</group>
+				<format>
+					<language>perl</language>
+					<code><![CDATA[ <<"EOT"
+<?xml version="1.0" encoding="UTF-8"?>
+<command-object>
+    <command-target>
+        <reference>
+            <registry-info>*,IDL:CipresIDL_api1/TreeInfer:1.0,org.cipres.paup-wrap,Python wrapper around PAUP's HSearch command (using parsimony). file-based io.</registry-info>
+        </reference>
+        <ui-id>org.cipres.paup-wrap</ui-id>
+    </command-target>
+    <commands>default hsearch addseq=random swap=none multrees=no  timelimit=None reconlimit=Infinity [paup.Wrap.n.ratchet.reps=0];</commands>
+</command-object>\\n
+EOT
+				]]></code>
+				</format>
+			</attributes>
+		</parameter>
+
+
+		<!-- ################### -->
+		<!-- Start  the parameter file that's used for specifying the rid3 parameters -->
+		<parameter type="String" ishidden="1">
+			<name>start_improve_parameter_file</name>
+			<attributes>
+				<paramfile>rid3-paup_co.xml</paramfile>
+				<group>1</group>
+				<format>
+					<language>perl</language>
+					<code><![CDATA[ <<"EOT"
+<?xml version="1.0" encoding="UTF-8"?>
+<command-object>
+    <command-target>
+        <reference>
+            <registry-info>*,IDL:CipresIDL_api1/Rid3TreeImprove:1.0,org.cipres.recidcm3,recidcm3</registry-info>
+        </reference>
+        <ui-id>org.cipres.recidcm3</ui-id>
+    </command-target>\\n
+EOT
+					]]></code>
+				</format>
+			</attributes>
+		</parameter>
+
+		<!-- Hardcode the subservices -->
+		<parameter type="String" ishidden="1">
+			<name>subservices</name>
+			<attributes>
+				<paramfile>rid3-paup_co.xml</paramfile>
+				<group>2</group>
+				<format>
+					<language>perl</language>
+					<code><![CDATA[ <<"EOT"
+<commands>
+	SetTreeDecompModule=*,IDL:CipresIDL_api1/TreeDecompose:1.0,org.cipres.dcm3,Roshan DCM
+</commands>
+<commands>
+	SetLargeTreeInferenceModule=*,IDL:CipresIDL_api1/TreeImprove:1.0,org.cipres.paup-wrap,Python wrapper around PAUP's HSearch command (using parsimony). file-based io.
+</commands>
+<commands>
+	SetSmallTreeInferenceModule=*,IDL:CipresIDL_api1/TreeImprove:1.0,org.cipres.paup-wrap,Python wrapper around PAUP's HSearch command (using parsimony). file-based io.
+</commands>
+<commands>
+	SetTreeRefineModule=*,IDL:CipresIDL_api1/TreeRefine:1.0,org.cipres.random-refine,Python implementation of a random refinement of polytomies (Random seed hard-coded for debugging purposes)
+</commands>
+<commands>SetTreeMergeModule=*,IDL:CipresIDL_api1/TreeMerge:1.0,org.cipres.PhycasSCMTreeMerge,C++ implementation of SCM (Yu Fan and Paul Lewis)</commands>\\n
+EOT
+					]]></code>
+				</format>
+			</attributes>
+		</parameter>
+
+
+		<!--
+		<parameter type="Excl" ismandatory="1">
+			<name>limitrecursionby</name>
+			<attributes>
+				<paramfile>rid3-paup_co.xml</paramfile>
+				<group>10</group>
+				<prompt>How do you want to specify the minimum subset size?</prompt>
+				<vdef><value>taxasubsetpercent</value></vdef>
+				<vlist>
+					<value>unlimited</value>
+					<label>No minimum.</label>
+					<value>taxasubsetsize</value>
+					<label>By number.</label>
+					<value>taxasubsetpercent</value>
+					<label>By percent.</label>
+				</vlist>
+			</attributes>
+		</parameter>
+		-->
+		
+		<parameter type="Integer" >
+			<name>maxtaxasubsetsize</name>
+			<attributes>
+				<paramfile>rid3-paup_co.xml</paramfile>
+				<group>11</group>
+				<prompt>Subset size (do inference when subset is this size or smaller)</prompt>
+				<comment><value>
+					It is normally recommended that you use Subset Percent instead of Subset Size.
+				</value></comment>
+				<format>
+					<language>perl</language>
+					<code><![CDATA[ <<"EOT"
+	<commands>SetMaxTaxaSubsetSize=$value;</commands>\\n
+EOT
+					]]></code>
+				</format>
+				<precond>
+					<language>perl</language>
+					<!--<code>$limitrecursionby eq "taxasubsetsize"</code>-->
+					<code>!defined $maxtaxasubsetpercent</code>
+				</precond>
+				<ctrls>
+					<ctrl>
+						<message>Subset size must be greater than 0 or blank.</message>
+						<language>perl</language>
+						<code>$value != "" &amp;&amp; $value  &lt;= 0</code>
+					</ctrl>
+				</ctrls>
+			</attributes>
+		</parameter>
+
+		<parameter type="Float">
+			<name>maxtaxasubsetpercent</name>
+			<attributes>
+				<paramfile>rid3-paup_co.xml</paramfile>
+				<group>12</group>
+				<prompt>Subset Percent (do inference when subset contains specified percent of the total number of taxa, or less).</prompt>
+				<comment><value>
+					The recommended Subset Percent depends on the number of taxa in the dataset.  For datasets with
+					100 - 500 taxa, use 50%.  For 501 - 1000 taxa, use 25 %, and for more than 1001 taxa, use 12 %.
+					Rec-i-dcm3 with paup is not recommended for use on datasets smaller than 100 taxa.
+				</value></comment>
+				<format>
+					<language>perl</language>
+					<code><![CDATA[ <<"EOT"
+	<commands>SetMaxTaxaSubsetPercent=$value;</commands>\\n
+EOT
+					]]></code>
+				</format>
+				<vdef><value>50</value></vdef>
+				<ctrls>
+					<ctrl>
+						<message>Subset percent must be a decimal number greater than 0.  For example, 25.5, means stop recursing when a subset contains 25.5% of the total number of taxa.</message>
+						<language>perl</language>
+						<code>$value != "" &amp;&amp; $value  &lt;= 0</code>
+					</ctrl>
+				</ctrls>
+				<precond>
+					<language>perl</language>
+					<code>!defined $maxtaxasubsetsize</code>
+				</precond>
+			</attributes>
+		</parameter>
+
+
+		<parameter type="Integer">
+			<name>maxrecursionlevels</name>
+			<attributes>
+				<paramfile>rid3-paup_co.xml</paramfile>
+				<group>13</group>
+				<prompt>Maximum recursion depth, before doing inference.  Leave blank if not using depth as limit.</prompt>
+				<format>
+					<language>perl</language>
+					<code><![CDATA[ <<"EOT"
+	<commands>SetMaxRecursionLevels=$value;</commands>\\n
+EOT
+					]]></code>
+				</format>
+				<ctrls>
+					<ctrl>
+						<message>Maximum recursion depth must be blank or an integer greater than zero.</message>
+						<language>perl</language>
+						<code>$value != ""  &amp;&amp; $value  &lt;= 0</code>
+					</ctrl>
+				</ctrls>
+			</attributes>
+		</parameter>
+
+		<parameter type="Integer">
+			<name>maxiterations</name>
+			<attributes>
+				<paramfile>rid3-paup_co.xml</paramfile>
+				<group>14</group>
+				<prompt>Maximum number of iterations.  Leave blank if no iteration limit.</prompt>
+				<format>
+					<language>perl</language>
+					<code><![CDATA[ <<"EOT"
+	<commands>SetMaxIterations=$value;</commands>\\n
+EOT
+					]]></code>
+				</format>
+				<vdef><value>10</value></vdef>
+				<ctrls>
+					<ctrl>
+						<message>Maximum iterations must be blank or an integer greater than zero.</message>
+						<language>perl</language>
+						<code>$value != "" &amp;&amp; $value  &lt;= 0</code>
+					</ctrl>
+				</ctrls>
+			</attributes>
+		</parameter>
+
+		<parameter type="Integer">
+			<name>maxanalysistime</name>
+			<attributes>
+				<paramfile>rid3-paup_co.xml</paramfile>
+				<group>15</group>
+				<prompt>Maximum number of hours to run.</prompt>
+				<format>
+					<language>perl</language>
+					<code><![CDATA[ <<"EOT"
+	<commands>SetMaxAnalysisTime=$value;</commands>\\n
+EOT
+					]]></code>
+				</format>
+				<ctrls>
+					<ctrl>
+						<message>Maximum analysis time must be blank or an integer greater than zero.</message>
+						<language>perl</language>
+						<code>$value != "" &amp;&amp; $value  &lt;= 0</code>
+					</ctrl>
+				</ctrls>
+			</attributes>
+		</parameter>
+
+		<parameter type="Excl" ismandatory="1">
+			<name>ignorestartedgelen</name>
+			<attributes>
+				<paramfile>rid3-paup_co.xml</paramfile>
+				<group>16</group>
+				<prompt>Ignore branch lengths in starting tree.</prompt>
+				<format>
+					<language>perl</language>
+					<code><![CDATA[ <<"EOT"
+<commands>ignoreStartEdgeLen=$value;</commands>\\n
+EOT
+					]]></code>
+				</format>
+				<vlist>
+					<value>yes</value>
+					<label>yes</label>
+					<value>no</value>
+					<label>no</label>
+				</vlist>
+				<vdef><value>no</value></vdef>
+			</attributes>
+		</parameter>
+
+		<!-- AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA -->
+		<parameter type="Paragraph" >
+			<paragraph>
+				<name>decompose_paragraph</name>
+				<prompt>Decomposition Settings</prompt>
+				<parameters>
+
+					<parameter type="String" ishidden="1">
+						<name>decompose_start</name>
+						<attributes>
+							<paramfile>rid3-paup_co.xml</paramfile>
+							<group>17</group>
+							<prompt></prompt>
+							<format>
+								<language>perl</language>
+								<code><![CDATA[ <<"EOT"
+<children>
+	<command-target>
+		<reference>
+			<registry-info>*,IDL:CipresIDL_api1/TreeDecompose:1.0,org.cipres.dcm3,Roshan DCM</registry-info>
+		</reference>            
+		<ui-id>Tree Decomposer Module</ui-id>
+	</command-target>\\n
+EOT
+								]]></code>
+							</format>
+						</attributes>
+					</parameter>
+
+
+					<parameter type="Excl" ismandatory="1">
+						<name>breakties</name>
+						<attributes>
+							<paramfile>rid3-paup_co.xml</paramfile>
+							<group>18</group>
+							<prompt>Break ties randomly?</prompt>
+							<vdef><value>yes</value></vdef>
+							<vlist>
+								<value>no</value>
+								<label>no</label>
+								<value>yes</value>
+								<label>yes</label>
+							</vlist>
+							<format>
+								<language>perl</language>
+								<code><![CDATA[ <<"EOT"
+<commands>BreakTies=$value;</commands>\\n
+EOT
+								]]></code>
+							</format>
+						</attributes>
+					</parameter>
+					<parameter type="Integer" >
+						<name>seed</name>
+						<attributes>
+							<paramfile>rid3-paup_co.xml</paramfile>
+							<group>19</group>
+							<prompt>Seed for random number generator.</prompt>
+							<vdef><value>0</value></vdef>
+							<format>
+								<language>perl</language>
+								<code><![CDATA[ <<"EOT"
+<commands>SEED=$value;</commands>\\n
+EOT
+								]]></code>
+							</format>
+							<precond>
+								<language>perl</language>
+								<code> defined $breakties &amp;&amp; $breakties eq "yes"</code>
+							</precond>
+							<ctrls>
+								<ctrl>
+									<message>Seed must be greater than or equal to 0.</message>
+									<language>perl</language>
+									<code>$value  &lt; 0</code>
+								</ctrl>
+							</ctrls>
+						</attributes>
+					</parameter>
+
+
+					<parameter type="String" ishidden="1">
+						<name>decompose_end</name>
+						<attributes>
+							<paramfile>rid3-paup_co.xml</paramfile>
+							<group>20</group>
+							<prompt></prompt>
+							<format>
+								<language>perl</language>
+								<code><![CDATA[ <<"EOT"
+</children>\\n
+EOT
+								]]></code>
+							</format>
+						</attributes>
+					</parameter>
+
+				</parameters>
+			</paragraph>
+		</parameter> <!-- Decompose Paragraph -->
+
+		<!-- AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA -->
+		<parameter type="Paragraph" >
+			<paragraph>
+				<name>large_tree_inference_paragraph</name>
+				<prompt>Paup Settings for Large Tree Search</prompt>
+				<parameters>
+
+					<parameter type="String" ishidden="1">
+						<name>large_tree_inference_start</name>
+						<attributes>
+							<paramfile>rid3-paup_co.xml</paramfile>
+							<group>21</group>
+							<prompt></prompt>
+							<format>
+								<language>perl</language>
+								<code><![CDATA[ <<"EOT"
+<children>
+	<command-target>
+		<reference>
+			<registry-info>*,IDL:CipresIDL_api1/TreeImprove:1.0,org.cipres.paup-wrap,Python wrapper around PAUP's HSearch command (using parsimony). file-based io.</registry-info>
+		</reference>
+		<ui-id>Large Tree Inference Module</ui-id>
+	</command-target>\\n
+EOT
+								]]></code>
+							</format>
+						</attributes>
+					</parameter>
+
+		<!--  Included from paup.xml, just changed groups, paramfile  and defaults.  -->
+		<!-- ######################################################################## -->
+		<parameter type="Integer">
+			<name>maxtrees</name>
+			<attributes>
+				<paramfile>rid3-paup_co.xml</paramfile>
+				<group>22</group>
+				<prompt>Maximum number of trees saved (maxtrees).</prompt>
+				<format>
+					<language>perl</language>
+					<code><![CDATA[ <<"EOT"
+	<commands>set maxtrees=$value;</commands>\\n
+EOT
+					]]></code>
+				</format>
+				<ctrls>
+					<ctrl>
+						<message>maxtrees must be a greater than 0.</message>
+						<language>perl</language>
+						<code>$value  &lt; 0</code>
+					</ctrl>
+				</ctrls>
+				<precond>
+					<language>perl</language>
+					<code> defined $multrees &amp;&amp; $multrees eq "yes"</code>
+				</precond>
+			</attributes>
+		</parameter>
+		<parameter type="Excl" ismandatory="1">
+			<name>increase</name>
+			<attributes>
+				<paramfile>rid3-paup_co.xml</paramfile>
+				<group>23</group>
+				<prompt>Automatically increase the number of trees in memory.</prompt>
+				<format>
+					<language>perl</language>
+					<code><![CDATA[ <<"EOT"
+	<commands>set Increase = $value;</commands>\\n
+EOT
+					]]></code>
+				</format>
+				<vdef><value>no</value></vdef>
+				<vlist>
+					<value>no</value>
+					<label>no</label>
+					<value>auto</value>
+					<label>yes</label>
+				</vlist>
+				<precond>
+					<language>perl</language>
+					<code> defined $multrees &amp;&amp; $multrees eq "yes"</code>
+				</precond>
+			</attributes>
+		</parameter>
+		<parameter type="Integer">
+			<name>autoincrease</name>
+			<attributes>
+				<paramfile>rid3-paup_co.xml</paramfile>
+				<group>24</group>
+				<prompt>Auto-increase amount (AutoInc).</prompt>
+				<format>
+					<language>perl</language>
+					<code><![CDATA[ <<"EOT"
+	<commands>set AutoInc=$value;</commands>\\n
+EOT
+					]]></code>
+				</format>
+				<ctrls>
+					<ctrl>
+						<message>Auto-increase amount must be greater than 0.</message>
+						<language>perl</language>
+						<code>$value  &lt;= 0</code>
+					</ctrl>
+				</ctrls>
+				<precond>
+					<language>perl</language>
+					<code> defined $multrees &amp;&amp; $multrees eq "yes" &amp;&amp; defined $increase
+						&amp;&amp; $increase eq "auto"
+					</code>
+				</precond>
+			</attributes>
+		</parameter>
+
+
+		<parameter type="String" ishidden="1">
+			<name>start_hsearch</name>
+			<attributes>
+				<paramfile>rid3-paup_co.xml</paramfile>
+				<group>25</group>
+					<format>
+						<language>perl</language>
+						<code><![CDATA[ <<"EOT"
+<commands>
+default hsearch\\n
+EOT
+						]]></code>
+					</format>
+			</attributes>
+		</parameter>
+
+
+	<parameter type="Paragraph" >
+		<paragraph>
+			<name>hsearch_paragraph</name>
+			<prompt>Paup Settings for Large Tree Search - HSearch Parameters</prompt>
+			<parameters>
+
+				<parameter type="Excl" ismandatory="1">
+					<name>swap</name>
+					<attributes>
+						<paramfile>rid3-paup_co.xml</paramfile>
+						<group>30</group>
+						<prompt>Branch Swapping Algorithm (swap)</prompt>
+						<format>
+							<language>perl</language>
+							<code>"swap=$value\\n"</code>
+						</format>
+						<vlist>
+							<value>tbr</value>
+							<label>TBR</label>
+							<value>spr</value>
+							<label>SPR</label>
+							<value>nni</value>
+							<label>NNI</label>
+						</vlist>
+						<vdef><value>tbr</value></vdef>
+					</attributes>
+				</parameter>
+				<parameter type="Excl" ismandatory="1">
+					<name>multrees</name>
+					<attributes>
+						<paramfile>rid3-paup_co.xml</paramfile>
+						<group>31</group>
+						<prompt>Save all optimal trees? (multrees)</prompt>
+						<format>
+							<language>perl</language>
+							<code>"multrees=$value\\n"</code>
+						</format>
+						<vlist>
+							<value>yes</value>
+							<label>yes</label>
+							<value>no</value>
+							<label>no</label>
+						</vlist>
+						<vdef><value>no</value></vdef>
+					</attributes>
+				</parameter>
+				<parameter type="Integer">
+					<name>rearrlimit</name>
+					<attributes>
+						<paramfile>rid3-paup_co.xml</paramfile>
+						<group>32</group>
+						<prompt>Maximum number of rearrangements (rearrlimit). Blank means unlimited.</prompt>
+						<format>
+							<language>perl</language>
+							<code>($rearrlimit == 0) ? "" : "rearrlimit=$value\\n"</code>
+						</format>
+						<ctrls>
+							<ctrl>
+								<message>rearrlimit must be a positive integer (or blank if unlimited).</message>
+								<language>perl</language>
+								<code>$value  &lt; 0</code>
+							</ctrl>
+						</ctrls>
+					</attributes>
+				</parameter>
+				<parameter type="Integer">
+					<name>timelimit</name>
+					<attributes>
+						<paramfile>rid3-paup_co.xml</paramfile>
+						<group>33</group>
+						<prompt>Maximum number of seconds to search (timelimit). Blank means unlimited.</prompt>
+						<format>
+							<language>perl</language>
+							<code>($timelimit == 0) ? "" : "timelimit=$value\\n"</code>
+						</format>
+						<vdef> <value>3600 </value> </vdef>
+						<ctrls>
+							<ctrl>
+								<message>timelimit must be a positive integer (or blank if unlimited).</message>
+								<language>perl</language>
+								<code>$value  &lt;  0</code>
+							</ctrl>
+						</ctrls>
+					</attributes>
+				</parameter>
+
+				<!-- TL: I'm assuming that not specifying reconlimit is the same as reconlimit=Infinity -->
+				<parameter type="Integer">
+					<name>reconlimit</name>
+					<attributes>
+						<paramfile>rid3-paup_co.xml</paramfile>
+						<group>34</group>
+						<prompt>Reconnection limit (reconlimit).  Blank means unlimited.</prompt>
+						<format>
+							<language>perl</language>
+							<code>($reconlimit == 0) ? "" : "reconlimit=$value\\n"</code>
+						</format>
+						<ctrls>
+							<ctrl>
+								<message>reconlimit must be a positive integer (or blank if unlimited).</message>
+								<language>perl</language>
+								<code>$value  &lt;  0</code>
+							</ctrl>
+						</ctrls>
+					</attributes>
+				</parameter>
+				<parameter type="Integer">
+					<name>ratchetreps</name>
+					<attributes>
+						<paramfile>rid3-paup_co.xml</paramfile>
+						<group>35</group>
+						<prompt>Number of ratchet iterations (or blank if not ratcheting)</prompt>
+						<vdef><value>0</value></vdef>
+						<format>
+							<language>perl</language>
+							<code>($ratchetreps == 0) ? "" : "[paup.Wrap.n.ratchet.reps=$value]\\n"</code>
+						</format>
+						<ctrls>
+							<ctrl>
+								<message>Ratchet iterations must be a positive integer (or blank if no ratchet).</message>
+								<language>perl</language>
+								<code>$value  &lt;  0</code>
+							</ctrl>
+						</ctrls>
+					</attributes>
+				</parameter>
+				<parameter type="Float" ismandatory="1">
+					<name>ratchetprop</name>
+					<attributes>
+						<paramfile>rid3-paup_co.xml</paramfile>
+						<group>36</group>
+						<prompt>Proportion of characters to reweight in ratchet</prompt>
+						<vdef><value>0.2</value></vdef>
+						<format>
+							<language>perl</language>
+							<code>"[paup.Wrap.ratchet.prop=$value]\\n"</code>
+						</format>
+						<ctrls>
+							<ctrl>
+								<message>Proportion to reweight must be greater than or equal to  0.</message>
+								<language>perl</language>
+								<code>$value  &lt;  0</code>
+							</ctrl>
+						</ctrls>
+						<precond>
+							<language>perl</language>
+							<code> defined $ratchetreps &amp;&amp; $ratchetreps &gt; 0</code>
+						</precond>
+					</attributes>
+				</parameter>
+				<parameter type="Integer" ismandatory="1">
+					<name>ratchetseed</name>
+					<attributes>
+						<paramfile>rid3-paup_co.xml</paramfile>
+						<group>37</group>
+						<prompt>Pseudo-random number generator seed for ratchet.</prompt>
+						<vdef><value>0</value></vdef>
+						<format>
+							<language>perl</language>
+							<code>"[paup.Wrap.ratchet.seed=$value]\\n"</code>
+						</format>
+						<ctrls>
+							<ctrl>
+								<message>Proportion to reweight must be greater than or equal to  0.</message>
+								<language>perl</language>
+								<code>$value  &lt;  0</code>
+							</ctrl>
+						</ctrls>
+						<precond>
+							<language>perl</language>
+							<code> defined $ratchetreps &amp;&amp; $ratchetreps &gt; 0</code>
+						</precond>
+					</attributes>
+				</parameter>
+
+			</parameters>
+		</paragraph>
+	</parameter>
+
+
+		<parameter type="String" ishidden="1">
+			<name>end_hsearch</name>
+			<attributes>
+				<paramfile>rid3-paup_co.xml</paramfile>
+				<group>38</group>
+				<format>
+					<language>perl</language>
+					<code><![CDATA[ <<"EOT"
+						;
+</commands>\\n
+EOT
+					]]></code>
+				</format>
+			</attributes>
+		</parameter>
+		<!-- End Included from paup.xml ######################################################################### -->
+
+
+					<parameter type="String" ishidden="1">
+						<name>large_tree_inference_end</name>
+						<attributes>
+							<paramfile>rid3-paup_co.xml</paramfile>
+							<group>40</group>
+							<prompt></prompt>
+							<format>
+								<language>perl</language>
+								<code><![CDATA[ <<"EOT"
+</children>\\n
+EOT
+								]]></code>
+							</format>
+						</attributes>
+					</parameter>
+
+				</parameters>
+			</paragraph>
+		</parameter> <!-- Large Tree Paragraph -->
+
+		<parameter type="Paragraph" >
+			<paragraph>
+				<name>small_tree_inference_paragraph</name>
+				<prompt>Paup Settings for Small Tree Search</prompt>
+				<parameters>
+
+					<parameter type="String" ishidden="1">
+						<name>small_tree_inference_start</name>
+						<attributes>
+							<paramfile>rid3-paup_co.xml</paramfile>
+							<group>50</group>
+							<prompt></prompt>
+							<format>
+								<language>perl</language>
+								<code><![CDATA[ <<"EOT"
+<children>
+	<command-target>
+		<reference>
+			<registry-info>*,IDL:CipresIDL_api1/TreeImprove:1.0,org.cipres.paup-wrap,Python wrapper around PAUP's HSearch command (using parsimony). file-based io.</registry-info>
+		</reference>
+		<ui-id>Small Tree Inference Module</ui-id>
+	</command-target>\\n
+EOT
+								]]></code>
+							</format>
+						</attributes>
+					</parameter>
+
+		<!--  Included from paup.xml, just changed groups, paramfile  and defaults.  Also changed name of params
+		to avoid conflict with large tree paup settings. -->
+		<!-- ######################################################################## -->
+		<parameter type="Integer">
+			<name>s_maxtrees</name>
+			<attributes>
+				<paramfile>rid3-paup_co.xml</paramfile>
+				<group>51</group>
+				<prompt>Maximum number of trees saved (maxtrees).</prompt>
+				<format>
+					<language>perl</language>
+					<code><![CDATA[ <<"EOT"
+	<commands>set maxtrees=$value;</commands>\\n
+EOT
+					]]></code>
+				</format>
+				<ctrls>
+					<ctrl>
+						<message>maxtrees must be a greater than 0.</message>
+						<language>perl</language>
+						<code>$value  &lt; 0</code>
+					</ctrl>
+				</ctrls>
+				<precond>
+					<language>perl</language>
+					<code> defined $s_multrees &amp;&amp; $s_multrees eq "yes"</code>
+				</precond>
+			</attributes>
+		</parameter>
+		<parameter type="Excl" ismandatory="1">
+			<name>s_increase</name>
+			<attributes>
+				<paramfile>rid3-paup_co.xml</paramfile>
+				<group>52</group>
+				<prompt>Automatically increase the number of trees in memory.</prompt>
+				<format>
+					<language>perl</language>
+					<code><![CDATA[ <<"EOT"
+	<commands>set Increase = $value;</commands>\\n
+EOT
+					]]></code>
+				</format>
+				<vdef><value>no</value></vdef>
+				<vlist>
+					<value>no</value>
+					<label>no</label>
+					<value>auto</value>
+					<label>yes</label>
+				</vlist>
+				<precond>
+					<language>perl</language>
+					<code> defined $s_multrees &amp;&amp; $s_multrees eq "yes"</code>
+				</precond>
+			</attributes>
+		</parameter>
+		<parameter type="Integer">
+			<name>s_autoincrease</name>
+			<attributes>
+				<paramfile>rid3-paup_co.xml</paramfile>
+				<group>53</group>
+				<prompt>Auto-increase amount (AutoInc).</prompt>
+				<format>
+					<language>perl</language>
+					<code><![CDATA[ <<"EOT"
+	<commands>set AutoInc=$value;</commands>\\n
+EOT
+					]]></code>
+				</format>
+				<ctrls>
+					<ctrl>
+						<message>Auto-increase amount must greater be than 0.</message>
+						<language>perl</language>
+						<code>$value  &lt;= 0</code>
+					</ctrl>
+				</ctrls>
+				<precond>
+					<language>perl</language>
+					<code> defined $s_multrees &amp;&amp; $s_multrees eq "yes" &amp;&amp; defined $s_increase
+						&amp;&amp; $s_increase eq "auto"
+					</code>
+				</precond>
+			</attributes>
+		</parameter>
+
+
+		<parameter type="String" ishidden="1">
+			<name>s_start_hsearch</name>
+			<attributes>
+				<paramfile>rid3-paup_co.xml</paramfile>
+				<group>54</group>
+					<format>
+						<language>perl</language>
+						<code><![CDATA[ <<"EOT"
+<commands>
+default hsearch\\n
+EOT
+						]]></code>
+					</format>
+			</attributes>
+		</parameter>
+
+
+	<parameter type="Paragraph" >
+		<paragraph>
+			<name>s_hsearch_paragraph</name>
+			<prompt>Paup Settings for Small Tree Search - HSearch Parameters</prompt>
+			<parameters>
+
+				<parameter type="Excl" ismandatory="1">
+					<name>s_swap</name>
+					<attributes>
+						<paramfile>rid3-paup_co.xml</paramfile>
+						<group>55</group>
+						<prompt>Branch Swapping Algorithm (swap)</prompt>
+						<format>
+							<language>perl</language>
+							<code>"swap=$value\\n"</code>
+						</format>
+						<vlist>
+							<value>tbr</value>
+							<label>TBR</label>
+							<value>spr</value>
+							<label>SPR</label>
+							<value>nni</value>
+							<label>NNI</label>
+						</vlist>
+						<vdef><value>tbr</value></vdef>
+					</attributes>
+				</parameter>
+				<parameter type="Excl" ismandatory="1">
+					<name>s_multrees</name>
+					<attributes>
+						<paramfile>rid3-paup_co.xml</paramfile>
+						<group>56</group>
+						<prompt>Save all optimal trees? (multrees)</prompt>
+						<format>
+							<language>perl</language>
+							<code>"multrees=$value\\n"</code>
+						</format>
+						<vlist>
+							<value>yes</value>
+							<label>yes</label>
+							<value>no</value>
+							<label>no</label>
+						</vlist>
+						<vdef><value>no</value></vdef>
+					</attributes>
+				</parameter>
+				<parameter type="Integer">
+					<name>s_rearrlimit</name>
+					<attributes>
+						<paramfile>rid3-paup_co.xml</paramfile>
+						<group>57</group>
+						<prompt>Maximum number of rearrangements (rearrlimit). Blank means unlimited.</prompt>
+						<format>
+							<language>perl</language>
+							<code>($rearrlimit == 0) ? "" : "rearrlimit=$value\\n"</code>
+						</format>
+						<ctrls>
+							<ctrl>
+								<message>rearrlimit must be a positive integer (or blank if unlimited).</message>
+								<language>perl</language>
+								<code>$value  &lt; 0</code>
+							</ctrl>
+						</ctrls>
+					</attributes>
+				</parameter>
+				<parameter type="Integer">
+					<name>s_timelimit</name>
+					<attributes>
+						<paramfile>rid3-paup_co.xml</paramfile>
+						<group>58</group>
+						<prompt>Maximum number of seconds to search (timelimit). Blank means unlimited.</prompt>
+						<format>
+							<language>perl</language>
+							<code>($timelimit == 0) ? "" : "timelimit=$value\\n"</code>
+						</format>
+						<ctrls>
+							<ctrl>
+								<message>timelimit must be a positive integer (or blank if unlimited).</message>
+								<language>perl</language>
+								<code>$value  &lt;  0</code>
+							</ctrl>
+						</ctrls>
+					</attributes>
+				</parameter>
+
+				<!-- TL: I'm assuming that not specifying reconlimit is the same as reconlimit=Infinity -->
+				<parameter type="Integer">
+					<name>s_reconlimit</name>
+					<attributes>
+						<paramfile>rid3-paup_co.xml</paramfile>
+						<group>59</group>
+						<prompt>Reconnection limit (reconlimit).  Blank means unlimited.</prompt>
+						<format>
+							<language>perl</language>
+							<code>($reconlimit == 0) ? "" : "reconlimit=$value\\n"</code>
+						</format>
+						<ctrls>
+							<ctrl>
+								<message>reconlimit must be a positive integer (or blank if unlimited).</message>
+								<language>perl</language>
+								<code>$value  &lt;  0</code>
+							</ctrl>
+						</ctrls>
+					</attributes>
+				</parameter>
+				<parameter type="Integer">
+					<name>s_ratchetreps</name>
+					<attributes>
+						<paramfile>rid3-paup_co.xml</paramfile>
+						<group>60</group>
+						<prompt>Number of ratchet iterations (or blank if not ratcheting)</prompt>
+						<vdef><value>5</value></vdef>
+						<format>
+							<language>perl</language>
+							<code>($s_ratchetreps == 0) ? "" : "[paup.Wrap.n.ratchet.reps=$value]\\n"</code>
+						</format>
+						<ctrls>
+							<ctrl>
+								<message>Ratchet iterations must be a positive integer (or blank if no ratchet).</message>
+								<language>perl</language>
+								<code>$value  &lt;  0</code>
+							</ctrl>
+						</ctrls>
+					</attributes>
+				</parameter>
+				<parameter type="Float" ismandatory="1">
+					<name>s_ratchetprop</name>
+					<attributes>
+						<paramfile>rid3-paup_co.xml</paramfile>
+						<group>61</group>
+						<prompt>Proportion of characters to reweight in ratchet</prompt>
+						<vdef><value>0.25</value></vdef>
+						<format>
+							<language>perl</language>
+							<code>"[paup.Wrap.ratchet.prop=$value]\\n"</code>
+						</format>
+						<ctrls>
+							<ctrl>
+								<message>Proportion to reweight must be greater than or equal to  0.</message>
+								<language>perl</language>
+								<code>$value  &lt;  0</code>
+							</ctrl>
+						</ctrls>
+						<precond>
+							<language>perl</language>
+							<code> defined $s_ratchetreps &amp;&amp; $s_ratchetreps &gt; 0</code>
+						</precond>
+					</attributes>
+				</parameter>
+				<parameter type="Integer" ismandatory="1">
+					<name>s_ratchetseed</name>
+					<attributes>
+						<paramfile>rid3-paup_co.xml</paramfile>
+						<group>62</group>
+						<prompt>Pseudo-random number generator seed for ratchet.</prompt>
+						<vdef><value>0</value></vdef>
+						<format>
+							<language>perl</language>
+							<code>"[paup.Wrap.ratchet.seed=$value]\\n"</code>
+						</format>
+						<ctrls>
+							<ctrl>
+								<message>Proportion to reweight must be greater than or equal to  0.</message>
+								<language>perl</language>
+								<code>$value  &lt;  0</code>
+							</ctrl>
+						</ctrls>
+						<precond>
+							<language>perl</language>
+							<code> defined $s_ratchetreps &amp;&amp; $s_ratchetreps &gt; 0</code>
+						</precond>
+					</attributes>
+				</parameter>
+
+			</parameters>
+		</paragraph>
+	</parameter>
+
+
+		<parameter type="String" ishidden="1">
+			<name>s_end_hsearch</name>
+			<attributes>
+				<paramfile>rid3-paup_co.xml</paramfile>
+				<group>63</group>
+				<format>
+					<language>perl</language>
+					<code><![CDATA[ <<"EOT"
+						;
+</commands>\\n
+EOT
+					]]></code>
+				</format>
+			</attributes>
+		</parameter>
+		<!-- End included from paup.xml ######################################################################### -->
+
+					<parameter type="String" ishidden="1">
+						<name>small_tree_inference_end</name>
+						<attributes>
+							<paramfile>rid3-paup_co.xml</paramfile>
+							<group>64</group>
+							<prompt></prompt>
+							<format>
+								<language>perl</language>
+								<code><![CDATA[ <<"EOT"
+</children>\\n
+EOT
+								]]></code>
+							</format>
+						</attributes>
+					</parameter>
+
+				</parameters>
+			</paragraph>
+		</parameter> <!-- Small  Tree Paragraph -->
+
+
+
+
+		<!-- Finish  the parameter file that's used for specifying the rid3 parameters -->
+		<parameter type="String" ishidden="1">
+			<name>end_improve_parameter_file</name>
+			<attributes>
+				<paramfile>rid3-paup_co.xml</paramfile>
+				<group>65</group>
+				<format>
+					<language>perl</language>
+					<code><![CDATA[ <<"EOT"
+</command-object>\\n
+EOT
+					]]></code>
+				</format>
+			</attributes>
+		</parameter>
+
+		<parameter type="Results">
+			<name>final_result</name>
+			<attributes>
+				<filenames>rid3-paup_data.nex</filenames>
+			</attributes>
+		</parameter>
+
+		<parameter type="Results">
+			<name>intermediate_results</name>
+			<attributes>
+				<filenames>tmp_rid3-paup_data.nex</filenames>
+			</attributes>
+		</parameter>
+
+		<parameter type="Results">
+			<name>original_input</name>
+			<attributes>
+				<filenames>data.nex</filenames>
+			</attributes>
+		</parameter>
+
+
+		<!--
+		<parameter type="Results">
+			<name>all_files</name>
+			<attributes>
+				<filenames>*</filenames>
+			</attributes>
+		</parameter>
+		-->
+
+
+
+		<!--
+			rm -rf trees subdirectory because it takes way too long to delete it using
+			sftpfilehandler.  Unfortunately this means we'll always return an exit
+			status of 0, since rm -rf always returns 0.
+		-->
+		<parameter type="String" ishidden="1">
+			<name>commandline</name>
+			<attributes>
+				<group>0</group>
+				<format>
+					<language>perl</language>
+					<code>	"run_cipres_svc.sh \\
+								-DnexusFile=data.nex \\
+								-DtoolFile=rid3-paup_co.xml \\
+								-DresultsDir=. \\
+								-DtoolName=rid3-paup \\
+								-DtreeInferTool=stepwise_addition_paup_infer_co.xml \\
+								-DoriginalNexusName=data.nex 
+					"</code>
+				</format>
+			</attributes>
+		</parameter>
+
+	</parameters>
+</pise>

@@ -1,0 +1,711 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE pise SYSTEM "http://www.phylo.org/dev/rami/PARSER/pise.dtd" [
+<!ENTITY runtime SYSTEM "http://www.phylo.org/dev/rami/XMLDIR/triton_run_time.xml">
+]>
+<pise>
+
+<head>
+	<title>NCLconverter</title>
+	<version>2.1</version>
+	<description>A file format transformation tool</description>
+	<authors>Paul Lewis, Mark Holder, Brian O'Meara</authors>
+	<reference></reference>
+	<category>Nucleic Acid Sequence, Protein Sequence, Phylogeny / Alignment</category>
+	<doclink></doclink>
+</head>
+
+<command>nclconverter</command>
+							  
+<!-- Interface Created for CIPRES2 Portal by mamiller 4/22/2009  -->
+<!--  Read & reformat biosequences,
+Expecting the path to NEXUS file as the only command line argument!
+
+NCLconverter takes reads a file and writes a report of the content to a file prefix (specified with the -o flag) in the chosen output format (specified with the -e flag).
+
+The most common usage is simply:
+
+    NEXUSnormalizer <path to NEXUS file>
+
+Command-line flags we wont support:
+
+    -h on the command line shows this help message
+
+    -l<path> reads a file and treats each line of the file as a path to NEXUS file
+   
+	-i<number> specifies the length of the interleaved pages to create  -->
+  
+<parameters>
+	&runtime;
+
+<!-- this parameter just sets the invocation line -->
+    <parameter ismandatory="1" issimple="1" ishidden="1" type="String"> 
+	<name>intiation_string</name>
+		<attributes>
+			<format>
+				<language>perl</language>
+				<code>"NCLconverter"</code>
+			</format>
+			<group>0</group>
+		</attributes>
+	</parameter>
+
+<!-- this parameter  sets the input file as the last delivered part of the command line-->	
+	<parameter ismandatory="1" issimple="1" isinput="1" type="Sequence"> 
+	<name>sequence</name>
+		<attributes>
+			<format>
+				<language>perl</language>
+				<code>"input.sequence"</code>
+			</format>
+			<filenames>input.sequence</filenames>	
+			<group>10</group>
+		</attributes>
+	</parameter>
+	
+<!-- this parameter sets the input format   but thecommand line is created later, once we know if it is DNA, RNA, interleaved,etc. -->
+            
+	<parameter ismandatory="1" issimple="1" type="Excl"> 
+		<name>format_type</name>
+			<attributes>
+				<prompt>Choose the Input Format</prompt>
+				<vdef>
+					<value>nexus</value>
+				</vdef>
+				<vlist>
+					<value>nexus</value>
+					<label>Nexus</label>
+					<value>fasta</value>
+					<label>Fasta</label>
+					<value>phylip</value>
+					<label>Phylip</label>
+					<value>phylipt</value>
+					<label>Phylip Tree (.tre, .dnd)</label>
+					<value>clustal</value>
+					<label>Clustal (.aln)</label>
+					<value>nexml</value>
+					<label>NEXML</label>
+				</vlist>
+				<comment>
+<value>	Clustal files must begin with the text Clustal on the first line. If you create .aln files using other programs, 
+	you may need to edit them manually, or (as with Muscle) you might be able to use a command line option to print Clustal on the first line. Depending on its composition, 
+	the input may be converted to multiple output files. This is because NEXUS can have multiple characters blocks; NCLconverter
+	currently writes each one to a separate file in the chosen format. 
+</value>
+				</comment>
+			</attributes>
+	</parameter>
+	
+	<!-- this parameter sets the input type it isn't known from format alone. This means when "format"  is  fasta or clustal (protein, dna, rna allowed), or phylip (protein, dna, rna, discrete  allowed),  
+for Nexus, Nexml, and Phylip tree, the data type does not need to be specified   -->
+	
+	<parameter ismandatory="1" issimple="1" type="Excl"> 
+		<name>data_type</name>
+			<attributes>
+				<prompt>Specify the Data Type (Mixed data types are not supported)</prompt>
+				<format>
+					<language>perl</language>
+					<code>""</code>
+				</format>
+				<precond>
+					<language>perl</language>
+					<code>$format_type eq "fasta" || $format_type eq "clustal" || $format_type eq "phylip" || $format_type eq "rphylip" </code>
+				</precond>
+				<vdef>
+					<value>dna</value>
+				</vdef>
+				<vlist>
+					<value>dna</value>
+					<label>DNA</label>
+					<value>rna</value>
+					<label>RNA</label>
+					<value>protein</value>
+					<label>Protein</label>
+					<value>discrete</value>
+					<label>Discrete</label>
+				</vlist>
+				<ctrls>
+					<ctrl>
+						<message>Sorry, Clustal format does not use discrete characters</message>
+						<language>perl</language>
+						<code>$value eq "discrete" &amp; $format_type eq "clustal" </code>
+					</ctrl>
+					<ctrl>
+						<message>Sorry, Fasta format does not use discrete characters</message>
+						<language>perl</language>
+						<code>$value eq "discrete" &amp; $format_type eq "fasta" </code>
+					</ctrl>
+				</ctrls>
+				<group>5</group>
+				<comment>
+<value>
+</value>
+				</comment>
+			</attributes>
+	</parameter>
+	
+		<parameter ismandatory="1" issimple="1" type="Switch"> 
+		<name>relaxed_type</name>
+			<attributes>
+				<prompt>My data is in a relaxed Phylip format</prompt>
+				<format>
+					<language>perl</language>
+					<code>""</code>
+				</format>
+				<precond>
+					<language>perl</language>
+					<code>$format_type eq "phylip"</code>
+				</precond>
+				<vdef>
+					<value>0</value>
+				</vdef>
+				<comment>
+					<value>Relaxed Phylip format is used by progams such as RAxML. It differs from strict Phlylip in allowing taxon names more than 10 characters long.</value>
+				</comment>
+			</attributes>
+	</parameter>
+	
+	<parameter ismandatory="1" issimple="1" type="Switch"> 
+		<name>interleaved_type</name>
+			<attributes>
+				<prompt>My data is interleaved</prompt>
+				<format>
+					<language>perl</language>
+					<code>""</code>
+				</format>
+				<precond>
+					<language>perl</language>
+					<code>$format_type eq "phylip"</code>
+				</precond>
+				<vdef>
+					<value>0</value>
+				</vdef>
+			</attributes>
+	</parameter>
+	
+	<!-- nexus and nexml have only one precond: the format setting -->
+
+		<parameter ishidden="1" ismandatory="1" issimple="1" type="String"> 
+		<name>format_nexus_comline</name>
+			<attributes>
+				<format>
+					<language>perl</language>
+					<code>"-fnexus"</code>
+				</format>
+				<precond>
+					<language>perl</language>
+					<code>$format_type eq "nexus"</code>
+				</precond>
+				<group>5</group>
+				<vdef>
+					<value>0</value>
+				</vdef>
+			</attributes>
+	</parameter>
+	
+	<!-- nexus and nexml have only one precond: the format setting -->
+	<parameter ishidden="1" ismandatory="1" issimple="1" type="String"> 
+		<name>format_nexml_comline</name>
+			<attributes>
+				<format>
+					<language>perl</language>
+					<code>"-fnexml"</code>
+				</format>
+				<precond>
+					<language>perl</language>
+					<code>$format_type eq "nexml"</code>
+				</precond>
+				<group>5</group>
+				<vdef>
+					<value>0</value>
+				</vdef>
+			</attributes>
+	</parameter>
+	
+<!-- the fasta family must specify  precond: format = fasta  and precond datatype  -->
+
+	<parameter ishidden="1" ismandatory="1" issimple="1" type="String"> 
+		<name>format_aafasta_comline</name>
+			<attributes>
+				<format>
+					<language>perl</language>
+					<code>"-faafasta"</code>
+				</format>
+				<precond>
+					<language>perl</language>
+					<code>$format_type eq "fasta" &amp; $data_type eq "protein"</code>
+				</precond>
+				<group>5</group>
+			</attributes>
+	</parameter>
+				
+<!-- fasta family   <value>-fdnafasta</value> precond: format = fasta  datatype = dna-->
+					
+	<parameter ishidden="1" ismandatory="1" issimple="1" type="String"> 
+		<name>format_dnafasta_comline</name>
+			<attributes>
+				<format>
+					<language>perl</language>
+					<code>"-fdnafasta"</code>
+				</format>
+				<precond>
+					<language>perl</language>
+					<code>$format_type eq "fasta" &amp;$data_type eq "dna"</code>
+				</precond>
+				<group>5</group>
+			</attributes>
+	</parameter>
+
+<!-- fasta family   <value>-frnafasta</value> precond: format = fasta  datatype = rna-->
+				
+	<parameter ishidden="1" ismandatory="1" issimple="1" type="String"> 
+		<name>format_rnafasta_comline</name>
+			<attributes>
+				<format>
+					<language>perl</language>
+					<code>"-frnafasta"</code>
+				</format>
+				<precond>
+					<language>perl</language>
+					<code>$format_type eq "fasta" &amp; $data_type eq "rna"</code>
+				</precond>
+				<group>5</group>
+			</attributes>
+	</parameter>
+				
+<!-- relaxed phylip family  -->	
+			
+
+					
+
+	<!-- in relaxed phylip, the preconds for relaxed=1 as well s phylip format and datatype are required , not interleaved is cvalled out explicitly -->
+	<!--  relaxed reviewed twice -->
+	<!--					<value>-faarelaxedphylip</value> -->
+	<parameter ishidden="1" ismandatory="1" issimple="1" type="String"> 
+		<name>format_raaphylip_comline</name>
+			<attributes>
+				<format>
+					<language>perl</language>
+					<code>"-faarelaxedphylip"</code>
+				</format>
+				<precond>
+					<language>perl</language>
+					<code>$format_type eq "phylip" &amp; $data_type eq "protein" &amp; $relaxed_type &amp;  !$interleaved_type</code>
+				</precond>
+				<group>5</group>
+			</attributes>
+	</parameter>
+	
+	<!-- -fdnarelaxedphylip -->
+		<parameter ishidden="1" ismandatory="1" issimple="1" type="String"> 
+		<name>format_rdnaphylip_comline</name>
+			<attributes>
+				<format>
+					<language>perl</language>
+					<code>"-fdnarelaxedphylip"</code>
+				</format>
+				<precond>
+					<language>perl</language>
+					<code>$format_type eq "phylip" &amp; $data_type eq "dna" &amp; $relaxed_type &amp;  !$interleaved_type</code>
+				</precond>
+				<group>5</group>
+			</attributes>
+	</parameter>
+	
+	<!--  -frnarelaxedphylip  -->
+	<parameter ishidden="1" ismandatory="1" issimple="1" type="String"> 
+		<name>format_rrnaphylip_comline</name>
+			<attributes>
+				<format>
+					<language>perl</language>
+					<code>"-frnarelaxedphylip"</code>
+				</format>
+				<precond>
+					<language>perl</language>
+					<code>$format_type eq "phylip" &amp; $data_type eq "rna" &amp; $relaxed_type &amp;  !$interleaved_type</code>
+				</precond>
+				<group>5</group>
+			</attributes>
+	</parameter>
+	
+	<!--  -fdiscreterelaxedphylip -->
+	<parameter ishidden="1" ismandatory="1" issimple="1" type="String"> 
+		<name>format_rdiscphylip_comline</name>
+			<attributes>
+				<format>
+					<language>perl</language>
+					<code>"-fdiscreterelaxedphylip"</code>
+				</format>
+				<precond>
+					<language>perl</language>
+					<code>$format_type eq "phylip" &amp; $data_type eq "discrete" &amp; $relaxed_type &amp;  !$interleaved_type</code>
+				</precond>
+				<group>5</group>
+			</attributes>
+	</parameter>
+	<!-- relaxed reviewed twice -->
+	<!-- relaxed, interleaved  reviewed twice -->
+<!-- -faarelaxedphylipinterleaved -->
+
+		<parameter ishidden="1" ismandatory="1" issimple="1" type="String"> 
+		<name>format_riaaaphylip_comline</name>
+			<attributes>
+				<format>
+					<language>perl</language>
+					<code>"-faarelaxedphylipinterleaved"</code>
+				</format>
+				<precond>
+					<language>perl</language>
+					<code>$format_type eq "phylip" &amp; $data_type eq "protein" &amp; $relaxed_type &amp;  $interleaved_type</code>
+				</precond>
+				<group>5</group>
+			</attributes>
+	</parameter>
+	
+	<!--  -fdnarelaxedphylipinterleaved -->
+	<parameter ishidden="1" ismandatory="1" issimple="1" type="String"> 
+		<name>format_ridnaphylip_comline</name>
+			<attributes>
+				<format>
+					<language>perl</language>
+					<code>"-fdnarelaxedphylipinterleaved"</code>
+				</format>
+				<precond>
+					<language>perl</language>
+					<code>$format_type eq "phylip" &amp; $data_type eq "dna" &amp; $relaxed_type &amp;  $interleaved_type</code>
+				</precond>
+				<group>5</group>
+			</attributes>
+	</parameter>
+	
+<!--  -frnarelaxedphylipinterleaved  -->
+	<parameter ishidden="1" ismandatory="1" issimple="1" type="String"> 
+		<name>format_ridnaphylip_comline</name>
+			<attributes>
+				<format>
+					<language>perl</language>
+					<code>"-frnarelaxedphylipinterleaved"</code>
+				</format>
+				<precond>
+					<language>perl</language>
+					<code>$format_type eq "phylip" &amp; $data_type eq "rna" &amp; $relaxed_type &amp;  $interleaved_type</code>
+				</precond>
+				<group>5</group>
+			</attributes>
+	</parameter>
+	
+<!--  -fdiscreterelaxedphylipinterleaved -->
+	<parameter ishidden="1" ismandatory="1" issimple="1" type="String"> 
+		<name>format_ridiscphylip_comline</name>
+			<attributes>
+				<format>
+					<language>perl</language>
+					<code>"-fdiscreterelaxedphylipinterleaved"</code>
+				</format>
+				<precond>
+					<language>perl</language>
+					<code>$format_type eq "phylip" &amp; $data_type eq "discrete" &amp; $relaxed_type &amp;  $interleaved_type</code>
+				</precond>
+				<group>5</group>
+			</attributes>
+	</parameter>
+	
+<!-- ==============strict phylip family ==================================================== -->
+<!-- strict all reviewed twice -->
+
+	<parameter ishidden="1" ismandatory="1" issimple="1" type="String"> 
+		<name>format_saaphylip_comline</name>
+			<attributes>
+				<format>
+					<language>perl</language>
+					<code>"-faaphylip"</code>
+				</format>
+				<precond>
+					<language>perl</language>
+					<code>$format_type eq "phylip" &amp; $data_type eq "protein" &amp; !$relaxed_type &amp;  !$interleaved_type</code>
+				</precond>
+				<group>5</group>
+			</attributes>
+	</parameter>
+	
+	<parameter ishidden="1" ismandatory="1" issimple="1" type="String"> 
+		<name>format_sdnaphylip_comline</name>
+			<attributes>
+				<format>
+					<language>perl</language>
+					<code>"-fdnaphylip"</code>
+				</format>
+				<precond>
+					<language>perl</language>
+					<code>$format_type eq "phylip" &amp; $data_type eq "dna" &amp; !$relaxed_type &amp;  !$interleaved_type</code>
+				</precond>
+				<group>5</group>
+			</attributes>
+	</parameter>
+	
+	<parameter ishidden="1" ismandatory="1" issimple="1" type="String"> 
+		<name>format_srnaphylip_comline</name>
+			<attributes>
+				<format>
+					<language>perl</language>
+					<code>"-frnaphylip"</code>
+				</format>
+				<precond>
+					<language>perl</language>
+					<code>$format_type eq "phylip" &amp; $data_type eq "rna" &amp; !$relaxed_type &amp;  !$interleaved_type</code>
+				</precond>
+				<group>5</group>
+			</attributes>
+	</parameter>
+	
+		<parameter ishidden="1" ismandatory="1" issimple="1" type="String"> 
+		<name>format_sdiscphylip_comline</name>
+			<attributes>
+				<format>
+					<language>perl</language>
+					<code>"-fdiscretephylip"</code>
+				</format>
+				<precond>
+					<language>perl</language>
+					<code>$format_type eq "phylip" &amp; $data_type eq "discrete" &amp; !$relaxed_type &amp;  !$interleaved_type</code>
+				</precond>
+				<group>5</group>
+			</attributes>
+	</parameter>
+<!-- strict all reviewed twice -->	
+	
+<!-- strict, interleaved, all reviewed twice -->
+<!--	======================== strict, interleaved ============================== -->
+	<parameter ishidden="1" ismandatory="1" issimple="1" type="String"> 
+		<name>format_siaaphylip_comline</name>
+			<attributes>
+				<format>
+					<language>perl</language>
+					<code>"-faaphylipinterleaved"</code>
+				</format>
+				<precond>
+					<language>perl</language>
+					<code>$format_type eq "phylip" &amp; $data_type eq "protein" &amp; !$relaxed_type &amp;  $interleaved_type</code>
+				</precond>
+				<group>5</group>
+			</attributes>
+	</parameter>
+	
+<!--	<value>-fdnaphylipinterleaved</value> -->
+	<parameter ishidden="1" ismandatory="1" issimple="1" type="String"> 
+		<name>format_sidnaphylip_comline</name>
+			<attributes>
+				<format>
+					<language>perl</language>
+					<code>"-fdnaphylipinterleaved"</code>
+				</format>
+				<precond>
+					<language>perl</language>
+					<code>$format_type eq "phylip" &amp; $data_type eq "dna" &amp; !$relaxed_type &amp;  $interleaved_type</code>
+				</precond>
+				<group>5</group>
+			</attributes>
+	</parameter>
+
+<!--		<value>-frnaphylipinterleaved</value>-->	
+	<parameter ishidden="1" ismandatory="1" issimple="1" type="String"> 
+		<name>format_sirnaphylip_comline</name>
+			<attributes>
+				<format>
+					<language>perl</language>
+					<code>"-frnaphylipinterleaved"</code>
+				</format>
+				<precond>
+					<language>perl</language>
+					<code>$format_type eq "phylip" &amp; $data_type eq "rna" &amp; !$relaxed_type &amp;  $interleaved_type</code>
+				</precond>
+				<group>5</group>
+			</attributes>
+	</parameter>
+	
+	<!--					<value>fdiscretephylipinterleaved</value> -->
+		<parameter ishidden="1" ismandatory="1" issimple="1" type="String"> 
+		<name>format_sidiscphylip_comline</name>
+			<attributes>
+				<format>
+					<language>perl</language>
+					<code>"-fdiscretephylipinterleaved"</code>
+				</format>
+				<precond>
+					<language>perl</language>
+					<code>$format_type eq "phylip" &amp; $data_type eq "discrete" &amp; !$relaxed_type &amp;  $interleaved_type</code>
+				</precond>
+				<group>5</group>
+			</attributes>
+	</parameter>
+<!-- strict, interleaved, all reviewed twice -->
+
+<!-- =========================== Clustal family ========================= -->
+
+<!-- 		<value>-faaaln</value>           -->
+	<parameter ishidden="1" ismandatory="1" issimple="1" type="String"> 
+		<name>format_aaaln_comline</name>
+			<attributes>
+				<format>
+					<language>perl</language>
+					<code>"-faaaln"</code>
+				</format>
+				<precond>
+					<language>perl</language>
+					<code>$format_type eq "clustal" &amp; $data_type eq "protein" </code>
+				</precond>
+				<group>5</group>
+			</attributes>
+	</parameter>
+
+<!-- <value>-fdnaaln</value> -->	
+	<parameter ishidden="1" ismandatory="1" issimple="1" type="String"> 
+		<name>format_dnaaln_comline</name>
+			<attributes>
+				<format>
+					<language>perl</language>
+					<code>"-fdnaaln"</code>
+				</format>
+				<precond>
+					<language>perl</language>
+					<code>$format_type eq "clustal" &amp; $data_type eq "dna" </code>
+				</precond>
+				<group>5</group>
+			</attributes>
+	</parameter>
+
+<!-- <value>-frnaaln</value> -->
+	<parameter ishidden="1" ismandatory="1" issimple="1" type="String"> 
+		<name>format_rnaaln_comline</name>
+			<attributes>
+				<format>
+					<language>perl</language>
+					<code>"-frnaaln"</code>
+				</format>
+				<precond>
+					<language>perl</language>
+					<code>$format_type eq "clustal" &amp; $data_type eq "rna" </code>
+				</precond>
+				<group>5</group>
+			</attributes>
+	</parameter>
+
+<!--==============================       Phylip Tree family    ======================================================== -->
+
+<!--		<value>-fphyliptree</value>-->	
+	<parameter ishidden="1" ismandatory="1" issimple="1" type="String"> 
+		<name>format_phylipt_comline</name>
+			<attributes>
+				<format>
+					<language>perl</language>
+					<code>"-fphyliptree"</code>
+				</format>
+				<precond>
+					<language>perl</language>
+					<code>$format_type eq "phylip" &amp; $data_type eq "phylipt" &amp; !$relaxed_type </code>
+				</precond>
+				<group>5</group>
+			</attributes>
+	</parameter>
+<!-- <value>-frelaxedphyliptree</value>	 -->
+	<parameter ishidden="1" ismandatory="1" issimple="1" type="String"> 
+		<name>format_rphylipt_comline</name>
+			<attributes>
+				<format>
+					<language>perl</language>
+					<code>"-frelaxedphyliptree"</code>
+				</format>
+				<precond>
+					<language>perl</language>
+					<code>$format_type eq "phylip" &amp; $data_type eq "phylipt" &amp; $relaxed_type </code>
+				</precond>
+				<group>5</group>
+			</attributes>
+	</parameter>
+<!-- ====================================================================================================-->
+
+	
+<!-- -s<non-negative integer> controls the NEXUS strictness level. the default level is equivalent to -s2 invoking the program with -s3 or a higher number will convert some warnings into fatal errors.
+        Running with -s1 will cause the parser to accept dangerous constructs, and running with -s0 will cause the parser make every attempt to finish parsing the file (warning about very serious errors).
+
+        Note that when -s0 strictness level is used, and the parser fails to finish, it will often be the result of an earlier error than the  error that is reported in the last message. -->
+        
+	<parameter ismandatory="1" issimple="1" type="Integer"> 
+	<name>nexus_strictness</name>
+		<attributes>
+			<prompt>Set the NEXUS strictness level (-s)</prompt>
+			<precond>
+				<language>perl</language>
+				<code>$format_type eq "nexus"</code>
+			</precond>
+			<format>
+				<language>perl</language>
+					<code>"-s$value"</code>
+			</format>
+			<vdef>
+				<value>2</value>
+			</vdef>
+			<group>5</group>
+			<comment>
+<value>The default level is 2. Invoking the program with 3 or a higher number will convert some warnings into fatal errors. Running with 1 will cause the parser to accept dangerous constructs, and running with 0 will cause the parser make every attempt to finish parsing the file (warning about very serious errors). Note that when 0 strictness level is used, and the parser fails to finish, it is often the result of an earlier error that occurred prior to the error reported in the last message.</value>
+			</comment>
+		</attributes>
+	</parameter> 
+	
+<!-- this parameter sets the output format using numbers  -f[ormat=]#	 Format number for output -->
+<parameter ismandatory="1" issimple="1" type="Excl"> 
+	<name>output_type</name>
+		<attributes>
+			<prompt>Choose the Output format (* values could produce multiple output files)</prompt>
+			<format>
+				<language>perl</language>
+					<code>"$value"</code>
+			</format>
+			<vdef>
+				<value>-enexus</value>
+			</vdef>
+			<vlist>
+				<value>-enexus</value>
+				<label>Normalized NEXUS</label>
+				<value>-efasta</value>
+				<label>Fasta*</label>
+				<value>-ephylip</value>
+				<label>Phylip*</label>
+				<value>-erelaxedphylip</value>
+				<label>Relaxed Phylip</label>
+				<value>-enexml</value>
+				<label>NEXML</label>
+			</vlist>
+			<group>15</group>
+			<comment>
+				<value>WE MAY HAVE TO MODIFY YOUR TAXON NAMES TO SATISFY THE FORMAT REQUIREMENTS!	If taxon names had to be translated, then a NameTranslationFile (in a somewhat ad-hoc xml format) will also be produced. This file shows how the names are remapped. A back-translation service is planned. Mixed data are not supported for NEXML output.</value>
+			</comment>
+		</attributes>
+	</parameter>
+
+<!--    -o<fn> specifies the output prefix.  An appropriate suffix and extension are added -->
+	<parameter issimple="1" type="String"> 
+		<name>outfile_nexus</name>
+		<attributes>
+		<prompt>Please enter a prefix for your output file (default is "out")</prompt>
+			<format>
+				<language>perl</language>
+				<code> " -o$value" </code>
+			</format>
+			<group>20</group>
+		</attributes>
+	 </parameter>
+
+	 
+
+<!-- return all  --> 
+	<parameter type="Results"> 
+		<name>all_output</name>
+		<attributes>
+			<filenames>*</filenames>
+		</attributes>
+	</parameter>  
+	 
+</parameters>
+	
+</pise>
+

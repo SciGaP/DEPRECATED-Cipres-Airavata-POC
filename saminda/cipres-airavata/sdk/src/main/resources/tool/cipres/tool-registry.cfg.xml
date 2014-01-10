@@ -1,0 +1,811 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ToolRegistry>
+	<ToolResources>
+		<ToolResource id="trestles" type="GLOBUS" 
+			class="org.ngbw.sdk.tool.DefaultToolResource"
+			filehandler="${trestles.filehandler}"
+			processworker="org.ngbw.sdk.tool.SSHExecProcessWorker">
+			<Parameters>
+				<Parameter key="runner" value="org.ngbw.sdk.common.util.GsiSSHProcessRunner" />
+				<Parameter key="login" value="${teragrid.trestles.login}" />
+				<Parameter key="fileHost" value="${teragrid.trestles.host}"/>
+				<Parameter key="filePort" value="2811"/>
+				<Parameter key="workspace" value="${teragrid.trestles.workspace}"/>
+				<Parameter key="rc" value="${teragrid.trestles.rc}"  />
+				<Parameter key="submit" value="${teragrid.trestles.submit}"  />
+				<Parameter key="check" value="${teragrid.trestles.check}"  />
+				<Parameter key="cancel" value="${teragrid.trestles.cancel}"  />
+				<Parameter key="accountGroup" value="teragrid"  />
+			</Parameters>
+		</ToolResource>
+
+		<ToolResource id="gordon" type="GLOBUS" 
+			class="org.ngbw.sdk.tool.DefaultToolResource"
+			filehandler="${gordon.filehandler}"
+			processworker="org.ngbw.sdk.tool.SSHExecProcessWorker">
+			<Parameters>
+				<Parameter key="runner" value="org.ngbw.sdk.common.util.GsiSSHProcessRunner" />
+				<Parameter key="login" value="${teragrid.gordon.login}" />
+				<Parameter key="fileHost" value="${teragrid.gordon.host}"/>
+				<Parameter key="filePort" value="2811"/>
+				<Parameter key="workspace" value="${teragrid.gordon.workspace}"/>
+				<Parameter key="rc" value="${teragrid.gordon.rc}"  />
+				<Parameter key="submit" value="${teragrid.gordon.submit}"  />
+				<Parameter key="check" value="${teragrid.gordon.check}"  />
+				<Parameter key="cancel" value="${teragrid.gordon.cancel}"  />
+				<Parameter key="accountGroup" value="teragrid"  />
+			</Parameters>
+		</ToolResource>
+
+		<!-- tool.resource.cluster = TSCC in sdk/cipres-*.properties -->
+		<ToolResource id="${tool.resource.cluster}" type="REMOTE_SHELL" 
+			class="org.ngbw.sdk.tool.DefaultToolResource"
+			filehandler="org.ngbw.sdk.tool.SFTPFileHandler" 
+			processworker="org.ngbw.sdk.tool.SSHExecProcessWorker">
+			<Parameters>
+				<Parameter key="runner" value="org.ngbw.sdk.common.util.SSHExecProcessRunner" />
+				<Parameter key="login" value="${tscc.login}" />
+				<Parameter key="fileHost" value="${tscc.fileHost}"/>
+				<Parameter key="workspace" value="${tscc.workspace}"/>
+				<Parameter key="rc" value="${tscc.rc}"  />
+				<Parameter key="submit" value="${tscc.submit}"  />
+				<Parameter key="check" value="${tscc.check}"  />
+				<Parameter key="cancel" value="${tscc.cancel}"  />
+			</Parameters>
+		</ToolResource>
+
+		<ToolResource id="${tool.resource.host}" type="REMOTE_SHELL" 
+			class="org.ngbw.sdk.tool.DefaultToolResource"
+			filehandler="org.ngbw.sdk.tool.SFTPFileHandler" 
+			processworker="org.ngbw.sdk.tool.SSHProcessWorker">
+			<Parameters>
+				<Parameter key="host" value="${host}" />
+				<Parameter key="workspace" value="${workspace}"/>
+				<Parameter key="fileHost" value="${host}"  />
+			</Parameters>
+		</ToolResource>
+
+		<!--
+		<ToolResource id="LOCALHOST" type="LOCAL_SHELL" class="org.ngbw.sdk.tool.DefaultToolResource"
+			filehandler="org.ngbw.sdk.tool.LocalFileHandler" 
+			processworker="org.ngbw.sdk.tool.LocalProcessWorker">
+			<Parameters>
+				<Parameter key="workspace" value="${workspace}"/>
+			</Parameters>
+		</ToolResource>
+		-->
+
+
+	</ToolResources>
+	<ToolGroups>
+
+		<ToolGroup id="TERAGRID" disable="${teragrid.tools.disable}">
+			
+			<Tool id="BEAST_TG" 
+				name="Bayesian Evolutionary Anaysis by Sampling Trees"
+				configfile="pisexml/beast_tg.xml" toolresource="trestles"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool>
+			
+<!--			<Tool id="BEAST_TG_TEST" 
+				name="Bayesian Evolutionary Anaysis by Sampling Trees"
+				configfile="pisexml/beast_tg_test.xml" toolresource="trestles"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool> -->
+			
+			<!--
+			<Tool id="GARLI_LONESTAR" 
+				name="Genetic algorithm, maximum likelihood inference for large datasets, run on Teragrid"
+				configfile="pisexml/garli_lonestar.xml" toolresource="lonestar"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters> 
+					<InputParameter id="infile_" entityType="NUCLEIC_ACID" dataType="SEQUENCE_ALIGNMENT" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters> 
+			</Tool>
+			-->
+			
+			<!-- Takes an alignment file as input, must be non-interleaved phylip OR nexus, DNA/RNA  -->
+			<!--
+			<Tool id="GARLI_ABE" 
+				name="Genetic algorithm, maximum likelihood inference for large datasets, run on Teragrid"
+				configfile="pisexml/garli_abe.xml" toolresource="abe"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="NUCLEIC_ACID" dataType="SEQUENCE_ALIGNMENT" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool>
+			-->
+						
+			<!--
+			<Tool id="GARLI_TG" 
+				name="Genetic algorithm, maximum likelihood inference for large datasets, run on Teragrid"
+				configfile="pisexml/garli_tg.xml" toolresource="trestles"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool>
+			-->
+			
+			<Tool id="GARLI2_TGB" 
+				name="Genetic algorithm, maximum likelihood inference for large datasets, run on Teragrid"
+				configfile="pisexml/garli2_tgb.xml" toolresource="trestles"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool> 
+						
+			<Tool id="GARLI_CONF_CREATOR" 
+				name="Creates garli.conf files"
+				configfile="pisexml/garli_conf_creator.xml" toolresource="trestles"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool>
+			
+			<Tool id="MAFFT_TG" 
+				name="Multiple sequence alignment based on fast Fourier transform on XSEDE"
+				configfile="pisexml/mafft_tg.xml"  toolresource="trestles"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool>
+			
+<!--			<Tool id="MAFFT_861" 
+				name="multiple sequence alignment based on fast Fourier transform"
+				configfile="pisexml/mafft_861.xml"  toolresource="trestles"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool> -->
+			    
+			<Tool id="MRBAYES_XSEDE" 
+				name="Tree Inference Using Bayesian Analysis run on XSEDE"
+				configfile="pisexml/mrbayes_xsede.xml" toolresource="gordon"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool>
+			
+
+			<Tool id="MRBAYES_321RESTARTBETA" 
+				name="Tree Inference Using Bayesian Analysis - run on XSEDE"
+				configfile="pisexml/mrbayes_321restartbeta.xml" toolresource="gordon"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool>
+			
+			<!-- This is here because there are certain jobs the new mrbayes can't handle -->
+			<Tool id="OLDMRBAYESHYBRID_TG" 
+				name="Old Tree Inference Using Bayesian Analysis run on XSEDE"
+				configfile="pisexml/oldmrbayeshybrid_tg.xml" toolresource="gordon"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool>
+			
+			<Tool id="PHYLOBAYES_XSEDE" 
+				name="Phylogenetic reconstruction using infinite mixtures "
+				configfile="pisexml/phylobayes_xsede.xml" toolresource="gordon"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool>
+			
+			<Tool id="PHYLOBAYES_XSEDE_RESTART" 
+				name="Phylogenetic reconstruction using infinite mixtures "
+				configfile="pisexml/phylobayes_xsede_restart.xml" toolresource="gordon"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool>
+
+			<Tool id="RAXMLHPC2_TGB" 
+				name="Raxml with rapid bootstrapping (v 7.3.0) run on XSEDE"
+				configfile="pisexml/raxmlhpc2_tgb.xml" toolresource="trestles"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="SEQUENCE_ALIGNMENT" dataFormat="PHYLIP" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool> 
+			
+<!--			<Tool id="RAXMLHPC2_TGBI" 
+				name="Raxml with rapid bootstrapping (v 7.3.0) run on XSEDE"
+				configfile="pisexml/raxmlhpc2_tgbi.xml" toolresource="trestles"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="SEQUENCE_ALIGNMENT" dataFormat="PHYLIP" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool> -->
+			
+			<Tool id="RAXMLHPC2BB" 
+				name="Raxml with rapid bootstrapping (v 7.3.0) run on XSEDE"
+				configfile="pisexml/raxmlhpc2bb.xml" toolresource="trestles"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="SEQUENCE_ALIGNMENT" dataFormat="PHYLIP" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool>
+		
+			<Tool id="RAXML_LIGHT2" 
+				name="Raxml-Light run on XSEDE"
+				configfile="pisexml/raxml_light2.xml" toolresource="trestles"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="SEQUENCE_ALIGNMENT" dataFormat="PHYLIP" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool> 
+			
+		</ToolGroup> 
+
+		<ToolGroup id="WEB" isdefault="1">
+
+			<Tool id="SLEEP" 
+				name="For testing sshprocessworker on billiards"
+				configfile="pisexml/sleep.xml" toolresource="${tool.resource.host}"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool>
+
+			<!--
+				To do: make tool registry read individual tool files in addition to this file so that
+				we can have the build drop in extra tools based on different build profiles instead
+				of having this entry here and having to uncomment it for the tool dev environment.
+			-->
+			<!--
+			<Tool id="NEW_TOOL" 
+				name="New tool being added to the workbench"
+				configfile="pisexml/new_tool.xml" toolresource="TOOL_DEVELOPMENT"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool>
+			-->
+			
+<!-- keep these in alphabetical order  -->
+			
+
+<!--			<Tool id="BOXSHADE" 
+				name="printouts from multiple-aligned protein or DNA sequences" 
+				configfile="pisexml/boxshade.xml" toolresource="${tool.resource.cluster}"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="alignment_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool> -->
+			
+<!-- commented out			<Tool id="BUCKY" 
+				name="Bayesian Untangling of Concordance Knots"
+				configfile="pisexml/bucky.xml"  toolresource="${tool.resource.cluster}"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool> -->
+			
+			<Tool id="CLEARCUT" name="Clearcut - Rapid, relaxed neighbor joining" 
+				configfile="pisexml/clearcut.xml" toolresource="${tool.resource.cluster}"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool>
+			
+<!-- COMMENT OUT PHYLIP
+			<Tool id="CLIQUE" name="clique - Compatibility Program" 
+				configfile="pisexml/clique.xml" toolresource="${tool.resource.cluster}"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool> 
+-->
+
+			<Tool id="CLUSTALW" name="Multiple Alignments" 
+				configfile="pisexml/clustalw.xml" toolresource="${tool.resource.cluster}" 
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool>
+			
+			
+<!-- commented out to remove from interface 			
+			<Tool id="CLUSTALW_DIST" name="Multiple Alignments" 
+				configfile="pisexml/clustalw_dist.xml" toolresource="${tool.resource.cluster}"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool>
+			
+			<Tool id="CLUSTALW_TREE" name="Multiple Alignments" 
+				configfile="pisexml/clustalw_tree.xml" toolresource="${tool.resource.cluster}"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool>  
+-->
+			
+			<Tool id="CONSENSE" name="consense - Consensus tree program" 
+				configfile="pisexml/consense.xml" toolresource="${tool.resource.cluster}"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool>
+            
+<!--		<Tool id="CONTRALIGN" 
+				name="CONditional TRAining for Sequence Alignment"
+				configfile="pisexml/contralign.xml" toolresource="${tool.resource.cluster}"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool> -->
+
+<!--			COMMENT OUT PHYLIP			
+			<Tool id="DNADIST" 
+				name="dnadist - Compute distance matrix from nucleotide sequences" 
+				configfile="pisexml/dnadist.xml" toolresource="${tool.resource.cluster}"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool>
+			
+			<Tool id="DNAPARS" name="dnapars - DNA Parsimony Program" 
+				configfile="pisexml/dnapars.xml" toolresource="${tool.resource.cluster}"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool>
+			
+			<Tool id="DOLLOP" name="dollop - Dollo and Polymorphism Parsimony Program" 
+				configfile="pisexml/dollop.xml" toolresource="${tool.resource.cluster}"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool> 
+-->
+			
+<!--		<Tool id="DRAWGRAM" 
+				name="drawgram - Plots a cladogram- or phenogram-like rooted tree" 
+				configfile="pisexml/drawgram.xml" toolresource="${tool.resource.cluster}"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="treefile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool> -->
+			
+<!--		<Tool id="DRAWTREE" name="drawtree - Plots an unrooted tree diagram" 
+				configfile="pisexml/drawtree.xml" toolresource="${tool.resource.cluster}"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="treefile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool> -->
+			
+<!--			COMMENT OUT PHYLIP			
+			<Tool id="FITCH" name="Fitch" configfile="pisexml/fitch.xml" 
+				toolresource="${rool.resource.host}"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool> 
+-->
+			
+<!--		<Tool id="FORMATVALIDATOR" 
+				name="Check matrix format in Nexus, Phylip, and Fasta "
+				configfile="pisexml/formatvalidator.xml" toolresource="${tool.resource.cluster}"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool> -->
+			
+<!--		<Tool id="FSA" 
+				name="Distance-based alignment of DNA, RNA and proteins."
+				configfile="pisexml/fsa.xml" toolresource="${tool.resource.cluster}" 
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool> -->
+
+<!--
+			<Tool id="GARLI" 
+				name="Genetic algorithm, maximum likelihood inference for large datasets, run on Teragrid"
+				configfile="pisexml/garli.xml" toolresource="${tool.resource.cluster}"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="NUCLEIC_ACID" dataType="SEQUENCE_ALIGNMENT" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+		</Tool>
+-->
+
+
+<!--			<Tool id="KITSCH" 
+				name="kitsch - Fitch-Margoliash and Least Squares Methods with Evolutionary Clock" 
+				configfile="pisexml/kitsch.xml" toolresource="${tool.resource.cluster}"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool> 
+-->
+
+<!--		<Tool id="MAFFT" 
+			name="multiple sequence alignment based on fast Fourier transform"
+			configfile="pisexml/mafft.xml"  toolresource="${tool.resource.cluster}"
+			commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+			<InputParameters>
+				<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+			</InputParameters>
+			<OutputParameters>
+			</OutputParameters>
+		</Tool> -->
+			
+<!--		<Tool id="MAFFTNEW" 
+			name="multiple sequence alignment based on fast Fourier transform"
+			configfile="pisexml/mafftnew.xml"  toolresource="${tool.resource.cluster}"
+			commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+			<InputParameters>
+				<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+			</InputParameters>
+			<OutputParameters>
+			</OutputParameters>
+		</Tool> -->
+			
+<!--	comment out	<Tool id="MBSUM" 
+			name="Prepare MrBayes .t files for BUCKy"
+			configfile="pisexml/mbsum.xml"  toolresource="${tool.resource.cluster}"
+			commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+			<InputParameters>
+				<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+			</InputParameters>
+			<OutputParameters>
+			</OutputParameters>
+		</Tool> -->
+		
+<!-- comment out phylip			
+		<Tool id="MIX" name="mix - Mixed method parsimony" configfile="pisexml/mix.xml" 
+			toolresource="${tool.resource.cluster}"
+			commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+			<InputParameters>
+				<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+			</InputParameters>
+			<OutputParameters>
+			</OutputParameters>
+		</Tool> 
+-->
+					
+			<Tool id="MUSCLE" 
+				name="Create Multiple Alignments from Sequences or Profiles"
+				configfile="pisexml/muscle.xml" toolresource="${tool.resource.cluster}"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool>
+			
+<!--			<Tool id="MVIEW_ALIG" name="a multiple alignment viewer" 
+				configfile="pisexml/mview_alig.xml" toolresource="${tool.resource.cluster}"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="alig_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool> -->
+			
+			<Tool id="NCLCONVERTER" 
+				name="Interconvert a number of phylogenetic tool formats"
+				configfile="pisexml/nclconverter.xml" toolresource="${tool.resource.cluster}"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool>
+<!--			COMMENT OUT PHYLIP			
+			<Tool id="NEIGHBOR" name="neighbor - Neighbor-Joining and UPGMA methods" 
+				configfile="pisexml/neighbor.xml" toolresource="${tool.resource.cluster}"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool>
+			
+			<Tool id="PARS" name="pars - Discrete character parsimony" 
+				configfile="pisexml/pars.xml" toolresource="${tool.resource.cluster}"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool>
+			
+			<Tool id="PHYML" 
+				name="a program that computes maximum likelihood phylogenies from DNA or AA homologous sequences" 
+				configfile="pisexml/phyml.xml" toolresource="${tool.resource.cluster}"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="alignment_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool> 
+-->
+
+<!--
+			<Tool id="PAUP" 
+				name="paup"
+				configfile="pisexml/paup.xml" toolresource="${tool.resource.host}"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool>
+-->
+			
+			<Tool id="PAUPRAT" 
+				name="pauprat"
+				configfile="pisexml/pauprat.xml" toolresource="${tool.resource.cluster}"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool>
+
+			<Tool id="POY" 
+				name="poy"
+				configfile="pisexml/poy.xml" toolresource="${tool.resource.cluster}"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool>
+			
+<!--			<Tool id="POY2" 
+				name="poy2"
+				configfile="pisexml/poy2.xml" toolresource="${tool.resource.cluster}"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool> -->
+
+			<Tool id="PROBALIGN" 
+				name="Create Multiple Alignments from Nucleic Acid or Protein Sequences"
+				configfile="pisexml/probalign.xml" toolresource="${tool.resource.cluster}"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="SEQUENCE" dataFormat="FASTA" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool>
+            
+            <Tool id="PROBCONS" 
+				name="Probabilistic Consistency-based Multiple Alignment of Amino/Nucleic Acid Sequences"
+				configfile="pisexml/probcons.xml" toolresource="${tool.resource.cluster}"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool>
+
+			
+<!-- comment out phylip			
+			<Tool id="PROTDIST" 
+				name="protdist - Program to compute distance matrix from protein sequences" 
+				configfile="pisexml/protdist.xml" toolresource="${tool.resource.cluster}"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool>
+			
+			<Tool id="PROTPARS" name="protpars - Protein Sequence Parcimony Method" 
+				configfile="pisexml/protpars.xml" toolresource="${tool.resource.cluster}"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool> 
+-->
+			
+			<Tool id="READSEQ" 
+				name="Interconvert a number of sequence formats"
+				configfile="pisexml/readseq.xml" toolresource="${tool.resource.cluster}"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool>
+
+			<!--
+			<Tool id="RID3PAUP" 
+				name="rid3paup"
+				configfile="pisexml/rid3paup.xml" toolresource="${tool.resource.host}"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool>			
+			-->
+
+			<!--
+			<Tool id="RID3RAXML" 
+				name="rid3raxml"
+				configfile="pisexml/rid3raxml.xml" toolresource="${tool.resource.host}"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool>			
+			-->
+			
+			<Tool id="SEQBOOT" 
+				name="seqboot - Bootstrap, Jackknife, or Permutation Resampling" 
+				configfile="pisexml/seqboot.xml" toolresource="${tool.resource.cluster}"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool>
+<!--			<Tool id="SEQRETSPLIT" 
+				name="seqretsplit - Read sequences and writes them to individual files" 
+				configfile="pisexml/seqretsplit.xml" toolresource="${tool.resource.host}"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool> -->
+			
+<!--			COMMENT OUT PHYLIP
+			<Tool id="UNROOT" name="unroot: use of RETREE to unroot a tree" 
+				configfile="pisexml/unroot.xml" toolresource="${tool.resource.cluster}"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer"><InputParameters>
+				<InputParameter id="treefile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool> 
+-->
+		</ToolGroup>
+	</ToolGroups>
+</ToolRegistry>
+	

@@ -1,0 +1,39 @@
+Handling upload of big files on cipres portal and things I learned about
+struts and our web app along the way:
+
+1) cipres-portal - actions - CreateData.java: for both single file and applet case,
+don't read into memory (i.e. looked for getEncodedData() and got rid of it).  Made
+saveDataItem() use stream instead of String.
+
+2) In resources/conversion/conversionRegistry.xml made MackSourceDocumentReader the reader
+for everything.  This makes Workbench.canRead() return false.   Otherwise the call to
+DataManager.refreshFolderDataTabs() at the end of CreateData.saveDataItems() will read
+the file into memory.
+
+	The actual flow is Workbench.canRead() calls DefaultConversionService.canRead(SourceDocumentType)
+	calls DefaultConversionRegistry.hasReader(SourceDocumentType) which returns false for 
+	MockSourceDocumentReader.
+
+	sdk.core.shared.SourceDocumentType is the triplet: EntityType, DataType, DataFormat, which
+	are enums defined in sdk.core.types. RecordType is also an enum, it corresponds to a combo
+	of EntityType and DataType.
+
+	UserDataItem is a SourceDocument (which is just an interface) and it contains a SourceDocumentRow.  
+	It also has info about the data type triple, the owner, a list of records, etc.  While a SourceDocumentRow
+	just has an id, a length and a FileColumn (a type of column that stores the data in a file outside
+	the db).
+
+3) Keep in mind that exceptions that occur during OGNL (and I think JSTL) expression evaluation
+are silently eaten.  Part of the page may be missing, but you'll never see anything in a log
+file and it won't reach any struts configured exception handling code.  For example, when a
+property getter in DataManager.java, like isCurrentTabPhysical() throws an exception, all that we
+see is that some of the columns are missing.  Apparently this is by design and there's nothing
+you can do about it except to catch and log exceptions in the property getter methods themselves.
+
+4) Size of "Use Data" table is hardcoded in cipres.css. See ".list".  When fields get
+too long they wrap.
+
+
+TODO:
+- get rid of all the JUpload parameter struts warnings in the log when using the applet.  Stack
+traces really clutter the log.

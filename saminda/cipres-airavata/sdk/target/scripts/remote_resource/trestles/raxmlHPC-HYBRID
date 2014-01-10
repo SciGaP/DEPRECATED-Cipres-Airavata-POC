@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# Can't run module command (I think it's a bash fn) without sourcing bashrc
+source $HOME/.bashrc
+
+module load raxml
+echo "CIPRES_THREADSPP=$CIPRES_THREADSPP"
+echo "CIPRES_NP=$CIPRES_NP"
+echo "running:"
+echo " mpirun -hostfile $PBS_NODEFILE -np $CIPRES_NP  raxmlHPC-HYBRID $*"
+
+mpirun -hostfile $PBS_NODEFILE -np $CIPRES_NP  raxmlHPC-HYBRID $*
+

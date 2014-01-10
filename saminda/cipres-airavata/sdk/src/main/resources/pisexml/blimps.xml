@@ -1,0 +1,506 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE pise SYSTEM "http://www.phylo.org/dev/rami/PARSER/pise.dtd" [
+<!ENTITY nucdbs SYSTEM "http://www.phylo.org/dev/rami/XMLDIR/nucdbs.xml">
+<!ENTITY protdbs SYSTEM "http://www.phylo.org/dev/rami/XMLDIR/protdbs.xml">
+<!ENTITY blocksDBpath SYSTEM "http://www.phylo.org/dev/rami/XMLDIR/blocksDBpath.xml">
+<!ENTITY fastaDBpath SYSTEM "http://www.phylo.org/dev/rami/XMLDIR/fastaDBpath.xml">
+
+]>
+
+<pise>
+
+  <head>
+    <title>Blimps</title>
+    <version>3.4</version>
+    <description>Search BLOCKS DB for Motifs</description>
+    <authors>Wallace, Henikoff</authors>
+    <reference>J.G. Henikoff, E.A. Greene, S. Pietrokovski and S. Henikoff
+"Increased coverage of protein families with the blocks database servers"
+Nucl. Acids Res. 28(1):228-230, 2000.PubMed: 10592233</reference>
+<reference>Henikoff S., Henikoff J.G. Pietrokovski S. Blocks+: A non-redundant database of protein alignment blocks dervied from multiple compilations
+Bioinformatics 15:471-479 (1999) PubMed: 10383472</reference> 
+<reference>3. Wallace J.C., Henikoff S. PATMAT: A searching and extraction program for sequence, pattern, and block queries and databases. CABIOS , 8:249-254 (1992) 
+PubMed: 1633566</reference> 
+<reference>Henikoff S., Henikoff J.G. Automated assembly of protein blocks for database searching
+Nucleic Acid Res., 19:6565-6572 (1991)PubMed: 1754394 </reference>
+	<category>Protein Sequence</category>
+  </head>
+
+  <command>blimps</command>
+
+  <parameters>
+
+    <parameter iscommand="1" ishidden="1" type="String">
+      <name>blimps</name>
+      <attributes>
+
+	<format>
+	  <language>perl</language>
+	  <code>"blimps blimps.cs "</code>
+	</format>
+	<group>0</group>
+
+      </attributes>
+    </parameter>
+
+    <parameter ismandatory="1" type="Excl">
+      <name>action</name>
+      <attributes>
+
+	<prompt>Action</prompt>
+	<format>
+	  <language>perl</language>
+	  <code> "SE	$value\\n" </code>
+	</format>
+	<vdef><value>block</value></vdef>
+	<group>2</group>
+	<vlist>
+	  <value>block</value>
+	  <label>block: score a query sequence against Blocks database</label>
+	  <value>matrix</value>
+	  <label>matrix: score a block or matrix against a database of sequences</label>
+	</vlist>
+	<comment>
+	  <value>To score a query sequence against a database of blocks, specify the query sequence file name and the blocks database name. The query can be either a protein or DNA sequence. BLIMPS converts each block in the database to a position-specific scoring matrix and scores every possible alignment between each block and the query. If the query is DNA, alignments can be scored in all six translation frames or just the reading frames of the given strand, depending on the ST field in the configuration file.</value>
+	  <value>To score a block query against a database of sequences, specify the block file name and the sequence database name. The sequence database can be either a protein or DNA database. BLIMPS converts the query block to a position-specific scoring matrix and scores every possible alignment between it and every sequence in the database. If the database is DNA, alignments can be scored in all six translation frames or just the reading frames of the given strand.</value>
+	</comment>
+	<paramfile>blimps.cs</paramfile>
+
+      </attributes>
+    </parameter>
+
+    <parameter type="Paragraph">
+      <paragraph>
+	<name>block_parameters</name>
+	<prompt>Parameters for sequence against Block db (action=block)</prompt>
+	<precond>
+	  <language>perl</language>
+	  <code>$action eq "block"</code>
+	</precond>
+	<group>3</group>
+	<parameters>
+
+	  <parameter ismandatory="1" type="Excl">
+	    <name>blocks_db</name>
+	    <attributes>
+
+	      <prompt>Blocks database</prompt>
+	      <format>
+		<language>perl</language>
+				&blocksDBpath;
+		
+		
+	      </format>
+	      <vdef><value>blocks.dat</value></vdef>
+	      <group>3</group>
+	      <vlist>
+		<value>blocks.dat</value>
+		<label>blocks.dat</label>
+	      </vlist>
+	      <precond>
+		<language>perl</language>
+		<code>$action eq "block"</code>
+	      </precond>
+	      <paramfile>blimps.cs</paramfile>
+
+	    </attributes>
+	  </parameter>
+
+	<!--     <parameter ismandatory="1" issimple="1"  type="Sequence"> -->
+    <parameter ismandatory="1" issimple="1" isinput="1" type="Sequence">  
+	    <name>sequence_file</name>
+	    <attributes>
+
+	    <!--  <prompt>Sequence file filename to score against blocks database </prompt> -->
+		<prompt>Sequence file filename to score against blocks database 
+			    Acceptable formats: Pearson/Fasta, GenBank/GB, PIR/CODATA, GBMAM, GCG</prompt> 
+	      
+		<format>
+		  <language>perl</language>
+			 <!-- <code> "SQ	$value\\n" </code> -->
+		  <code> "SQ	sequence_file\\n" </code>
+		</format>
+		
+		<!-- Added for Swami -->
+		<filenames>sequence_file</filenames>
+		<!--   --> 
+	
+		<group>3</group>  
+	    <seqfmt>
+		<value>8</value>
+		<value>2</value>
+		<value>14</value>
+		<value>4</value>
+		<value>5</value>
+	      </seqfmt>
+	      <precond>
+		<language>perl</language>
+		<code>$action eq "block"</code>
+	      </precond>
+	      <paramfile>blimps.cs</paramfile>
+
+	    </attributes>
+	  </parameter>
+
+	</parameters>
+      </paragraph>
+
+    </parameter>
+
+    <parameter type="Paragraph">
+      <paragraph>
+	<name>matrix_parameters</name>
+	<prompt>Parameters for block against sequences db (action=matrix)</prompt>
+	<precond>
+	  <language>perl</language>
+	  <code>$action eq "matrix"</code>
+	</precond>
+	<group>3</group>
+	<parameters>
+
+	  <parameter ismandatory="1" type="Excl">
+	    <name>sequence_db</name>
+	    <attributes>
+
+	      <prompt>Sequences database</prompt>
+	      <format>
+		<language>perl</language>
+		&fastaDBpath;
+	      </format>
+	      <vdef><value>UNIPROT.fasta</value></vdef>
+	      <group>3</group>
+	      &protdbs;
+	      &nucdbs;
+
+	      <precond>
+			<language>perl</language>
+			<code>$action eq "matrix"</code>
+	</precond>
+		<paramfile>blimps.cs</paramfile>
+
+	    </attributes>
+	  </parameter>
+
+	  <parameter type="InFile">
+	    <name>block_file</name>
+	    <attributes>
+
+	      <prompt>Block file filename</prompt>
+
+		<format>
+		  <language>perl</language>
+			 <!-- ($value eq "")? "" : "BL	$value\\n" </code> -->
+		  <code> "BL	block_file\\n" </code>
+		</format>
+		
+		<!-- Added for Swami -->
+		<filenames>block_file</filenames>
+		<!--   --> 
+	  
+		<group>3</group>
+	      <ctrls>
+		<ctrl>
+		  <message>only one of the block or the matrix files is required</message>
+		  <language>perl</language>
+		  <code>$matrix_file &amp;&amp; $block_file</code>
+		</ctrl>
+	      </ctrls>
+	      <precond>
+		<language>perl</language>
+		<code>$action eq "matrix"</code>
+	      </precond>
+	      <paramfile>blimps.cs</paramfile>
+
+	    </attributes>
+	  </parameter>
+
+	  <parameter type="InFile">
+	    <name>matrix_file</name>
+	    <attributes>
+
+	      <prompt>A precomputed site specific scoring matrix file</prompt>
+	      <format>
+		<language>perl</language>
+		<code>($value eq "")? "" : "MA	$value\\n" </code>
+	      </format>
+		  
+		  
+		<format>
+		  <language>perl</language>
+			 <!--($value eq "")? "" : "MA	$value\\n" </code> -->
+		  <code>"MA	matrix_file\\n" </code>
+		</format>
+		
+		<!-- Added for Swami -->
+		<filenames>matrix_file</filenames>
+		<!--   --> 
+	  
+	      <group>3</group>
+	      <comment>
+		<value>Blimps will accept a matrix file, or a block file, Blimps will convert block files to position-specific scoring matrices.</value>
+		<value>Export to a matrix file is allowed only when scoring a block query against a database of sequences (matrix).</value>
+	      </comment>
+	      <ctrls>
+		<ctrl>
+		  <message>only one of the block or the matrix files is required</message>
+		  <language>perl</language>
+		  <code>$matrix_file &amp;&amp; $block_file</code>
+		</ctrl>
+	      </ctrls>
+	      <precond>
+		<language>perl</language>
+		<code>$action eq "matrix"</code>
+	      </precond>
+	      <paramfile>blimps.cs</paramfile>
+
+	    </attributes>
+	  </parameter>
+
+	</parameters>
+      </paragraph>
+
+    </parameter>
+
+    <parameter type="Paragraph">
+      <paragraph>
+	<name>control_parameters</name>
+	<prompt>Control parameters</prompt>
+	<group>4</group>
+	<parameters>
+
+	  <parameter ismandatory="1" type="Excl">
+	    <name>conversion</name>
+	    <attributes>
+
+	      <prompt>Conversion method for converting a block to a matrix</prompt>
+	      <format>
+		<language>perl</language>
+		<code> "CO	$value\\n" </code>
+	      </format>
+	      <vdef><value>2</value></vdef>
+	      <group>4</group>
+	      <vlist>
+		<value>0</value>
+		<label>Clustering</label>
+		<value>1</value>
+		<label>patmat method</label>
+		<value>2</value>
+		<label>Sequence weighing</label>
+	      </vlist>
+	      <comment>
+		<value>The field value is a number. Allowed values are:</value>
+		<value>0 - Clustering. Same as the original method, but cleaner and without negative fields in the frequency file. It also does a weighted average of D &amp; N to get B and of E &amp; Q to get Z. If a B or Z is encountered, it is split between D &amp; N or E &amp; Q.</value>
+		<value>1 - uses patmat's method, needs -1 and -2 in the frequency file - can give weird numbers due to division by zero if there are zeros in the frequency file.</value>
+		<value>2 - Sequence weighing. (default method) This method is the same as Clustering, except the weights of the sequences are taken explicitly from user-provided weight values, rather than implicitly from the clustering.</value>
+	      </comment>
+	      <paramfile>blimps.cs</paramfile>
+
+	    </attributes>
+	  </parameter>
+
+	  <parameter type="Excl">
+	    <name>genetic_code</name>
+	    <attributes>
+
+	      <prompt>The Genetic code to use</prompt>
+	      <format>
+		<language>perl</language>
+		<code>($value)? "GE	$value\\n" : "" </code>
+	      </format>
+	      <vdef><value>0</value></vdef>
+	      <group>4</group>
+	      <vlist>
+		<value>0</value>
+		<label>0 - Standard (default)</label>
+		<value>1</value>
+		<label>1 - Vertebrate Mitochondrial</label>
+		<value>2</value>
+		<label>2 - Yeast Mitochondrial</label>
+		<value>3</value>
+		<label>3 - Mold Mitochondrial and Mycoplasma</label>
+		<value>4</value>
+		<label>4 - Invertebrate Mitochondrial</label>
+		<value>5</value>
+		<label>5 - Ciliate Macronuclear</label>
+		<value>6</value>
+		<label>6 - Protozoan Mitochondrial</label>
+		<value>7</value>
+		<label>7 - Plant Mitochondrial</label>
+		<value>8</value>
+		<label>8 - Echinodermate Mitochondrial</label>
+	      </vlist>
+	      <paramfile>blimps.cs</paramfile>
+
+	    </attributes>
+	  </parameter>
+
+	  <parameter type="Switch">
+	    <name>strand</name>
+	    <attributes>
+
+	      <prompt>both strands to be searched</prompt>
+	      <format>
+		<language>perl</language>
+		<code>(! $value)? "ST	1\\n" : ""</code>
+	      </format>
+	      <vdef><value>1</value></vdef>
+	      <group>4</group>
+	      <paramfile>blimps.cs</paramfile>
+
+	    </attributes>
+	  </parameter>
+
+	</parameters>
+      </paragraph>
+
+    </parameter>
+
+    <parameter type="Paragraph">
+      <paragraph>
+	<name>output_parameters</name>
+	<prompt>Output parameters</prompt>
+	<group>5</group>
+	<parameters>
+
+	  <parameter ismandatory="1" type="OutFile">
+	    <name>outfile</name>
+	    <attributes>
+	      <prompt>Output file filename</prompt>
+	      <format>
+		<language>perl</language>
+		<!-- -->
+		<code>"OU	blimps.results\\n" </code>
+		<!-- -->
+	      </format>
+	      <vdef><value>blimps.results</value></vdef>
+	      <group>5</group>
+	      <paramfile>blimps.cs</paramfile>
+		  <!-- Added for Swami -->
+		  <paramfile>blimps.results</paramfile>
+		  <!-- -->
+	    </attributes>
+	  </parameter>
+
+	  <parameter type="Excl">
+	    <name>error</name>
+	    <attributes>
+	      <prompt>Error level to report at</prompt>
+	      <format>
+		<language>perl</language>
+		<code>"ER	$value\\n"</code>
+	      </format>
+	      <vdef><value>2</value></vdef>
+	      <group>1</group>
+	      <vlist>
+		<value>1</value>
+		<label>1 - info </label>
+		<value>2</value>
+		<label>2 - warning</label>
+		<value>3</value>
+		<label>3 - serious</label>
+		<value>4</value>
+		<label>4 - program error</label>
+		<value>5</value>
+		<label>5 - fatal error</label>
+	      </vlist>
+	      <comment>
+		<value>Errors value less than the user-defined error level are not reported. The program will always handle a fatal error regardless of the error level setting.</value>
+	      </comment>
+	      <paramfile>blimps.cs</paramfile>
+	    </attributes>
+	  </parameter>
+
+	  <parameter type="OutFile">
+	    <name>export_matrix</name>
+	    <attributes>
+	      <prompt>Export matrix/(matrices) to this filename</prompt>
+	      <format>
+		<language>perl</language>
+		<!-- <code>(defined $value &amp;&amp; $value eq "")? "" : "EX	$value\\n" </code>-->
+		<code>"EX	export_matrix\\n" </code>
+	      </format>
+	      <group>5</group>
+	      <comment>
+		<value>Not allowed for action = block.</value>
+	      </comment>
+	      <precond>
+		<language>perl</language>
+		<code>$action eq "matrix"</code>
+	      </precond>
+	      <paramfile>blimps.cs</paramfile>
+	    </attributes>
+	  </parameter>
+
+	  <parameter type="Switch">
+	    <name>histogram</name>
+	    <attributes>
+	      <prompt>Print the histogram values in the output file</prompt>
+	      <format>
+		<language>perl</language>
+		<code>(! $value)? "" : "HI	yes\\n" </code>
+	      </format>
+	      <vdef><value>0</value></vdef>
+	      <group>5</group>
+	      <paramfile>blimps.cs</paramfile>
+	    </attributes>
+	  </parameter>
+
+	  <parameter type="Integer">
+	    <name>scores_number</name>
+	    <attributes>
+	      <prompt>Number of scores to report.</prompt>
+	      <format>
+		<language>perl</language>
+		<code>(defined $value)? "NU	$value\\n" : "\\n" </code>
+	      </format>
+	      <vdef><value>0</value></vdef>
+	      <group>5</group>
+	      <comment>
+		<value>If the value=0 (default), the number reported is based on the query block or sequence. A number less than zero causes the program to report all scores. A value greater than zero forces the program to report exactly that number.</value>
+	      </comment>
+	      <paramfile>blimps.cs</paramfile>
+	    </attributes>
+	  </parameter>
+
+	  <parameter type="Switch">
+	    <name>repeats</name>
+	    <attributes>
+	      <prompt>Repeats are allowed in the scoring list</prompt>
+	      <format>
+		<language>perl</language>
+		<code>(! $value)? "RE	0\\n" : "" </code>
+	      </format>
+	      <vdef><value>1</value></vdef>
+	      <group>5</group>
+	      <paramfile>blimps.cs</paramfile>
+	    </attributes>
+	  </parameter>
+
+<!-- added Swami
+	  <parameter ishidden="1" type="OutFile">
+	    <name>error_file</name>
+	    <attributes>
+	     <format>
+		<language>perl</language>
+		<code>blimps.err</code>
+	      </format>
+	      <group>5</group> 
+		  	<filenames>blimps.err</filenames> 
+	    </attributes>
+	  </parameter>
+-->
+
+	</parameters>
+      </paragraph>
+
+    </parameter>
+
+    <parameter type="Results">
+      <name>config_file</name>
+      <attributes>
+	<filenames>blimps.results</filenames>
+      </attributes>
+    </parameter>
+
+  </parameters>
+</pise>

@@ -1,0 +1,28 @@
+#!/bin/sh
+
+
+# Figure out which directory this script is in.
+whereami()
+{
+	program="$0"
+	while [ -h "$program" ]; do
+		link=`ls -ld "$program"`
+		link=`expr "$link" : '.*-> \(.*\)'`
+		if [ "`expr "$link" : '/.*'`" = 0 ]; then
+			dir=`dirname "$program"`
+			program="$dir/$link"
+		else
+			program="$link"
+		fi
+	done
+	dir=`dirname $program`
+	echo `cd $dir && /bin/pwd`
+}
+
+class=org.ngbw.utils.UserDelete
+dir=`whereami`
+
+# directory may have colons in it so can't use it in the java classpath; cd to it instead
+# redirect logging messages to /dev/null
+cd $dir
+java -cp $sdk*depend* $class "$@" 2>/tmp/userDelete.log

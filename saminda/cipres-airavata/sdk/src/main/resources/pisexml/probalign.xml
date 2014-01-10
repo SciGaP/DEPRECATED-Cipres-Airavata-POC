@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE pise SYSTEM "http://www.phylo.org/dev/rami/PARSER/pise.dtd" [
+<!ENTITY runtime SYSTEM "http://www.phylo.org/dev/rami/XMLDIR/triton_run_time.xml">
+]>
+
+<!--Prepared  by S. Chikkagoudar around 7/2008. -->
+<pise>	
+	<head>
+		<title>Probalign</title>
+		<version>1.3</version>
+		<description>Multiple sequence alignment using partition function posterior probabilities.</description>
+		<authors>Satish Chikkagoudar, Usman Roshan</authors>
+		<reference>S. Chikkagoudar, U. Roshan and D. R. Livesay, eProbalign: generation and manipulation of multiple sequence alignments using 
+partition function posterior probabilities, Nucleic Acids Research, 2007.</reference>
+		<category>Phylogeny / Alignment</category>
+		<doclink>http://probalign.njit.edu</doclink>
+	</head>
+	<command>probalign</command>
+	
+	<parameters>
+		&runtime;
+
+		<!-- Edited by mamiller to enable some more options
+Usage:
+       probalign [OPTION]... [MFAFILE]...
+
+Description:
+       Align sequences in MFAFILE(s) and print result to standard output; refer to output file
+
+       -clustalw
+              use CLUSTALW output format instead of MFA
+       -v, -verbose
+              report progress while aligning (default: off)
+       -a, -alignment-order
+              print sequences in alignment order rather than input order (default: off)
+      -T, -temperature
+             Sets the thermodynamic temperature parameter 
+           (default: 5 (for protein data mode), 1 ( for nucleotide data mode)).
+      -score_matrix, -score_matrix
+             Sets the type of scoring matrix used to calculate the posterior probabilities
+             (default: gonnet_160, representing gonnet 160, refer README for details)
+      -go, -gap-open
+             This option can be used to specify the gap open parameter. The 
+             default for Gonnet 160 (protein) is 22 and nucleotide (simple matrix)
+             is 4.
+      -ge, -gap-extension    
+             This option can be used to specify the gap extension parameter. The 
+             default for Gonnet 160 (protein) is 1 and nucleotide (simple matrix)
+             is 0.25.
+      -nuc  
+             Specify this option to indicate that input sequences are nucleotide sequences
+      -prot  
+             Specify this option to indicate that input sequences are protein sequences [DEFAULT]
+      -showPP 
+             Outputs the posterior probabilities of alignment columns as a new sequence named Posterior Probabilities
+             (The probability values are scaled to be between integers between 0 and 9).
+		-->
+		<parameter ishidden="1" type="String">
+			<name>command_name</name>
+			<attributes>
+				<format>
+					<language>perl</language>
+					<code>"probalign"</code>
+				</format>
+				<group>0</group>
+			</attributes>
+		</parameter>
+
+		<!-- Here we're declaring the "main input" to the tool, that is the data that the user
+		selects outside of this gui.  The workbench will take the data the user chooses and
+		put it in a file of the name you specify in the <filename> element below.  Chances
+		are, you'll want to use the <format> element to output the text that will pass that
+		file to the program.
+		
+		When using this template you must leave the <name> as "infile".
+		-->
+
+		<parameter ismandatory="1" issimple="1" isinput="1" type="InFile">
+			<name>infile</name>
+			<attributes>
+				<format>
+					<language>perl</language>
+					<code>"infile.fasta"</code>
+				</format>
+				<group>1</group>
+				<filenames>infile.fasta</filenames>
+			</attributes>
+		</parameter>
+
+
+	<!-- mmiller added this to enable clustal output format -->
+			<parameter issimple="1" type="Switch">
+				<name>alignment_order</name>
+					<attributes>
+						<prompt>Print sequences in alignment order rather than input order (-a)</prompt>
+						<format>
+								<language>perl</language>
+								<code>($value) ? " -a":""</code>
+						</format>
+						<vdef>
+							<value>0</value>
+						</vdef>
+						<group>7</group>
+						</attributes>
+					</parameter>
+		<!-- Parameters with visible controls start here -->
+
+<!-- An example: is it protein or dna input ? -->
+		<parameter type="Excl" issimple="1" ismandatory="1" >
+			<name>scoring_matrix</name>
+				<attributes>
+					<format>
+						<language>perl </language>
+						<code>" -score_matrix $value"</code>
+					</format>
+					<prompt>Sequence Type (Protein specifies gonnet 160; Nucleic acid specifies simple)</prompt>
+					<vlist>
+						<value>gonnet_160</value>
+						<label>Protein</label>
+						<value>nuc_simple</value>
+						<label>Nucleic acid</label>
+					</vlist>
+					<vdef>
+						<value>nuc_simple</value>
+					</vdef>
+					<group>3</group>
+				</attributes>
+		</parameter>
+		
+<!-- specify output format -->		
+		<parameter issimple="1" type="Switch">
+			<name>output_format</name>
+				<attributes>
+					<prompt>ClustalW output format (-clustalw)?</prompt>
+					<format>
+						<language>perl</language>
+						<code>($value) ? " -clustalw > outfile.aln":"> outfile.fasta"</code>
+					</format>
+					<vdef>
+						<value>0</value>
+					</vdef>
+					<group>10</group>
+				</attributes>
+		</parameter>
+
+<!-- configure DNA data params -->
+<parameter type="Paragraph">
+	<paragraph>
+		<name>dna_params</name>
+		<prompt>Set DNA Parameters</prompt>
+		<parameters>
+		
+		<parameter type="Float" ismandatory="1">
+			<name>gapopenn</name>
+				<attributes>
+					<prompt>Gap Open Penalty (-go, recommended = 4.0)</prompt>
+					<precond>
+						<language>perl</language>
+						<code>$scoring_matrix eq "nuc_simple"</code>
+					</precond>
+					<format>
+						<language>perl</language>
+						<code>" -go $value"</code>
+					</format>
+					<vdef>
+						<value>4.0</value>
+					</vdef>
+					<group>4</group>
+					<ctrls>
+						<ctrl>
+							<message>Please enter a value for Gap Open penalty (recommended = 4)</message>
+							<language>perl</language>
+							<code>!defined $gapopenn</code>
+						</ctrl>
+						<ctrl>
+							<message>Gap Open penalty must be positive</message>
+							<language>perl</language>
+							<code>$value &lt; 0</code>
+						</ctrl>
+					</ctrls>
+				</attributes>
+		</parameter>
+		
+		<parameter type="Float" ismandatory="1">
+			<name>gapextn</name>
+				<attributes>
+					<prompt>Gap Extension Penalty (-ge, recommended = 0.25)</prompt>
+					<precond>
+						<language>perl</language>
+						<code>$scoring_matrix eq "nuc_simple"</code>
+					</precond>
+					<format>
+						<language>perl</language>
+						<code>" -ge $value"</code>
+					</format>
+					<vdef>
+						<value>0.25</value>
+					</vdef>
+					<group>5</group>
+					<ctrls>
+						<ctrl>
+							<message>Please enter a value for Gap extension penalty (recommended = 0.25)</message>
+							<language>perl</language>
+							<code>!defined $gapextn</code>
+						</ctrl>				
+						<ctrl>
+							<message>Gap extension penalty should be positive</message>
+							<language>perl</language>
+							<code>$value &lt; 0</code>
+						</ctrl>
+					</ctrls>
+				</attributes>
+			</parameter>
+			
+			<parameter type="Float" ismandatory="1">
+			<name>temp_na</name>
+				<attributes>
+					<prompt>Temperature for Nucleic Acid (-T, recommended = 1.0)</prompt>
+					<precond>
+						<language>perl</language>
+						<code>$scoring_matrix eq "nuc_simple"</code>
+					</precond>
+					<format>
+						<language>perl</language>
+						<code>" -T $value"</code>
+					</format>
+					<group>6</group>
+					<vdef>
+						<value>1.0</value>
+					</vdef>
+					<ctrls>
+						<ctrl>
+							<message>Please enter a value for Temperature (recommended = 1)</message>
+							<language>perl</language>
+							<code>!defined $temp_na</code>
+						</ctrl>
+						<ctrl>
+							<message>Temperature value should be positive</message>
+							<language>perl</language>
+							<code>$value &lt; 0</code>
+						</ctrl>
+					</ctrls>
+				</attributes>
+		</parameter>
+				
+		</parameters>
+	</paragraph>
+</parameter>
+
+<!-- configure Protein data params -->
+<parameter type="Paragraph">
+	<paragraph>
+		<name>prot_params</name>
+		<prompt>Set Protein Parameters</prompt>
+		<parameters>
+		
+		<parameter type="Float" ismandatory="1">
+			<name>gapopenp</name>
+				<attributes>
+					<prompt>Protein Gap Open Penalty (-go, recommended = 22)</prompt>
+					<precond>
+						<language>perl</language>
+						<code>$scoring_matrix eq "gonnet_160"</code>
+					</precond>
+					<format>
+						<language>perl</language>
+						<code>" -go $value"</code>
+					</format>
+					<group>4</group>
+					<ctrls>
+						<ctrl>
+							<message>Please enter a value for Gap Open penalty (recommended = 22)</message>
+							<language>perl</language>
+							<code>!defined $gapopenp</code>
+						</ctrl>
+						<ctrl>
+							<message>Gap Open penalty must be positive</message>
+							<language>perl</language>
+							<code>$value &lt; 0</code>
+						</ctrl>
+					</ctrls>
+					<vdef>
+						<value>22.0</value>
+					</vdef>
+				</attributes>
+		</parameter>
+
+		<parameter type="Float" ismandatory="1">
+			<name>gapextp</name>
+				<attributes>
+					<prompt>Gap Extension Penalty (-ge, recommended = 1)</prompt>
+					<precond>
+						<language>perl</language>
+						<code>$scoring_matrix eq "gonnet_160"</code>
+					</precond>
+					<format>
+						<language>perl</language>
+						<code>" -ge $value"</code>
+					</format>
+					<group>5</group>
+					<ctrls>
+						<ctrl>
+							<message>Please enter a value for Gap extension penalty (recommended = 1)</message>
+							<language>perl</language>
+							<code>!defined $gapextp</code>
+						</ctrl>
+						<ctrl>
+							<message>Gap extension penalty should be positive</message>
+							<language>perl</language>
+							<code>$value &lt; 0</code>
+						</ctrl>
+					</ctrls>
+					<vdef>
+						<value>1.0</value>
+					</vdef>
+				</attributes>
+			</parameter>
+		
+		<parameter type="Float" ismandatory="1">
+			<name>temp_aa</name>
+				<attributes>
+					<prompt>Temperature for Amino Acids (-T, recommended = 5)</prompt>
+					<precond>
+						<language>perl</language>
+						<code>$scoring_matrix eq "gonnet_160"</code>
+					</precond>
+					<format>
+						<language>perl</language>
+						<code>" -T $value"</code>
+					</format>
+					<group>6</group>
+					<vdef>
+						<value>5.0</value>
+					</vdef>
+					<ctrls>
+						<ctrl>
+							<message>Please enter a value for Temperature (recommended = 5)</message>
+							<language>perl</language>
+							<code>!defined $temp_aa</code>
+						</ctrl>
+						<ctrl>
+							<message>Temperature value should be positive</message>
+							<language>perl</language>
+							<code>$value &lt; 0</code>
+						</ctrl>
+					</ctrls>
+				</attributes>
+		</parameter>	
+
+		</parameters>
+	</paragraph>
+</parameter>
+			
+				<!-- We also need to specify the names of the output files that the tool creates, or
+		at least those that we want returned to the user. --> 
+		<!-- mmiller added this to enable clustal output format -->
+		
+<!-- doesnt seem to work
+			<parameter issimple="1" type="Switch">
+				<name>posterior_probs</name>
+					<attributes>
+						<prompt>Output the posterior probabilities of alignment columns</prompt>
+						<format>
+								<language>perl</language>
+								<code>($value) ? " -showPP":""</code>
+						</format>
+						<vdef>
+							<value>0</value>
+						</vdef>
+						<group>8</group>
+						</attributes>
+			</parameter> -->
+
+			<parameter type="Results">
+				<name>output_files</name>
+				<attributes>
+					<filenames>*</filenames>
+				</attributes>
+			</parameter>
+
+	</parameters>
+</pise>

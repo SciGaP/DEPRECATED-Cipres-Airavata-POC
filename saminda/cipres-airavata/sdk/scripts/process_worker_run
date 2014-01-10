@@ -1,0 +1,46 @@
+#!/bin/sh
+
+# Maven resource filtering will replace process_worker_logs in the line below.
+logdir=${process_worker_logs}
+if [ -z "$logdir" ]; then
+	echo "process_worker_logs property was not configured correctly."
+	exit 1
+fi
+
+# If maven resource filtering doesn't find a value for pw.java.opts, ok, we won't
+# set any java.opts.
+java_opts="${pw_java_opts}"
+if [ "$java_opts" = '${pw_java_opts}' ]; then
+	java_opts=
+fi
+
+
+# Figure out which directory this script is in.
+whereami()
+{
+	program="$0"
+	while [ -h "$program" ]; do
+		link=`ls -ld "$program"`
+		link=`expr "$link" : '.*-> \(.*\)'`
+		if [ "`expr "$link" : '/.*'`" = 0 ]; then
+			dir=`dirname "$program"`
+			program="$dir/$link"
+		else
+			program="$link"
+		fi
+	done
+	dir=`dirname $program`
+	echo `cd $dir && /bin/pwd`
+}
+
+dir=`whereami`
+
+mkdir $logdir/running_logs >/dev/null 2>&1
+mkdir $logdir/finished_logs >/dev/null 2>&1
+
+extension=`date +%Y-%m-%d-%H-%M-%S`
+
+(cd $dir; java $java_opts -cp sdk*depend* "$@") > $logdir/running_logs/log.$extension.$$ 2>&1
+
+mv $logdir/running_logs/log.$extension.$$ $logdir/finished_logs/
+

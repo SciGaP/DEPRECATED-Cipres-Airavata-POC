@@ -1,0 +1,2 @@
+ERROR : 'list' object has no attribute 'strip'
+FAILURE : Problem submitting direct job.
