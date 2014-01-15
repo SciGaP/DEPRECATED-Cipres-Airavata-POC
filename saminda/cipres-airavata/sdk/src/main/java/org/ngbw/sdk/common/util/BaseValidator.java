@@ -7,8 +7,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * 
@@ -23,7 +21,6 @@ import org.apache.commons.logging.LogFactory;
  * @author Roland H. Niedner <br />
  */
 public class BaseValidator {
-	private static final Log log = LogFactory.getLog(BaseValidator.class);
 
 	/**
 	 * Method checks whether the specified value is not null.
@@ -292,18 +289,12 @@ public class BaseValidator {
 	 * @param value
 	 * @return true if value can be parsed into a double otherwise false
 	 */
-	public static boolean validateDouble(Object value) 
-	{
+	public static boolean validateDouble(Object value) {
 		if (validateString(value) == false)
-		{
 			return true;
-		}
-		try 
-		{
+		try {
 			Double.parseDouble(toString(value));
-		} catch (NumberFormatException e) 
-		{
-			//log.debug(e.toString());
+		} catch (NumberFormatException e) {
 			return false;
 		}
 		return true;

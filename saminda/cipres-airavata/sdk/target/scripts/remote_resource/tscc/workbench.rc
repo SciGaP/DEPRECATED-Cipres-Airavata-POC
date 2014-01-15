@@ -1,3 +1,0 @@
-export CIPRES_BIN=$HOME/ngbw/contrib/tools/bin
-export CIPRES_SCRIPT=$HOME/ngbw/contrib/scripts
-export PATH=$CIPRES_BIN:$PATH:$HOME/bin

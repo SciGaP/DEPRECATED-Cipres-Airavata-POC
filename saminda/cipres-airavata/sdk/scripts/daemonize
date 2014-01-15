@@ -1,7 +1,7 @@
 """
    Runs a class from the sdk jar as a daemon.  The class must have a main method and not take any
    command line arguments, but can use system properties.  Start up errors are logged to /tmp/daemon.txt.
-   Looks for the jar in $SDK_VERSIONS
+   Looks for the jar in $SDK_VERSIONS/current 
 
    Usage: cipres_daemon <sysprops> <classname>
    Where <sysprops> is a list of system properties to define, including the -D.  For example:
@@ -113,7 +113,7 @@ if __name__ == "__main__":
       # sys.exit(2)
    
    import subprocess
-   jarfile = os.path.join(sdkversions, 'sdk-2.0-jar-with-dependencies.jar')
+   jarfile = os.path.join(sdkversions, 'current', 'sdk-2.0-jar-with-dependencies.jar')
 
    commandline = ["java"]
    commandline.extend(sysprops)

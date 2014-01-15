@@ -3,7 +3,7 @@
 # Can't run module command (I think it's a bash fn) without sourcing bashrc
 source $HOME/.bashrc
 
-module load garli/2.0
+module load garli
 echo "CIPRES_THREADSPP=$CIPRES_THREADSPP"
 echo "CIPRES_NP=$CIPRES_NP"
 echo "running: mpirun -hostfile $PBS_NODEFILE -np $CIPRES_NP Garli $*"

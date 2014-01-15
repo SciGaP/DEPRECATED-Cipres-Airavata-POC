@@ -129,7 +129,7 @@ qstat -f $PBS_JOBID | grep Job
 qstat -f $PBS_JOBID | grep resources
 """ % (url, 
         int(scheduler_info["threads_per_process"]), 
-        int(scheduler_info["ppn"]) * int(scheduler_info["nodes"]),
+        int(scheduler_info["mpi_processes"]),
         lib.cmdfile)
     rfile.write(text)
 

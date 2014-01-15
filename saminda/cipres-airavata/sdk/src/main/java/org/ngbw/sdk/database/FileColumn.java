@@ -614,17 +614,17 @@ class FileColumn extends StreamColumn<byte[]> {
       String dirName = m_fileRoot + String.valueOf(m_majorDirName) + fileSeparator + String.valueOf(m_minorDirName);
 
       while (true) {
-        //m_log.debug("Checking to see if the maximum number of files in " + dirName + " has been exceeded");
+        m_log.debug("Checking to see if the maximum number of files in " + dirName + " has been exceeded");
 
         int numFiles = (new File(dirName)).list().length;
 
         if (numFiles <= MAX_FILES) {
-          //m_log.debug("Found usable directory " + dirName);
+          m_log.debug("Found usable directory " + dirName);
 
           break;
         }
 
-        //m_log.debug(dirName + " has " + numFiles + " files, searching for another directory");
+        m_log.debug(dirName + " has " + numFiles + " files, searching for another directory");
 
         if (m_minorDirName < MAX_MINOR_DIRS - 1)
           m_minorDirName += 1;
@@ -640,7 +640,7 @@ class FileColumn extends StreamColumn<byte[]> {
         if (!nextDir.exists()) {
           nextDir.mkdirs();
 
-         //m_log.debug("Created " + dirName);
+          m_log.debug("Created " + dirName);
 
           break;
         }
@@ -664,21 +664,21 @@ class FileColumn extends StreamColumn<byte[]> {
 
         result = new File(fileName);
 
-        //m_log.debug("Attempting to create " + fileName);
+        m_log.debug("Attempting to create " + fileName);
 
         if (result.createNewFile())
           break;
 
-        //m_log.debug("Failed to create " + fileName + ", trying again");
+        m_log.debug("Failed to create " + fileName + ", trying again");
       }
 
       return result;
     }
     finally {
-      //m_log.debug("Finish new file creation, number of tries = " + tries);
+      m_log.debug("Finish new file creation, number of tries = " + tries);
 
       if (tu.checkCutoff(60))
-        m_log.debug("DB TIME: New file creation took " + tu.getElapsed());
+        m_log.debug("DB TIME: It took " + tu.getElapsed() + ", tries =  " + tries);
     }
   }
 }

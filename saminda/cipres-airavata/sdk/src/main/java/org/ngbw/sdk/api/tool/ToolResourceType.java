@@ -12,5 +12,6 @@ public enum ToolResourceType {
 	GLOBUS,
 	DRMAA_SGE,
 	LOCAL_SHELL,
-	PSUEDO
+	PSUEDO,
+	AIRAVATA
 }

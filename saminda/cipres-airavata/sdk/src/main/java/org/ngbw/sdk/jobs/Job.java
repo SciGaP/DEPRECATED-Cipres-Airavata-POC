@@ -20,12 +20,8 @@ import org.ngbw.sdk.database.TaskOutputSourceDocument;
 import org.ngbw.sdk.database.User;
 import org.ngbw.sdk.database.Task;
 import org.ngbw.sdk.tool.TaskMonitor;
-import org.ngbw.sdk.tool.Tool;
 import org.ngbw.sdk.Workbench;
 import org.ngbw.sdk.core.shared.TaskRunStage;
-import org.ngbw.sdk.tool.TaskValidator;
-import org.ngbw.sdk.api.tool.FieldError;
-import org.ngbw.sdk.api.tool.JobValidationException;
 
 
 /**
@@ -59,55 +55,19 @@ public class Job
 
 		visibleParameterMap has name/value pairs for parameters that can be set by an end user.
 
-		inputFileMap maps parameter_name to File object.  In the case of the REST
+		inputFileMap maps parameter_name to File object.  There must be an entry for each InFile element
+		in the pisexml file.  (Todo - check on optional/mandatory InFile elements).   This method
+		checks the encoding of text files and may modify the contents.  In the case of the REST
 		API, the files were uploaded as part of the submission request and are in a tmp location.
-
-		toolId must not be null.
-
-		If validateOnly is true, just validates the parameters, does not submit the job, doesn't
-		store a task.  Returns generated command line. Throws JobValidationException if errors are found.
-
 
 	*/
 	public static String submit(	
 					User user,
 					JobMetadata clientMetadata,
 					String toolId,
-					Map<String, List<String>> visibleParameterMap,
-					Map<String, File> inputFileMap,
-					boolean validateOnly) throws Exception
+					Map<String, String> visibleParameterMap,
+					Map<String, File> inputFileMap) throws Exception
 	{
-		if (visibleParameterMap == null)
-		{
-			visibleParameterMap = new HashMap<String, List<String>>();
-		}
-		if (inputFileMap  == null)
-		{
-			inputFileMap = new HashMap<String, File>();
-		}
-
-		// throws an exception if tool isn't in registry.
-		TaskValidator validator = new TaskValidator(toolId);
-
-		Map<String, String> toolParameters = validator.validate(visibleParameterMap, inputFileMap.keySet()); 
-		List<FieldError> errors = validator.getErrors();
-		if (errors.size() > 0)
-		{
-			throw new JobValidationException(errors);
-		}
-		Tool tool = new Tool(toolId, Workbench.getInstance().getServiceFactory().getToolRegistry());
-
-		/*
-			Instantiates command renderer and evaulates perl precond and ctrl elements.
-			May throw JobValidationException.  Just needs list of input file parameters that were supplied
-			by the user, doesn't validate the contents.
-		*/
-		String commandline = tool.validateCommand(toolParameters, inputFileMap.keySet());
-		if (validateOnly)
-		{
-			return commandline;
-		}
-
 		Folder enclosingFolder = defaultFolder(user);
 		Task task = new Task(enclosingFolder);
 		long taskId = 0;
@@ -117,17 +77,17 @@ public class Job
 			opening a FileInputStream on the File, then wrap the document in a list.  The list 
 			will always have just the single entry.
 		*/
-		HashMap<String, List<TaskInputSourceDocument>> inputMap = new HashMap<String, List<TaskInputSourceDocument>>();
+		HashMap<String, List<TaskInputSourceDocument>> inputMap = 
+			new HashMap<String, List<TaskInputSourceDocument>>();
+
 		for (String k: inputFileMap.keySet())
 		{
 			File file = inputFileMap.get(k);
 
-			/*
-				TODO: Maybe we should leave this out until someone tells us they need it?
-				I'm not sure I understand the usecase: someone uploading data that is in an encoding that needs
-				to be translated to ascii?
-			Workbench.convertEncoding(file);
-			*/
+			// TODO: Maybe we should leave this out until someone tells us they need it?
+			// I'm not sure I understand the usecase: someone uploading data that is in an encoding that needs
+			// to be translated to ascii?
+			// Workbench.convertEncoding(file);
 
 			// TaskInputSourceDocument ctor closes the stream, but if the ctor fails we need to close the stream. 
 			FileInputStream is = new FileInputStream(file);
@@ -147,7 +107,7 @@ public class Job
 			inputMap.put(k, list); 
 		}
 		task.input().putAll(inputMap);
-		task.toolParameters().putAll(toolParameters);
+		task.toolParameters().putAll(visibleParameterMap);
 		task.setToolId(toolId);
 		task.setLabel("REST v1"); 
 		task.setStage(TaskRunStage.READY);

@@ -533,16 +533,8 @@ public abstract class BaseProcessWorker
 		{
 			m_rc = param;
 		}
-		String callbackurl;
-		String pstr = Workbench.getInstance().getProperties().getProperty("use.rest.callback");
-		if (pstr != null && pstr.trim().equals("true"))
-		{
-			callbackurl =  Workbench.getInstance().getProperties().getProperty("rest.callback.url"); 
-		} else
-		{
-			callbackurl =  Workbench.getInstance().getProperties().getProperty("portal.callback.url"); 
-		}
-		m_url = "'" + callbackurl + "?taskId=" + m_taskId + "\\&jh=" + m_jobHandle + "'"; 
+		m_url = "'" + Workbench.getInstance().getProperties().getProperty("job.callback.url") + "?taskId=" + m_taskId +
+			"\\&jh=" + m_jobHandle + "'"; 
 
 		initTaskInfo();
 	}

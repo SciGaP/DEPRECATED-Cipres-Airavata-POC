@@ -109,7 +109,8 @@ def schedulerInfo(properties, tooltype):
     # With the recent OS upgrade on gordon, ppn should always be 8 if running in shared Q and cores_per_node (ie. 16)
     # in the regular Q.
     retval =    {"runtime":runtime, "queue":queue, "threads_per_process":int(properties.get("threads_per_process", 0)),
-                 "nodes": int(properties.get("nodes", 1)), "ppn": int(cores_per_node), "qos": int(5)}
+                 "nodes": int(properties.get("nodes", 1)), "ppn": int(cores_per_node), "qos": int(5),
+                 "mpi_processes": int(properties.get("mpi_processes", 1)) }
 
     if properties.get("jobtype") == "direct":
         retval["is_direct"]  = True 
@@ -131,7 +132,6 @@ def schedulerInfo(properties, tooltype):
         # how we want to run garli here, so explicitly exclude it.  Garli just specifies
         # the number of mpi processes but we always want to use a single node for it.
         if (properties.get("nodes", "") == "") and (properties.get("thread_per_process", "") == "") and tooltype != "garli":
-            processes = int(properties.get("mpi_processes", 1))
             processes = int(processes / cores_per_node) * cores_per_node
             processes = min(max(processes, default_cores), max_cores)
             retval["nodes"] = processes / cores_per_node 
@@ -140,7 +140,6 @@ def schedulerInfo(properties, tooltype):
         # the number of nodes as well as the number of mpi processes; we don't 2nd guess them.
         else:
             retval["nodes"] = int(properties.get("nodes", 1));
-            retval["mpi_processes"] = int(properties.get("mpi_processes", 1));
 
         # Special case for garli.  Run small jobs in shared queue.
         if (tooltype == "garli") and (retval["mpi_processes"] < cores_per_node):

@@ -1,25 +1,25 @@
 #!/bin/bash
 
-# Can't run module command (I think it's a bash fn) without sourcing bashrc
-source $HOME/.bashrc
+#we want to use the default modules on Gordon.
 source /etc/profile.d/modules.sh
-export MODULEPATH=/home/diag/jpg/modulefiles/gordon/applications:$MODULEPATH
-
 
 module load mrbayes
 paramfile=$1
+
+THEBINARY=mb
+
 
 echo "CIPRES_THREADSPP=$CIPRES_THREADSPP"
 echo "CIPRES_NP=$CIPRES_NP"
 echo "paramfile=$1"
 echo "running:"
-echo " mpirun -hostfile $PBS_NODEFILE -np $CIPRES_NP mb-mpi < $paramfile"
+echo " mpirun -hostfile $PBS_NODEFILE -np $CIPRES_NP ${THEBINARY} < $paramfile"
 
 # Don't allow files greater than 1 gig (specified in 1024 byte blocks)
 # ulimit -f 1048576
-Don't allow files greater than 8 gig (specified in 1024 byte blocks)
+# Don't allow files greater than 8 gig (specified in 1024 byte blocks)
 ulimit -f 8388608 
 
 
-mpirun -hostfile $PBS_NODEFILE -np $CIPRES_NP mb-mpi < $paramfile
+mpirun -hostfile $PBS_NODEFILE -np $CIPRES_NP ${THEBINARY} < $paramfile
 

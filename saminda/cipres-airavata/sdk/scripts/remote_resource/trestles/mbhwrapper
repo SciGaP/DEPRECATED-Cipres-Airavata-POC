@@ -4,18 +4,10 @@
 # so we don't need to source .bashrc to get module load to work.  In fact
 # source'ing .bashrc or modules.sh here would clobber MODULEPATH set in
 # gordon_submit.py.  TODO: make the same change to trestle's submit.py 
-#and all the tool wrappers.  
+and all the tool wrappers.  
 # source $HOME/.bashrc
 
-#It doesn't matter that we globally load modules. Actually we want to totally ignore that and build the environment from scratch for this script.
-#This is more robust to changes in the default environment and helps to decouple these scripts from the rest of the system.
-source /etc/profile.d/modules.sh
-module purge
-module load gnubase
-module load intel
-module load openmpi_ib
-
-export THEBINARY=/home/pfeiffer/gordon/MrBayes-3.1.2h/mb-hybrid
+module load mrbayes
 paramfile=$1
 if [ -n "$CIPRES_THREADSPP" ]; then
     export OMP_NUM_THREADS=$CIPRES_THREADSPP
@@ -25,7 +17,7 @@ echo "CIPRES_THREADSPP=$CIPRES_THREADSPP"
 echo "CIPRES_NP=$CIPRES_NP"
 echo "paramfile=$1"
 echo "running:"
-echo " mpirun -hostfile $PBS_NODEFILE -np $CIPRES_NP -x OMP_NUM_THREADS --bynode mb-hybrid < $paramfile"
+echo " mpirun -hostfile $PBS_NODEFILE -np $CIPRES_NP mb-hybrid < $paramfile"
 
 # Don't allow files greater than 1 gig (specified in 1024 byte blocks)
 # ulimit -f 1048576
@@ -38,5 +30,5 @@ uniq -c $PBS_NODEFILE | awk '{print $2" slots="$1;}' > ${uniqueNodefile}
 
 export OMP_NUM_THREADS=${CIPRES_THREADSPP}
 
-mpirun --machinefile ${uniqueNodefile} -n ${CIPRES_NP} -x OMP_NUM_THREADS --bynode ${THEBINARY} < $paramfile
+mpirun --machinefile ${uniqueNodefile} -n ${CIPRES_NP} -x OMP_NUM_THREADS --bynode  mb-hybrid < $paramfile
 

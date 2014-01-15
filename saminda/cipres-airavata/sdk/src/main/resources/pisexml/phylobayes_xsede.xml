@@ -482,6 +482,9 @@ id to that.-->
 							<language>perl</language>
 							<code>defined $set_seed ? "--seed $value":""</code>
 						</format>	
+						<vdef>
+							<value>12345</value>
+						</vdef>
 						<comment>
 							<value>Base random seed to use. Each of the N chains will add its
 id to that. Setting a seed value allows the user to reproduce specific runs. 
@@ -614,7 +617,7 @@ quired before convergence. Defaults to 50, which is \acceptable". (300 for
 					<name>acceptsizeval</name>
 					<attributes>
 						<group>12</group>
-						<prompt>Minimum Effective Size</prompt>
+						<prompt>Maximum \maxdiff" value to accept.</prompt>
 						<format>
 							<language>perl</language>
 							<code>"--ACCEPTSIZE $value"</code>
@@ -701,7 +704,7 @@ quired before convergence. Defaults to 50, which is \acceptable". (300 for
 							<code>($value) ? " -dc":""</code>
 						</format>
 						<vdef>
-							<value>1</value>
+							<value>0</value>
 						</vdef>
 					<!--	<comment>
 <value></value>
@@ -837,7 +840,6 @@ during the run using this -s option.</value>
 				</parameter>
 
 <!--	-f forces the program to overwrite an already existing chain with same name.  -->
-<!--	removed at Bryan's recommendation
 				<parameter type="Switch" issimple="0" >
 					<name>overwrite_existing</name>
 					<attributes>
@@ -851,7 +853,7 @@ during the run using this -s option.</value>
 <value>The -f option forces the program to overwrite an already existing chain with same name.</value>
 						</comment>
 					</attributes>
-				</parameter> -->
+				</parameter>
 	
 	
 <!--End general parameters -->

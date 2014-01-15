@@ -7,3 +7,4 @@ export CIPRES_SCRIPT=$HOME/ngbw/contrib/scripts
 export CIPRES_TOOLS_BIN=/projects/mmiller-group/contrib/tools/bin/x86_64
 export PATH=$CIPRES_BIN:$CIPRES_TOOLS_BIN:$PATH
 
+module load python

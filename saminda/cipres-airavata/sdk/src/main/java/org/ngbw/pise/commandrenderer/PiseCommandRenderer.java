@@ -22,9 +22,6 @@ import org.ngbw.sdk.api.tool.CommandRenderer;
 import org.ngbw.sdk.common.util.StringUtils;
 import org.ngbw.sdk.common.util.SuperString;
 import org.ngbw.sdk.tool.RenderedCommand;
-import org.ngbw.pise.commandrenderer.PiseMarshaller;
-import org.ngbw.sdk.api.tool.FieldError;
-import org.ngbw.sdk.api.tool.JobValidationException;
 
 
 /**
@@ -39,7 +36,7 @@ import org.ngbw.sdk.api.tool.JobValidationException;
 
 public class PiseCommandRenderer implements CommandRenderer 
 {
-	private static Log log = LogFactory.getLog(PiseCommandRenderer.class.getName());
+	private static Log log = LogFactory.getLog(PiseCommandRenderer.class .getName());
 
 	private final Map<URL , PiseMarshaller> cfgMap = new HashMap<URL , PiseMarshaller>();
 
@@ -54,10 +51,11 @@ public class PiseCommandRenderer implements CommandRenderer
 	private Map<String, String[]> paramFiles = null;
 	
 	private RenderedCommand renderedCommand= null;
+
 	private final static String SCHEDULER_CONF = "scheduler.conf";
+
 	private PerlEval perlEval = null;
 
-	List<FieldError> parameterErrors = new ArrayList<FieldError>();
 	
 	public PiseCommandRenderer() 
 	{
@@ -73,17 +71,7 @@ public class PiseCommandRenderer implements CommandRenderer
 		unixCmdGroupNegative = new String[100];
 		paramFiles = new HashMap<String, String[]>();
 		renderedCommand = new RenderedCommand();
-	}
 
-	// TODO:
-	public RenderedCommand validate(URL url, Map<String, String> parameters) 
-	{
-		return render(url, parameters, true);
-	}
-
-	public RenderedCommand render(URL url, Map<String, String> parameters) 
-	{
-		return render(url, parameters, false);
 	}
 
 	/**
@@ -91,24 +79,12 @@ public class PiseCommandRenderer implements CommandRenderer
 		@param parameters A map of parameter name to value, where parameter name is the name element
 		of a parameter element in the pise xml file and where value may be something like
 		"1" or "y", or the contents of a source document, depending on the type of parameter.
-
-		Caller must verify that entries in parameters map meet certain criteria BEFORE 
-		calling this method: 
-
-		- keys must correspond to parameters in the pise xml file 
-		- values of the correct type as specified by the pise file (for example, integer, string, double)
-		- values are in min/max range specified by the pise xml
-
-		This method does evaluates perl precond and ctrls elements for the parameters and throws 
-		JobValidationException if they are violated.  If precond for a parameter is not met, the parameter must not be
-		in the parameters map.
 	*/
-	private RenderedCommand render(URL url, Map<String, String> parameters, boolean validateOnly) 
+	public RenderedCommand render(URL url, Map<String, String> parameters) 
 	{
 		try 
 		{
 			log.debug("render command from " + parameters.size() + " parameters using config:" + url);
-			log.debug("validateOnly is " + validateOnly);
 			init();
 
 			/*
@@ -121,11 +97,10 @@ public class PiseCommandRenderer implements CommandRenderer
 
 			perlEval = new PerlEval();
 			perlEval.initialize();
-			List<String> commandList = toUnixCmd(validateOnly);
+			List<String> commandList = toUnixCmd();
 			perlEval.terminate();
 
-
-			//log.debug("toUnixCmd returns a list with " + commandList.size() + " elements");
+			log.debug("toUnixCmd returns a list with " + commandList.size() + " elements");
 			String[] commandArray = new String[commandList.size()];
 			renderedCommand.setCommand(commandList.toArray(commandArray));
 			if (log.isDebugEnabled()) 
@@ -140,10 +115,6 @@ public class PiseCommandRenderer implements CommandRenderer
 			}
 			setSchedulerProperties();
 			return renderedCommand;
-		}
-		catch(JobValidationException jve)
-		{
-			throw jve;
 		}
 		catch (Exception err) 
 		{
@@ -166,6 +137,8 @@ public class PiseCommandRenderer implements CommandRenderer
 	*/
 	private void setSchedulerProperties()
 	{
+		log.debug("Looking for " + SCHEDULER_CONF + " to load properties");
+
 		Map<String, byte[]> inputData = new TreeMap<String, byte[]>();
 		Map<String, String> inputFileNames = renderedCommand.getInputFileMap();
 
@@ -191,6 +164,7 @@ public class PiseCommandRenderer implements CommandRenderer
 		log.debug("Parameter " + p + " value is:" + new String(value));
 		try
 		{
+			log.debug("Loading properties from byte array");
 			renderedCommand.getSchedulerProperties().load(new StringBufferInputStream(value));
 		}
 		catch (Throwable t)
@@ -292,26 +266,20 @@ public class PiseCommandRenderer implements CommandRenderer
 	}
 	*/
 
-	/*
-	*/
-	private List<String> toUnixCmd(boolean validateOnly) throws IOException, InterruptedException, ExecutionException, Exception
+	private List<String> toUnixCmd() throws IOException, InterruptedException, ExecutionException, 
+		Exception
 	{
 
 		List<String> commandList = new ArrayList<String>();
 
 		/*
-			A command is constructed from multiple type of parameters:
+			1- A command is constructed from multiple type of parameters:
 			These are the parameters passed as Map argument for this class, which means parameter selected through GUI
 		*/
 		log.debug("toUnixCmd: processing " + getParameterSet().size() + " GUI parameters");
-		FieldError error;
 		for (String paramName : getParameterSet()) 
 		{
 			processParameter(paramName, false);
-		}
-		if (parameterErrors.size() > 0)
-		{
-			throw new JobValidationException(parameterErrors);
 		}
 
 		// These are the parameters hidden from the GUI, but necessary for generating the command line correctly
@@ -321,13 +289,15 @@ public class PiseCommandRenderer implements CommandRenderer
 
 		/*
 			These are the parameters that generate an outfile, they are hidden from the GUI since the GUI dosen't
-			give the user the possibility to specify the names of the output files.  
+			give the user the possibility to specify the names of the output files, we use a standard filenames for 
+			each output file we have added this information (filenames) into the Pise XML file
+			we return these parameter through getOutputFileMap()
 		*/
 		log.debug("toUnixCmd: processing " + piseMarshaller.getOutfileSet().size() + " OUTFILESET parameters");
 		for (String paramName : piseMarshaller.getOutfileSet())
 			processParameter(paramName, false);
 
-		// Not sure of the difference bewteen Pise ResultFile and piseOutfile, but here we handle ResultFiles. 
+		// similar to outfile, one difference is not all output files are defined as outfile but also as Results
 		log.debug("toUnixCmd: processing " + piseMarshaller.getResultSet().size() + " RESULTSET parameters");
 		for (String paramName : piseMarshaller.getResultSet()) 
 			processParameter(paramName, true);
@@ -360,7 +330,7 @@ public class PiseCommandRenderer implements CommandRenderer
 			setParameterValue(key, value.replace("\\n", "\n"));
 
 			/*
-				This adds an entry in the input file map with key = parameter file name, value = parameter file name.
+				This adds in entry in the input file map with key = parameter file name, value = parameter file name.
 			*/
 			setInputFileName(key, key);
 		}
@@ -394,11 +364,7 @@ public class PiseCommandRenderer implements CommandRenderer
 		return commandList;
 	}
 
-	/*
-		Returns false if encounters errors that mean the job should not be run.
-	*/
-	private void processParameter(String paramName, boolean hidden) 
-		throws IOException, InterruptedException, ExecutionException, Exception
+	private void processParameter(String paramName, boolean hidden) throws IOException, InterruptedException, ExecutionException, Exception
 	{
 		log.debug("START: processParameter: " + paramName + " (hidden: " + hidden + ")");
 
@@ -412,15 +378,13 @@ public class PiseCommandRenderer implements CommandRenderer
 		String separator = piseMarshaller.getSeparator(paramName);
 		String filenames = piseMarshaller.getFileNames(paramName);
 		String paramfile = piseMarshaller.getParamFile(paramName);
-		List<PiseMarshaller.Control> controls = piseMarshaller.getCtrl(paramName);
 
 		if (parameterValue == null || (parameterValue.length() < 100))
 		{
 			log.debug(paramName +"=" + parameterValue + ", type=" + type);
 		} else
 		{
-			log.debug(paramName +"=" + parameterValue.substring(0, Math.min(100, parameterValue.length())) + 
-				"...(truncated), type=" + type);
+			log.debug(paramName +"=" + parameterValue.substring(0, Math.min(100, parameterValue.length())) + "...(truncated), type=" + type);
 		}
 
 		@SuppressWarnings("unused")
@@ -428,7 +392,12 @@ public class PiseCommandRenderer implements CommandRenderer
 		@SuppressWarnings("unused")
 		String ishidden = piseMarshaller.getIsHidden(paramName);
 
-		// With flist, user chooses a label that pise maps to a string of code. 
+		/* 
+			this method signature is different than preceding ones since flist is a list of format, we should return 
+			exactly the format that corresponds with the entered value which is capture in the parameters. In other
+			words, the user entered parameter value is a "key".  Here we return the format statement associated with
+			that key in that parameter.
+		*/
 		String flist = piseMarshaller.getflistValue(paramName, parameterValue);
 		String perlFormat = null;
 		String perlPrecond = null;
@@ -452,114 +421,186 @@ public class PiseCommandRenderer implements CommandRenderer
 			format = flist;
 		}
 		/*
-			The front end code is responsible for inserting the separator character, if any,
-			and concatenating the list elements.  However, if the pise doesn't specify a separator,
-			the front end uses "@" as a separator because it must maintain the distinct elements in order
-			to repopulate a form from them. THIS MEANS YOU CAN'T USE AN '@' in a LIST ELEMENT.
+			Some parameters have multiple choices list, so we should arrange them with respect of their separator
+			it's safer to repalce in parameters than replacing into the original paramMap
 		*/
 		if (type != null && type.equals("List"))
 		{
-			if (separator == null)
+			if (separator == null) 
 			{
-				 // Remove the dummy '@' that the front end inserted and concatenate the elements since there
-				 // is not separator specified in the pise xml.
-				 setParameterValue(paramName, SuperString.valueOf(parameterValue, '@').concatenate());
-			} else
+				setParameterValue(paramName, SuperString.valueOf(parameterValue, '@').concatenate());
+			} else 
 			{
-				;
-			} 
+				setParameterValue(paramName, SuperString.valueOf(parameterValue, separator.toCharArray()[1]).concatenate());
+			}
+
 		}
-		// Todo: If precondition is present and is false skip it. Would be nice to return a warning.  
-		// Not an error, because portal send values for all fields with default values.
-		log.debug("precond: " + precond);
 		if (precond != null) 
 		{
 			precond = restitutionPrecond(precond, paramName, vdef);
 			perlPrecond = evaluatePerlStatement(precond);
-			log.debug("Precond evaluation: " + perlPrecond + ", boolean value is " +  Boolean.valueOf(perlPrecond));
-			if (!Boolean.valueOf(perlPrecond))
-			{
-				//parameterErrors.add(new FieldError(paramName, "Precondition not satisfied."));
-				log.debug("Precondition not satisfied, not generating code for " + paramName);
-				return;
-			}
-		}
-		if (evaluateControls(controls, paramName, vdef) == false)
-		{
-			// If controls are violated quit processing this parameter
-			log.debug("Return early because evaluateControls returned false");
-			return;
+			log.debug("Precond evaluation: " + perlPrecond);
 		}
 
-		log.debug("format: " + (format == null ? "null" : format));
 		if (format != null) 
 		{
 			format = restitutionFormat(format, paramName, vdef);
 			perlFormat = evaluatePerlStatement(format);
 			log.debug("Format evaluation: " + perlFormat);
 		}
-		if (perlFormat != null) 
+
+		/*
+			Start testing if precondition is true or false if the precondition exists and is false, we should do nothing.
+			if the precondition exits and true, we should test if format exists this format can be the part of the command 
+			line or part of the param file however if we are writting in the command line or in a param file
+			we should see if this parameter is (input file) or generate a file (outfile, param) then we have to add 
+			the file to the corresponding Map. if it is a parameter file we should also capture the value to be written in this 
+			file
+		*/
+		log.debug("precond: " + precond);
+		if (precond == null) 
 		{
-			log.debug("paramfile: " + (paramfile == null ? "null" : paramfile));
-			if (paramfile != null) 
+			if (perlFormat != null) 
 			{
-				String[] value;
-				if (paramFiles.containsKey(paramfile) == false || paramFiles.get(paramfile) == null)
+				// check if should be written to a file or to cmd
+				if (paramfile != null) 
 				{
-					paramFiles.put(paramfile, new String[100]);
-				}	
-				value = paramFiles.get(paramfile);
-				if (value[groupValue] != null)
-				{
-					value[groupValue] += perlFormat;
-				}
-				else
-				{
-					value[groupValue] = perlFormat;
-				}
-				log.debug("parameter: " + paramName + " put in inputDataMap: '" + paramfile + "' -> '" + value[groupValue] + "'");
-			} else 
-			{
-				if (groupValue >= 0) 
-				{
-					if (unixCmdGroup[groupValue] != null)
+					String[] value;
+					if (paramFiles.containsKey(paramfile) == false || paramFiles.get(paramfile) == null)
 					{
-						unixCmdGroup[groupValue] += " " + perlFormat;
+						paramFiles.put(paramfile, new String[100]);
+					}	
+					value = paramFiles.get(paramfile);
+					if (value[groupValue] != null)
+					{
+						value[groupValue] += perlFormat;
 					}
 					else
 					{
-						unixCmdGroup[groupValue] = perlFormat;
+						value[groupValue] = perlFormat;
 					}
-					log.debug("unixCmdGroup[" + groupValue + "] = " + unixCmdGroup[groupValue]);
+					log.debug("parameter: " + paramName + " put in inputDataMap: '" + paramfile + "' -> '" + value[groupValue] + "'");
 				} else 
 				{
-					if (unixCmdGroupNegative[Math.abs(groupValue)] != null)
+					if (groupValue >= 0) 
 					{
-						unixCmdGroupNegative[Math.abs(groupValue)] += " " + perlFormat;
+						if (unixCmdGroup[groupValue] != null)
+						{
+							unixCmdGroup[groupValue] += " " + perlFormat;
+						}
+						else
+						{
+							unixCmdGroup[groupValue] = perlFormat;
+						}
+						log.debug("unixCmdGroup[" + groupValue + "] = " + unixCmdGroup[groupValue]);
+					} else 
+					{
+						if (unixCmdGroupNegative[Math.abs(groupValue)] != null)
+						{
+							unixCmdGroupNegative[Math.abs(groupValue)] += " " + perlFormat;
+						}
+						else
+						{
+							unixCmdGroupNegative[Math.abs(groupValue)] = perlFormat;
+						}	
+						log.debug("unixCmdGroupNegative[" + Math.abs(groupValue) + "] = " + unixCmdGroupNegative[Math.abs(groupValue)]);
 					}
-					else
-					{
-						unixCmdGroupNegative[Math.abs(groupValue)] = perlFormat;
-					}	
-					log.debug("unixCmdGroupNegative[" + Math.abs(groupValue) + "] = " + unixCmdGroupNegative[Math.abs(groupValue)]);
 				}
 			}
-		}
 
-		if (filenames != null) 
+			if (filenames != null) 
+			{
+				// filenames not null for infile and sequence means we have assigned standard names for these input files
+				if (type.equals("InFile") || type.equals("Sequence"))
+				{
+					setInputFileName(paramName, filenames);
+					log.debug("setInputFileName: '" + paramName + "' -> '" + filenames + "'");
+				}
+				// Most output filenames are given in Results but can also be defined in Switch, List, OutFile, etc.
+				else 
+				{
+					setOutputFileName(paramName, filenames);
+					log.debug("setOutputFileName: '" + paramName + "' -> '" + filenames + "'");
+				}
+			}
+		} else 
 		{
-			// filenames not null for infile and sequence means we have assigned standard names for these input files
-			if (type.equals("InFile") || type.equals("Sequence"))
+			log.debug("perlPrecond: " + (perlPrecond == null ? "null" : perlPrecond));
+			log.debug("perlFormat: " + (perlFormat == null ? "null" : perlFormat));
+			if (perlPrecond != null) 
 			{
-				setInputFileName(paramName, filenames);
-				log.debug("setInputFileName: '" + paramName + "' -> '" + filenames + "'");
+				log.debug("Boolean.valueOf(perlPrecond.trim()) == " + Boolean.valueOf(perlPrecond));
+				if (Boolean.valueOf(perlPrecond)) 
+				{
+					if (perlFormat != null) 
+					{
+						// check if should be written to a file or to cmd
+						log.debug("paramfile: " + (paramfile == null ? "null" : paramfile));
+						if (paramfile != null) 
+						{
+							String[] value;
+							if (paramFiles.containsKey(paramfile) == false || paramFiles.get(paramfile) == null)
+								paramFiles.put(paramfile, new String[100]);
+							value = paramFiles.get(paramfile);
+							if (value[groupValue] != null)
+							{
+								value[groupValue] += perlFormat;
+							}
+							else
+							{
+								value[groupValue] = perlFormat;
+							}
+						} else 
+						{
+							if (groupValue >= 0) 
+							{
+								if (unixCmdGroup[groupValue] != null)
+								{
+									unixCmdGroup[groupValue] += " " + perlFormat;
+								}
+								else
+								{
+									unixCmdGroup[groupValue] = perlFormat .toString();
+								}	
+								log.debug("unixCmdGroup[" + groupValue + "] = " + unixCmdGroup[groupValue]);
+							} else 
+							{
+								if (unixCmdGroupNegative[Math.abs(groupValue)] != null)
+								{
+									unixCmdGroupNegative[Math.abs(groupValue)] += " " + perlFormat;
+								}
+								else
+								{
+									unixCmdGroupNegative[Math.abs(groupValue)] = perlFormat .toString();
+								}	
+								log.debug("unixCmdGroupNegative[" + Math.abs(groupValue) + "] = " + 	
+									unixCmdGroupNegative[Math.abs(groupValue)]);
+							}
+						}
+					}
+
+					// some filesnames are given in the any type such as Switch, list, etc.
+					if (filenames != null) 
+					{
+						if (type.equals("InFile") == false && type.equals("Sequence") == false) 
+						{
+							setOutputFileName(paramName, filenames);
+							log.debug("type = " + type + ": setOutputFileName: '" + paramName + "' -> '" + filenames + "'");
+						}
+						if (type.equals("Results")) 
+						{
+							setOutputFileName(paramName, filenames);
+							log.debug("type = " + type + ": setOutputFileName: '" + paramName + "' -> '" + filenames + "'");
+						}
+						if (type.equals("InFile") || type.equals("Sequence")) 
+						{
+							setInputFileName(paramName, filenames);
+							log.debug("type = " + type + ": setInputFileName: '" + paramName + "' -> '" + filenames + "'");
+						}
+					}
+				}
 			}
-			// Most output filenames are given in Results but can also be defined in Switch, List, OutFile, etc.
-			else 
-			{
-				setOutputFileName(paramName, filenames);
-				log.debug("setOutputFileName: '" + paramName + "' -> '" + filenames + "'");
-			}
+
 		}
 		log.debug("END : processParameter: " + paramName + " (hidden: " + hidden + ")\n");
 	}
@@ -771,41 +812,7 @@ public class PiseCommandRenderer implements CommandRenderer
 
 		return format;
 	}
-
-	/*
-		Controls are written to express an error condition when true. 
-		For example to require runtime to be <= 168, you write
-			"$runtime > 168.0"
-
-		Returns true (ie. all's well) if there are no controls or all controls evaluate to false.
-		For each control that is true, sets an error message in ??? TODO
-	*/
-	private boolean evaluateControls(List<PiseMarshaller.Control> controls, String paramName, String vdef)
-		throws Exception
-	{
-		int errorCount = 0;
-		String perl;
-		String evaluatedPerl; 
-		if (controls == null)
-		{
-			return true;
-		}
-		for (PiseMarshaller.Control c : controls)
-		{
-			perl = restitutionPrecond(c.perl, paramName, vdef);
-			evaluatedPerl= evaluatePerlStatement(perl);
-			//log.debug("ctrl: '" + perl + "' EVAL TO '" + evaluatedPerl + "'");
-			if (Boolean.valueOf(evaluatedPerl) == true)
-			{
-				parameterErrors.add(new FieldError(paramName, c.message));
-				errorCount += 1;
-			} 
-		}
-		return errorCount == 0;
-	}
 }
-	
-
 
 /*
 	NEWLINE replacement:  (search for "NEWLINE" to see what this comment is referring to).
@@ -819,7 +826,7 @@ public class PiseCommandRenderer implements CommandRenderer
 	note that when you print a java string, as the logging messages in this file do, if
 	the string contains an actual newline, it will print on multiple lines.  If you see
 	"\n" in the value displayed, it means the string contains two characters: a backslash
-	followed by an n.  This is mostly what we see because if you put "\n" in an xml file
+	followed b an n.  This is mostly what we see because if you put "\n" in an xml file
 	element, the xml unmarshaller delivers this as a java string containing a backslash
 	followed by an n.
 

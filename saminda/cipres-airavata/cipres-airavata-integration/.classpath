@@ -63,6 +63,6 @@
 	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/airavata-interpreter-service-client-0.11.jar"/>
 	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/staxon-jackson-1.2.jar"/>
 	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/slf4j-log4j12-1.7.2.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/sdk${my.name}"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/sdk"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

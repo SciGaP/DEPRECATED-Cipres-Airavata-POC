@@ -632,7 +632,6 @@
 								<language>perl</language>
 								<code>$orf</code>
 							</precond>
-							<!-- separator must be a single character within single quotes -->
 							<separator>' '</separator>
 						</attributes>
 					</parameter>

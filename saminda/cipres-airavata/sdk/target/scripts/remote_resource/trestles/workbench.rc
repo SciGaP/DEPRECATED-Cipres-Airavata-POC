@@ -16,3 +16,4 @@ ulimit -f 8388608
 # Create files and dirs with rwx for owner and group, nothing for others.
 umask 0007
 
+module load python

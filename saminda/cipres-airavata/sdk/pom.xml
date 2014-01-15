@@ -1,26 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.ngbw</groupId>
 	<artifactId>sdk${my.name}</artifactId>
-	<name>Cipres SDK</name>
+	<name>Next Generation Biology Workbench SDK</name>
 	<version>2.0</version>
-	<parent>
-		<groupId>org.ngbw</groupId>
-		<artifactId>cipres</artifactId>
-		<version>2.0</version>
-		<relativePath>../cipres-portal/cipres-build</relativePath>
-	</parent>
 
 	<properties>
-	 	<filter.file.path>${basedir}/../cipres-portal/cipres-build/${filter.file}</filter.file.path>
 		<my.name></my.name>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<!-- Default values in case a profile isn't specified. -->
+		<mvn.property.file>ngbw-dev.properties</mvn.property.file>
 		<database.username>${db.ngbw.test.username}</database.username>
 		<database.password>${db.ngbw.test.password}</database.password>
 		<grid.globus.dir>${env.HOME}/.globus</grid.globus.dir>
-		<maven.test.skip>true</maven.test.skip>
 	</properties>
 
 	<prerequisites>
@@ -30,8 +25,43 @@
 
 	<build>
 		<plugins>
-			<!-- This builds a sdk jar (sdk-jar-with-dependencies.jar )that includes all dependencies-->
-			<!-- This execution must appear before "copy files" execution so that jar is created before copied --> 
+
+			<!-- Copy certain resources to ~/.globus (i.e. grid.globus.dir).  The code that
+			uses these files loads the files from a path on disk, so we need to put them in
+			a location the code can find via a property. -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy files</id>
+						<phase>package</phase>
+						<configuration>
+							<tasks>
+								<echo>
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+Copying files to ${grid.globus.dir} for teragrid tools. For ngbw and non-teragrid builds of cipres
+this is unnecessary but harmless. For cipres teragrid builds however, it's important that the same 
+account be used for building and running the web application so that these files end up in the home 
+directory of the user running the web application." 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+								</echo>
+								<mkdir dir="${grid.globus.dir}"/>
+
+								<delete file="${grid.globus.dir}/cog.properties"/>
+								<copy file="target/classes/cog.properties" 
+									tofile="${grid.globus.dir}/cog.properties"/>
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<executions>
@@ -46,67 +76,6 @@
 								<descriptorRef>jar-with-dependencies</descriptorRef>
 							</descriptorRefs>
 						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-
-
-			<!-- Copy certain resources to ~/.globus (i.e. grid.globus.dir).  The code that
-			uses these files loads the files from a path on disk, so we need to put them in
-			a location the code can find via a property. BUILD MUST BE RUN BY USER WHO WILL
-			BE RUNNING THE APLLICATION -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>copy files</id>
-						<phase>package</phase>
-						<configuration>
-							<tasks>
-								<mkdir dir="${grid.globus.dir}"/>
-
-								<delete file="${grid.globus.dir}/cog.properties"/>
-								<copy file="target/classes/cog.properties" 
-									tofile="${grid.globus.dir}/cog.properties" verbose="true" />
-
-								<!-- copy certain files from target directory to $SDK_VERSIONS -->
-								<copy todir="${env.SDK_VERSIONS}" flatten="true" overwrite="true" verbose="true">
-									<fileset dir="target/scripts">
-										<patternset id="scriptfiles">
-											<include name="daemonize" />
-											<include name="loadResultsD" />
-											<include name="recoverResultsD" />
-											<include name="checkJobsD" />
-											<include name="piseEval" />
-											<include name="userTgAllocation" />
-											<include name="userCanSubmit" />
-											<include name="taskInspector" />
-											<include name="importTgusage" />
-											<include name="tgusage.sh" />
-											<include name="convertEncoding.sh" />
-											<include name="userDelete" />
-											<include name="sdkrun" />
-											<include name="submitJobD" />
-											<include name="updateLastLogin" />
-											<include name="mailer.py" />
-										</patternset>
-									</fileset>
-								</copy>
-
-								<chmod  perm="u+x" verbose="true">
-									<fileset dir="${env.SDK_VERSIONS}"> <patternset refid="scriptfiles"/> </fileset>
-								</chmod>
-
-								<copy	file="target/sdk-2.0-jar-with-dependencies.jar"
-										todir="${env.SDK_VERSIONS}" 
-										flatten="true" overwrite="true" verbose="true"/>
-
-							</tasks>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
 					</execution>
 				</executions>
 			</plugin>
@@ -139,7 +108,7 @@
 				<version>2.4</version>
 				<executions>
 					<execution>
-						<id>copy-scripts</id>
+						<id>copy-resources</id>
 						<phase>validate</phase>
 						<goals>
 							<goal>copy-resources</goal>
@@ -152,38 +121,14 @@
 									<filtering>true</filtering>
 								</resource>
 							</resources>              
+							<filters>
+		    					<filter>${basedir}/properties/${mvn.property.file}</filter>
+							</filters>
 						</configuration>            
 					</execution>
 				</executions>
 			</plugin>
-
-
-			<!-- 
-				Generate code from pisexml.  Note that clean does not remove the generated code  
-				but rebuilding does via the build.xml file.
-			-->
-			<plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.0.1</version>
-                <executions>
-                    <execution>
-                        <id>code-generation</id>
-                        <goals><goal>exec</goal></goals>
-                        <phase>generate-resources</phase>
-                        <configuration>
-                            <executable>ant</executable>
-                            <arguments>
-                                <argument>-f</argument>
-                                <argument>${basedir}/src/main/codeGeneration/build.xml</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
 		</plugins>
-
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
@@ -191,13 +136,38 @@
 			</resource>
 		</resources>
 		<filters>
-			<filter>${filter.file.path}</filter>
+		    <filter>${basedir}/properties/${mvn.property.file}</filter>
 		</filters>
-
-
 	</build>
-
+	<repositories>
+		<!-- log into maven@billiards and start apache if needed by running 
+		~maven/apache_webserver/bin/apachectl start.  Password is the usual cac... -->
+		<repository>
+			<id>internal</id>
+			<name>Maven 2 Internal Repository</name>
+			<url>http://billiards.sdsc.edu:9999/maven2</url>
+		</repository>
+		<repository>
+			<id>central</id>
+			<name>Default Maven2 Repository</name>
+			<url>http://repo1.maven.org/maven2</url>
+		</repository>
+		<repository>
+			<id>new-central</id>
+			<name>Default Maven2 Repository</name>
+			<url>http://repo.maven.apache.org/maven2</url>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<!--
+		<pluginRepository>
+			<id>maven2-repository.dev.java.net</id>
+			<url>https://maven2-repository.dev.java.net/nonav/repository</url>
+		</pluginRepository>
+		-->
+	</pluginRepositories>
 	<dependencies>
+
 		<!-- To support sending email using Lucie's emailbean -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -219,6 +189,12 @@
 			<scope>test</scope>
 		</dependency>
 		<!-- End Test dependencies -->
+		<!-- SGE Drmaa java library  -->
+		<dependency>
+			<groupId>org.ggf</groupId>
+			<artifactId>drmaa</artifactId>
+			<version>0.5</version>
+		</dependency>
 		<!-- SSH and SCP functionality -->
 		<dependency>
 			<groupId>com.trilead</groupId>
@@ -339,5 +315,16 @@
 			<version>2.0.6</version>
 		</dependency>
 
+
+
+
+		<!-- End Globus -->
+
+
+
+
+
 	</dependencies>
+	<!-- End database dependencies -->
+
 </project>

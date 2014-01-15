@@ -6,7 +6,7 @@
 	<!-- BEGIN APPENDER: DAILY ROLLING FILE APPENDER (sdk_file) -->
 	<!-- Note that including the %L for location info (line numbers) is supposedly very slow, but I think we need it at this point. -->
 	<appender name="file" class="org.apache.log4j.DailyRollingFileAppender">
-		<param name="File" value="${logs}/checkJobs.log"/>
+		<param name="File" value="${process_worker_logs}/checkJobs.log"/>
 		<param name="DatePattern" value="'.'yyyy-MM-dd"/>
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%-20.20d{MMM dd yyyy HH:mm:ss} [%-6.6t] %-5.5p - %25.25c{1}:%-5.5L %x | %m%n"/>

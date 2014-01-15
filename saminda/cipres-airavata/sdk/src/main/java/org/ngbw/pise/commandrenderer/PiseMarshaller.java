@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -15,8 +14,6 @@ import javax.xml.bind.Unmarshaller;
 
 import org.ngbw.pise.commandrenderer.pise.Attributes;
 import org.ngbw.pise.commandrenderer.pise.Code;
-import org.ngbw.pise.commandrenderer.pise.Ctrl;
-import org.ngbw.pise.commandrenderer.pise.Ctrls;
 import org.ngbw.pise.commandrenderer.pise.Filenames;
 import org.ngbw.pise.commandrenderer.pise.Flist;
 import org.ngbw.pise.commandrenderer.pise.Format;
@@ -48,17 +45,6 @@ public class PiseMarshaller {
 	private Set<String> hiddenSet = new HashSet<String>();
 	private Set<String> outfileSet = new HashSet<String>();
 	private Set<String> resultSet = new HashSet<String>();
-
-	public static class Control
-	{
-		public Control(String perl, String message)
-		{
-			this.perl = perl;
-			this.message = message;
-		}
-		public String perl;
-		public String message;
-	}
 
 	public PiseMarshaller(InputStream piseXMLIs) {
 		init(piseXMLIs);
@@ -187,219 +173,191 @@ public class PiseMarshaller {
 		return result;
 	}
 
-	/*
-		Same comment as for getFormat applies here - we are expecting perl code only.
-	*/
-	public List<Control> getCtrl(String parameterName) 
-	{
+	/**
+	 * Find the Group in the PiseXML for parameterName
+	 * @param parameterName
+	 * @return group
+	 */
+	public String getGroup(String parameterName) {
+
+		String result = null;
 		Parameters parameters = pise.getParameters();
-		Ctrls ctrls = (Ctrls) getRecursive(parameters, parameterName, "Ctrls");
-		if (ctrls == null)
-		{
-			return null;
+
+		Group group = (Group) getRecursive(parameters, parameterName, "Group");
+		if (group != null) {
+
+			result = group.getContent();
+		} else {
+			// group dosen't exist or Group is empty <group/>
 		}
-		List<Control> controls = new ArrayList<Control>();
-		for (Ctrl c : ctrls.getCtrl())
-		{
-			String perl;
-			String message;
-			List<?> languageAndCode = c.getLanguageAndCode();
-			if (languageAndCode.size() > 1) 
-			{
-				Code code = (Code) languageAndCode.get(1);
-				perl = code.getContent();
-				message = c.getMessage().getContent();
-				controls.add(new Control(perl, message));
-			}
-		}
-		return controls;
+		return result;
+
 	}
 
-		/**
-		 * Find the Group in the PiseXML for parameterName
-		 * @param parameterName
-		 * @return group
-		 */
-		public String getGroup(String parameterName) {
+	/**
+	 * Find the Type in the PiseXML for parameterName
+	 * @param parameterName
+	 * @return type
+	 */
+	public String getType(String parameterName) {
 
-			String result = null;
-			Parameters parameters = pise.getParameters();
+		String result = null;
+		Parameters parameters = pise.getParameters();
 
-			Group group = (Group) getRecursive(parameters, parameterName, "Group");
-			if (group != null) {
+		Parameter param = (Parameter) getRecursive(parameters, parameterName,
+				"Type");
+		if (param != null) {
 
-				result = group.getContent();
-			} else {
-				// group dosen't exist or Group is empty <group/>
-			}
-			return result;
+			result = param.getType();
+		}
+
+		return result;
+	}
+
+	/**
+	 * Find if the parameter is the command 
+	 * @param parameterName
+	 * @return isCommand
+	 */
+	public String getIsCommand(String parameterName) {
+
+		String result = null;
+		Parameters parameters = pise.getParameters();
+
+		Parameter param = (Parameter) getRecursive(parameters, parameterName,
+				"iscommand");
+		if (param != null) {
+
+			result = param.getIscommand();
+		}
+
+		return result;
+	}
+
+	/**
+	 * Find if the parameter is hidden from the user
+	 * @param parameterName
+	 * @return hidden
+	 */
+	public String getIsHidden(String parameterName) {
+
+		String result = null;
+		Parameters parameters = pise.getParameters();
+
+		Parameter param = (Parameter) getRecursive(parameters, parameterName,
+				"ishidden");
+		if (param != null) {
+
+			result = param.getIshidden();
+		}
+
+		return result;
+	}
+
+	/**
+	 * Find the isMandatory value in the PiseXML for parameterName
+	 * @param parameterName
+	 * @return mandatory
+	 */
+	public String getIsMandatory(String parameterName) {
+
+		String result = "false";
+		Parameters parameters = pise.getParameters();
+
+		Parameter param = (Parameter) getRecursive(parameters, parameterName,
+				"ismandatory");
+		if (param != null) {
+			result = param.getIsmandatory();
 
 		}
 
-		/**
-		 * Find the Type in the PiseXML for parameterName
-		 * @param parameterName
-		 * @return type
-		 */
-		public String getType(String parameterName) {
+		return result;
+	}
 
-			String result = null;
-			Parameters parameters = pise.getParameters();
+	/**
+	 * Find the high level Command in the Pise XML 
+	 * @return command
+	 */
+	public String getCmd() {
 
-			Parameter param = (Parameter) getRecursive(parameters, parameterName,
-					"Type");
-			if (param != null) {
+		return pise.getCommand().getContent();
+	}
 
-				result = param.getType();
-			}
+	/**
+	 * Find the Separator in the PiseXML for parameterName
+	 * A separator is used for lists with multiple choices 
+	 * @param parameterName
+	 * @return separator
+	 */
+	public String getSeparator(String parameterName) {
 
-			return result;
+		String result = null;
+		Parameters parameters = pise.getParameters();
+
+		Separator separator = (Separator) getRecursive(parameters,
+				parameterName, "Separator");
+		if (separator != null) {
+
+			result = separator.getContent();
 		}
 
-		/**
-		 * Find if the parameter is the command 
-		 * @param parameterName
-		 * @return isCommand
-		 */
-		public String getIsCommand(String parameterName) {
+		return result;
+	}
 
-			String result = null;
-			Parameters parameters = pise.getParameters();
+	/**
+	 * @param parameterName
+	 * @return parameterFileContent
+	 */
+	public String getParamFile(String parameterName) {
 
-			Parameter param = (Parameter) getRecursive(parameters, parameterName,
-					"iscommand");
-			if (param != null) {
+		String result = null;
+		Parameters parameters = pise.getParameters();
 
-				result = param.getIscommand();
-			}
+		Paramfile paramfile = (Paramfile) getRecursive(parameters,
+				parameterName, "Paramfile");
+		if (paramfile != null) {
 
-			return result;
+			result = paramfile.getContent();
 		}
 
-		/**
-		 * Find if the parameter is hidden from the user
-		 * @param parameterName
-		 * @return hidden
-		 */
-		public String getIsHidden(String parameterName) {
+		return result;
+	}
 
-			String result = null;
-			Parameters parameters = pise.getParameters();
+	/**
+	 * @param parameterName
+	 * @return filenames
+	 */
+	public String getFileNames(String parameterName) {
 
-			Parameter param = (Parameter) getRecursive(parameters, parameterName,
-					"ishidden");
-			if (param != null) {
+		String result = null;
+		Parameters parameters = pise.getParameters();
 
-				result = param.getIshidden();
-			}
+		Filenames filenames = (Filenames) getRecursive(parameters,
+				parameterName, "Filenames");
+		if (filenames != null) {
 
-			return result;
+			result = filenames.getContent();
 		}
 
-		/**
-		 * Find the isMandatory value in the PiseXML for parameterName
-		 * @param parameterName
-		 * @return mandatory
-		 */
-		public String getIsMandatory(String parameterName) {
+		return result;
+	}
 
-			String result = "false";
-			Parameters parameters = pise.getParameters();
+	/**
+	 * Find the Precond in the PiseXML for parameterName
+	 * @param parameterName
+	 * @return precondition
+	 */
+	public String getPrecond(String parameterName) {
 
-			Parameter param = (Parameter) getRecursive(parameters, parameterName,
-					"ismandatory");
-			if (param != null) {
-				result = param.getIsmandatory();
+		String result = null;
+		Parameters parameters = pise.getParameters();
 
-			}
+		Precond precond = (Precond) getRecursive(parameters, parameterName,
+				"Precond");
+		if (precond != null) {
+			List<?> languageAndCode = precond.getLanguageAndCode();
 
-			return result;
-		}
-
-		/**
-		 * Find the high level Command in the Pise XML 
-		 * @return command
-		 */
-		public String getCmd() {
-
-			return pise.getCommand().getContent();
-		}
-
-		/**
-		 * Find the Separator in the PiseXML for parameterName
-		 * A separator is used for lists with multiple choices 
-		 * @param parameterName
-		 * @return separator
-		 */
-		public String getSeparator(String parameterName) {
-
-			String result = null;
-			Parameters parameters = pise.getParameters();
-
-			Separator separator = (Separator) getRecursive(parameters,
-					parameterName, "Separator");
-			if (separator != null) {
-
-				result = separator.getContent();
-			}
-
-			return result;
-		}
-
-		/**
-		 * @param parameterName
-		 * @return parameterFileContent
-		 */
-		public String getParamFile(String parameterName) {
-
-			String result = null;
-			Parameters parameters = pise.getParameters();
-
-			Paramfile paramfile = (Paramfile) getRecursive(parameters,
-					parameterName, "Paramfile");
-			if (paramfile != null) {
-
-				result = paramfile.getContent();
-			}
-
-			return result;
-		}
-
-		/**
-		 * @param parameterName
-		 * @return filenames
-		 */
-		public String getFileNames(String parameterName) {
-
-			String result = null;
-			Parameters parameters = pise.getParameters();
-
-			Filenames filenames = (Filenames) getRecursive(parameters,
-					parameterName, "Filenames");
-			if (filenames != null) {
-
-				result = filenames.getContent();
-			}
-
-			return result;
-		}
-
-		/**
-		 * Find the Precond in the PiseXML for parameterName
-		 * @param parameterName
-		 * @return precondition
-		 */
-		public String getPrecond(String parameterName) {
-
-			String result = null;
-			Parameters parameters = pise.getParameters();
-
-			Precond precond = (Precond) getRecursive(parameters, parameterName,
-					"Precond");
-			if (precond != null) {
-				List<?> languageAndCode = precond.getLanguageAndCode();
-
-				if (languageAndCode.size() > 1)
+			if (languageAndCode.size() > 1)
 			//this Means it has at leat one langauge and  one code
 			{
 				Code code = (Code) languageAndCode.get(1);

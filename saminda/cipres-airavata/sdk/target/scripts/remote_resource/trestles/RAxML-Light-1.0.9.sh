@@ -1,5 +1,6 @@
 #!/bin/bash
-RAXMLSERIAL=/home/diag/opt/raxml/7.4.2/bin/raxmlHPC
+# RAXMLSERIAL=/home/diag/opt/raxml/7.4.2/bin/raxmlHPC
+RAXMLSERIAL=/opt/raxml/bin/raxmlHPC
 PARSIMONATOR=/home/pfeiffer/Parsimonator-1.0.2/parsimonator-SSE3
 RAXMLLIGHT=/home/pfeiffer/RAxML-Light-1.0.9/raxmlLight-PTHREADS
 bsearches=100
@@ -443,7 +444,8 @@ while [ "$1" ] ; do
         shift; EMAIL=$(cat <<-EOF
         #PBS -m ae
         #PBS -M $1
-EOF)
+EOF
+)
         ;;
     --submit)
         submit=1;;

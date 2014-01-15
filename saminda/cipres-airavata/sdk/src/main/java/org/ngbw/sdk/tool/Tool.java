@@ -15,7 +15,6 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 import java.util.Properties;
 import java.util.Set;
 import java.util.Date;
@@ -105,12 +104,14 @@ public class Tool {
 		return toolId;
 	}
 
-	public CommandRenderer getCommandRenderer()
+	public RenderedCommand renderCommand(Map<String, String> parameters)
 	{
 		String className = toolConfig.getCommandRendererClassName();
 
 		try {
-			return (CommandRenderer) Class.forName(className).newInstance();
+			CommandRenderer cr = (CommandRenderer) Class.forName(className).newInstance();
+
+			return cr.render(toolConfig.getConfigFileURL(), parameters);
 		}
 		catch (InstantiationException e) {
 			throw new RuntimeException("No argument constructor missing for " + className, e);
@@ -121,36 +122,6 @@ public class Tool {
 		catch (ClassNotFoundException e) {
 			throw new RuntimeException("ClassNotFoundException for " + className, e);
 		}
-	}
-
-
-	public RenderedCommand renderCommand(Map<String, String> parameters)
-	{
-		CommandRenderer cr = getCommandRenderer(); 
-		return cr.render(toolConfig.getConfigFileURL(), parameters);
-	}
-
-	/*
-		Throws JobValidationException if there's a problem with the parameters.
-		Otherwise, returns the command line.
-	*/
-	public String validateCommand(Map<String, String> parameters, Set<String> inputFileParams)
-	{
-		/*
-			CommandRenderer.validate() calls CommandRenderer.render() which modifies the parameter 
-			map so we need to give it a copy of the map, not the actual map that's passed to us.
-			We need the names of the input file parameters that the user entered to generate the full command line.
-		*/
-		Map<String, String> parametersCopy = new HashMap<String, String>(parameters.size()); 
-		parametersCopy.putAll(parameters);
-		for (String param : inputFileParams)
-		{
-			parametersCopy.put(param, "");
-		}
-
-		CommandRenderer cr = getCommandRenderer(); 
-		RenderedCommand rc = cr.validate(toolConfig.getConfigFileURL(), parametersCopy);
-		return StringUtils.join(rc.getCommand(), " "); 
 	}
 
 
@@ -177,7 +148,7 @@ public class Tool {
 			} else
 			{
 				chargeNumber = (user.getAccount(accountGroup));
-				//log.debug("returning user chargeNumber " + chargeNumber);
+				log.debug("returning user chargeNumber " + chargeNumber);
 			}
 		}
 		return chargeNumber;

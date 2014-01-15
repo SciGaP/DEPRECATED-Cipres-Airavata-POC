@@ -3,12 +3,12 @@
 HOST=`hostname`
 COMMAND=org.ngbw.utils.LoadResults
 
-STDOUT=stdout=${logs}/loadResultsD_daemon.log
+STDOUT=stdout=${process_worker_logs}/loadResultsD_daemon.log
 SUBMITTER=submitter=${portal.url}
 LOG=log4j.configuration=loadResults_log4j.xml
 PROPERTIES="-D$SUBMITTER -D$LOG -D$STDOUT"
 
-RUN="python $SDK_VERSIONS/daemonize $PROPERTIES $COMMAND"
+RUN="python $SDK_VERSIONS/current/daemonize $PROPERTIES $COMMAND"
 
 PS="ps aux -ww"
 

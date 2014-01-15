@@ -106,10 +106,7 @@ def upload_files(source_dir):
 
             os.chdir(user_archive_dir)
 
-            if os.path.getsize(archive_file) <= 2147483648:
-                call_swift("upload", "-c", username, archive_file)
-            else:
-                call_swift("upload", "-S", "2147483648", username, archive_file)
+            call_swift("upload", "-c", username, archive_file)
 
             if new_user_container:
                 new_containers.append("Directory %s created for user %s" % (username, user_email))

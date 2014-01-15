@@ -3,9 +3,10 @@
 HOST=`hostname`
 COMMAND=org.ngbw.utils.CheckJobs
 
+STDOUT=stdout=/tmp/checkJobs_daemon.log
 SUBMITTER=submitter=http://localhost:8080/web
 LOG=log4j.configuration=checkJobs_log4j.xml
-PROPERTIES="-D$SUBMITTER -D$LOG"
+PROPERTIES="-D$SUBMITTER -D$LOG -D$STDOUT"
 
 RUN="python $SDK_VERSIONS/current/daemonize $PROPERTIES $COMMAND"
 

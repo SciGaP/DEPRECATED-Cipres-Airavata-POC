@@ -4,9 +4,7 @@ package org.ngbw.examples;
 import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.ngbw.sdk.Workbench;
@@ -76,22 +74,8 @@ public class TestJob
 			FileUtils.writeFile(tmpFile, data);
 			inputFiles.put(name, tmpFile);
 		}
-
-		/*
-			I modified Job.submit to make 4th param Map<String, List<String>> so that we could
-			handle pisexml "List" parameters, but haven't really updated this code to handle it.
-			As a temporary workaround I'm just taking our testParam and changing the type of
-			map below.  The caveat is that this won't correctly handle List type parameters in pise files.
-		*/
-		Map<String, List<String>> toolParameters = new HashMap<String, List<String>>(testParam.size());
-		for (String key : testParam.keySet())
-		{
-			ArrayList<String> al = new ArrayList<String>(1);
-			al.add(testParam.get(key));
-			toolParameters.put(key, al);
-		}
 		JobMetadata md = new JobMetadata();
-		String jh = Job.submit(user, md, toolId, toolParameters, inputFiles, false);
+		String jh = Job.submit(user, md, toolId, testParam, inputFiles);
 		return jh;
 	}
 

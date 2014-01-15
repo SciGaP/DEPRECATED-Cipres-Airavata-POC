@@ -9,5 +9,4 @@ echo "CIPRES_NP=$CIPRES_NP"
 echo "running:"
 echo " mpirun -hostfile $PBS_NODEFILE -np $CIPRES_NP  raxmlHPC-HYBRID $*"
 
-mpirun -hostfile $PBS_NODEFILE -np $CIPRES_NP  raxmlHPC-HYBRID $*
-
+ibrun -n ${CIPRES_NP} --tpp ${CIPRES_THREADSPP} raxmlHPC-HYBRID -T ${CIPRES_THREADSPP} $*

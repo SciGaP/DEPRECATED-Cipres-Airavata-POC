@@ -6,6 +6,10 @@ import subprocess
 
 # I didn't implement getProperties, found it somewhere, just reads a java style
 # properties file into a dictionary.
+#Note: Fixed by Bryan Lunt <blunt@sdsc.edu> on Oct, 28, 2013 to handle properly escaped spaces in properties files.
+import re
+__property_separator_regex=""":|=|(?<=[^\\\\]) """
+__property_regex = re.compile(__property_separator_regex)
 def getProperties(filename):
     propFile= file( filename, "rU" )
     propDict= dict()
@@ -15,9 +19,12 @@ def getProperties(filename):
             continue
         if propDef[0] in ( '!', '#' ):
             continue
-        punctuation= [ propDef.find(c) for c in ':= ' ] + [ len(propDef) ]
-        found= min( [ pos for pos in punctuation if pos != -1 ] )
-        name= propDef[:found].rstrip()
+        separator_location = __property_regex.search(propDef)
+	if separator_location is not None:
+		found = separator_location.start()
+	else:
+		found = len(propDef)
+	name= propDef[:found].rstrip().replace('\\ ', ' ')
         value= propDef[found:].lstrip(":= ").rstrip()
         propDict[name]= value
     propFile.close()
@@ -53,7 +60,7 @@ account = "TG-DEB090011"
 # account = "ddp116"
 scheduler_file = "scheduler.conf"
 
-email = "terri@sdsc.edu"
+email = "terri@sdsc.edu,mmiller@sdsc.edu"
 
 jobname = ""
 runfile = "./batch_command.run"
@@ -100,20 +107,23 @@ def schedulerInfo(properties, tooltype):
     # Create retval and set values we just determined for runtime and queue.  Set defaults for some
     # if the other retvals which may be overriden below.  Note that for serial jobs we'll need to set nodes=1
     # and ppn=1 in the job run script.
-    retval =    {"runtime":runtime, "queue":queue, "threads_per_process":int(properties.get("threads_per_process", 0)),
-                 "nodes": int(properties.get("nodes", 1)), "ppn": int(1)}
-
+    retval =    {"runtime":runtime, "queue":queue, "threads_per_process":int(properties.get("threads_per_process", 1)),
+                 "nodes": int(properties.get("nodes", 1)), "ppn": int(1),
+				 "mpi_processes":int(properties.get("mpi_processes",1)),
+				 "node_exclusive":int(properties.get("node_exclusive",0))
+				 }
+    
     if properties.get("jobtype") == "direct":
         retval["is_direct"]  = True 
         return retval
     else:
         retval["is_direct"] = False
-
+    
     if properties.get("jobtype", "")  == "mpi":
         retval["is_mpi"]  = True 
     else:
         retval["is_mpi"] = False 
-
+    
     if (retval["is_mpi"] == True):
         # Some of our pise xml interfaces just specify the number of mpi processes they want. 
         # We round it down to a multiple of the number of cores per node and request enough nodes
@@ -135,7 +145,7 @@ def schedulerInfo(properties, tooltype):
             retval["nodes"] = int(properties.get("nodes", 1));
             retval["mpi_processes"] = int(properties.get("mpi_processes", 1));
             retval["ppn"] = int(retval["mpi_processes"]) / int(retval["nodes"]);
-
+    
         # Special case for garli.  Run small jobs in shared queue.
         if (tooltype == "garli") and (retval["mpi_processes"] < cores_per_node):
             retval["queue"] = shared_queue
@@ -151,8 +161,11 @@ def schedulerInfo(properties, tooltype):
             if runtime > shared_queue_limit:
                 runtime = shared_queue_limit
                 retval["runtime"] = runtime
-
-
+    
+    if(retval["node_exclusive"] == 1):
+        retval["ppn"] = cores_per_node
+    
+    
     return retval
 
 def log(filename, message):

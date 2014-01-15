@@ -1,7 +1,11 @@
 #!/bin/bash
 
-# Can't run module command (I think it's a bash fn) without sourcing bashrc
-source $HOME/.bashrc
+# gordon_submit.py sources /etc/profile.d/modules.sh and sets MODULEPATH
+# so we don't need to source .bashrc to get module load to work.  In fact
+# source'ing .bashrc or modules.sh here would clobber MODULEPATH set in
+# gordon_submit.py.  TODO: make the same change to trestle's submit.py 
+and all the tool wrappers.  
+# source $HOME/.bashrc
 
 module load mrbayes
 paramfile=$1
@@ -20,5 +24,11 @@ echo " mpirun -hostfile $PBS_NODEFILE -np $CIPRES_NP mb-hybrid < $paramfile"
 # Don't allow files greater than 8 gig (specified in 1024 byte blocks)
 ulimit -f 8388608 
 
-mpirun -hostfile $PBS_NODEFILE -np $CIPRES_NP mb-hybrid < $paramfile
+#OpenMPI 1.6.5 is not compatible with the machine files that torque creates by default anymore.
+uniqueNodefile=$(mktemp /tmp/uniqNodefileXXX)
+uniq -c $PBS_NODEFILE | awk '{print $2" slots="$1;}' > ${uniqueNodefile}
+
+export OMP_NUM_THREADS=${CIPRES_THREADSPP}
+
+mpirun --machinefile ${uniqueNodefile} -n ${CIPRES_NP} -x OMP_NUM_THREADS --bynode  mb-hybrid < $paramfile
 

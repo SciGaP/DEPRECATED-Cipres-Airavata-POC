@@ -1,9 +1,5 @@
 #!/bin/bash
 
-# Can't run module command (I think it's a bash fn) without sourcing bashrc
-source $HOME/.bashrc
-source /etc/profile.d/modules.sh
-export MODULEPATH=/home/diag/jpg/modulefiles/gordon/applications:$MODULEPATH
 export LD_LIBRARY_PATH=/home/pfeiffer/BEAGLE/lib:$LD_LIBRARY_PATH
 
 

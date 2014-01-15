@@ -10,10 +10,12 @@
     Install:
         Build cipres as usual and copy deleteUserData.py, mailer.py and deleteWarning1.txt from 
         sdk/scripts to ~/scripts. If not already present, create db_password.txt in ~/scripts with 
-        3 entries:
+        5 entries:
         db=
         username=
         password=
+		host=
+		port=
 
         You may need to modify deleteWarning1.txt - this is the email that will be sent to users.  
         You may also need to modify deleteUserData.py to change the from and cc email addresses, the subject of 
@@ -88,12 +90,12 @@ import traceback
 conn = None
 preferencePrefix = "DELETE_USER"
 preferenceDeleteUserDate = preferencePrefix + "_DATE"
-limit = 365
-gracePeriod = 30
+limit = 365 
+gracePeriod = 30 
 emailSubject = "URGENT Usage Notice from the Cipres Science Gateway"
 emailContentsFile = "deleteWarning1.txt"
-fromaddr = "terri@sdsc.edu"
-ccaddr = "terri.liebowitz@gmail.com"
+fromaddr = "mmiller@sdsc.edu"
+ccaddr = "terri@sdsc.edu"
 
 
 def clearWarningsForRecentLogins():
@@ -278,11 +280,11 @@ def issue2ndWarnings():
 
 def sdkUserDelete(username):
     """
-        Let the sdk handle the deletion so that we defer to it's concept of a user's "tasks" and "data" which
+        Let the sdk handle the deletion so that we defer to its concept of a user's "tasks" and "data" which
         consist of rows in multiple related tables AND flat files.  Execute the command: 
         "userDelete <username> data" to delete the user's tasks and data, but not the account.
     """
-    cmd = "userDelete %s data" % username
+    cmd = "userDelete \'%s\' data" % username
     # print "Running %s" % cmd
     p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     outerr = p.communicate()
@@ -350,7 +352,7 @@ def main(argv=None):
         properties[s[0].strip()] = s[1].strip()
     pf.close()
     
-    conn = pymysql.connect(host="mysql.sdsc.edu", port=3316, user=properties["username"], 
+    conn = pymysql.connect(host=properties["host"], port=int(properties["port"]), user=properties["username"], 
         passwd=properties["password"], db=properties["db"])
     # print conn
 

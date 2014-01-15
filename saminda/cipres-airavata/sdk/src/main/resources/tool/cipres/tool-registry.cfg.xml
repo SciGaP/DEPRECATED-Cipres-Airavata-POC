@@ -3,7 +3,7 @@
 	<ToolResources>
 		<ToolResource id="trestles" type="GLOBUS" 
 			class="org.ngbw.sdk.tool.DefaultToolResource"
-			filehandler="${trestles.filehandler}"
+			filehandler="org.ngbw.sdk.tool.LocalFileHandler" 
 			processworker="org.ngbw.sdk.tool.SSHExecProcessWorker">
 			<Parameters>
 				<Parameter key="runner" value="org.ngbw.sdk.common.util.GsiSSHProcessRunner" />
@@ -21,7 +21,7 @@
 
 		<ToolResource id="gordon" type="GLOBUS" 
 			class="org.ngbw.sdk.tool.DefaultToolResource"
-			filehandler="${gordon.filehandler}"
+			filehandler="org.ngbw.sdk.tool.LocalFileHandler" 
 			processworker="org.ngbw.sdk.tool.SSHExecProcessWorker">
 			<Parameters>
 				<Parameter key="runner" value="org.ngbw.sdk.common.util.GsiSSHProcessRunner" />
@@ -102,6 +102,17 @@
 				<OutputParameters>
 				</OutputParameters>
 			</Tool> -->
+			
+			<Tool id="DPPDIV" 
+				name="Estimating species divergence times and lineage-specific substitution rates on a fixed topology run on XSEDE"
+				configfile="pisexml/dppdiv.xml" toolresource="gordon"
+				commandrenderer="org.ngbw.pise.commandrenderer.PiseCommandRenderer">
+				<InputParameters>
+					<InputParameter id="infile_" entityType="UNKNOWN" dataType="UNKNOWN" dataFormat="UNKNOWN" iomode="FILE" />
+				</InputParameters>
+				<OutputParameters>
+				</OutputParameters>
+			</Tool> 
 			
 			<!--
 			<Tool id="GARLI_LONESTAR" 
@@ -292,6 +303,7 @@
 
 		<ToolGroup id="WEB" isdefault="1">
 
+			<!--
 			<Tool id="SLEEP" 
 				name="For testing sshprocessworker on billiards"
 				configfile="pisexml/sleep.xml" toolresource="${tool.resource.host}"
@@ -302,6 +314,7 @@
 				<OutputParameters>
 				</OutputParameters>
 			</Tool>
+			-->
 
 			<!--
 				To do: make tool registry read individual tool files in addition to this file so that

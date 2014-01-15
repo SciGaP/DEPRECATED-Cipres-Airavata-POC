@@ -1,35 +1,45 @@
 #!/usr/bin/env python
 import test_lib as lib
-# import lib
 import sys
 import os
 
 def main(argv=None):
     """
     Usage is:
-    submit.py [id=<chargecode>] <url> <commandline> 
-    Run from the working dir of the job which must contain (in additoin
+    submit.py [--account <chargecode>] [--url <url>] -- <commandline> 
+    Run from the working dir of the job which must contain (in addition
     to the job files) a file named scheduler.conf with scheduler properties for the job.
-
-    id=<chargecode> if present gives the project to charge the job to.
-    Url is url of the submitting website including taskid parameter.
-
+    
+    <chargecode>, if present, gives the project to charge the job to.
+    Url is the url of the submitting website including the taskid parameter.
+    
     Returns 0 with "jobid=<jobid>" on stdout if job submitted ok
     Returns 1 with multiline error message on stdout if error.
     Returns 2 for the specific error of queue limit exceeded.
     """
-    if argv is None:
-        argv=sys.argv
-
-    splits = argv[1].split("=", 1)
-    if (len(splits) == 2 and splits[0] == "id"):
-        account = splits[1]
-        url = argv[2]
-        cmdline = argv[3:]
-    else:
-        account = lib.account 
-        url = argv[1]
-        cmdline = argv[2:]
+    
+    #COMMAND LINE PARSING
+    import argparse
+    parser = argparse.ArgumentParser()
+    
+    parser.add_argument('--account', metavar="ACCOUNT", type=str, default=lib.account,
+                    help="The account string to use when submitting jobs. Default is read from config files.")
+    
+    parser.add_argument('--url', metavar="URL", dest="URL", type=str,
+                    help="Notification URL")
+    
+    try:
+        cmdline_options, cmdline = parser.parse_known_args(argv)
+        cmdline = cmdline[1:] if not ('--' in cmdline) else cmdline[cmdline.index('--')+1:]
+    except Exception as e:
+        print "There was a problem submitting your job"
+        print e
+        sys.exit(1)
+    
+    account = cmdline_options.account
+    url     = cmdline_options.URL
+    #cmdline as an array (and already set)
+    
     tooltype = lib.getToolType(cmdline)
 
     scheduler_properties = lib.getProperties("scheduler.conf")
@@ -118,8 +128,9 @@ export CIPRES_NP=%d
 echo Job finished at `date` > done.txt
 """ % (url, 
         int(scheduler_info["threads_per_process"]), 
-        int(scheduler_info["ppn"]) * int(scheduler_info["nodes"]),
+        int(scheduler_info["mpi_processes"]),
         lib.cmdfile)
+	
     rfile.write(text)
 
     if (useLocalDisk):

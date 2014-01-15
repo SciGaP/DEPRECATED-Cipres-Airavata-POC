@@ -3,7 +3,7 @@
 HOST=`hostname`
 COMMAND=org.ngbw.utils.SubmitJob
 
-STDOUT=stdout=${logs}/submitJobD_daemon.log
+STDOUT=stdout=${process_worker_logs}/submitJobD_daemon.log
 SUBMITTER=submitter=${portal.url}
 LOG=log4j.configuration=submitJob_log4j.xml
 
@@ -15,7 +15,7 @@ LOG=log4j.configuration=submitJob_log4j.xml
 
 PROPERTIES="-D$SUBMITTER -D$LOG -D$JULI -D$STDOUT"
 
-RUN="python $SDK_VERSIONS/daemonize $PROPERTIES $COMMAND"
+RUN="python $SDK_VERSIONS/current/daemonize $PROPERTIES $COMMAND"
 
 PS="ps aux -ww"
 

@@ -2,25 +2,24 @@
 
 # Use this instead of loadResultsD/loadResults when you want to make a single
 # pass thru the running tasks db table to get results for jobs where there was
-# a previous failed attempt.  Only considers tasks who's status is ERROR_GETTING_RESULTS,
-# so you can manually changes a task's status to that if needed.  Eg:
-# "update running_tasks set status = 'ERROR_GETTING_RESULTS' where task_id = 7335'.
+# a previous failed attempt.  Only considers tasks who's RunningTask table entry
+# has status = TERMINATED (like loadResults) and retry > 1, meaning that we've
+# already tried once.  This program will increment retry in the RunningTask record if
+# there's an error.  Maximum retries is determined by the loadResults.retries property
+# and code in sdk/tool/TaskMonitor.java.
 #
-# Only considers tasks that were submitted less than AGE days ago.  Set age=0 to disregard age. 
-#
-# Looks for the working directory in the normal location (which is recorded in the running_task
-# record), as well as in the FAILED and ARCHIVED subdirs.
+# Looks for the working directory in the normal location as well as in the 
+# FAILED and ARCHIVED subdirs.
 #
 # Can add a -Dlocal=path argument to the command line to look in a local filesystem instead
-# of the directory where the task was run on a remote host.
+# of the directory where the task was run on a remote host.  NOT IMPLEMENTED.
 
 HOST=`hostname`
 COMMAND=org.ngbw.utils.LoadResults
 
 SUBMITTER=submitter=http://localhost:8080/web
 LOG=log4j.configuration=recoverResults_log4j.xml
-AGE=30
-PROPERTIES="-D$SUBMITTER -D$LOG -Drecover=true -Dage=$AGE"
+PROPERTIES="-D$SUBMITTER -D$LOG -Drecover=1" 
 
 RUN="python $SDK_VERSIONS/current/daemonize $PROPERTIES $COMMAND"
 

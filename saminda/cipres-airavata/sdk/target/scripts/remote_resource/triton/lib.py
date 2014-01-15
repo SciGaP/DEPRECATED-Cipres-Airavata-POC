@@ -27,10 +27,10 @@ def getProperties(filename):
 def getToolType(commandlineString):
     return None 
     
-queues = (("small", 4320.0), )
+queues = (("hotel", 4320.0), )
 account = "cipres_test"
 scheduler_file = "scheduler.conf"
-email = "terri@sdsc.edu"
+email = "terri@sdsc.edu,mmiller@sdsc.edu"
 jobname = ""
 runfile = "./batch_command.run"
 statusfile = "./batch_command.status"
@@ -153,7 +153,7 @@ def submitJob():
     log(statusfile, "qsub output is: " + output + "\n" + 
         "======================================================================" +  "\n")
 
-    p = re.compile(r"^(\d+).triton.\S+", re.M)
+    p = re.compile(r"^(\d+).tscc.\S+", re.M)
     m = p.search(output)
     if m != None:
         jobid = m.group(0)

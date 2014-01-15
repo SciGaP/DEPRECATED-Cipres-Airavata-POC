@@ -35,6 +35,4 @@ public interface CommandRenderer {
 	 * @return renderedCommand
 	 */
 	public RenderedCommand render(URL url, Map<String, String> parameters);
-	public RenderedCommand validate(URL url, Map<String, String> parameters);
-
 }

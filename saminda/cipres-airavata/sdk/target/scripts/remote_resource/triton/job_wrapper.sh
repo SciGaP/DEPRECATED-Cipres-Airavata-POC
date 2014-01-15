@@ -8,7 +8,7 @@ SCHEDULER_FILE=scheduler.conf
 CORES_PER_NODE=8
 
 # max runtime is 72 hours, node is shared with other jobs
-SMALL_Q=small
+SMALL_Q=hotel
 SMALL_Q_RUNTIME=4320
 
 DEFAULT_JOBNAME=cipres
@@ -75,7 +75,7 @@ submit_job()
 	echo $output >> $STATUSFILE
 	echo ======================================================================================= >> $STATUSFILE
 	JOBID=$output
-	SHORT_JOBID=`echo "$output" | perl -ne 'if ( $_ =~ /(\d+)\.triton-.+/ ) { print $1; exit }'`
+	SHORT_JOBID=`echo "$output" | perl -ne 'if ( $_ =~ /(\d+)\.tscc-.+/ ) { print $1; exit }'`
 
 	# Hmm, it must have said something else.
 	if [ -z "$SHORT_JOBID" ];  then
@@ -103,7 +103,7 @@ job_finished()
 	# job info (followed by extra lines if multiple hosts are used).  Columns are:
 	# JOBID NAME USER TIME STATUS QUEUE
 	JOBID=$1
-	SHORT_JOBID=`echo "$JOBID" | perl -ne 'if ( $_ =~ /(\d+)\.triton-.+/ ) { print $1; exit }'`
+	SHORT_JOBID=`echo "$JOBID" | perl -ne 'if ( $_ =~ /(\d+)\.tscc-.+/ ) { print $1; exit }'`
 	output=`qstat $JOBID 2>&1`
 	echo "$output" >> $STATUSFILE
 

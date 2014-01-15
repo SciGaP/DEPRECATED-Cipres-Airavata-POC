@@ -51,19 +51,21 @@ def allUsage():
     global chargeNumberClause
     query = """
         select
-        job_stats.statistic_id,
-        job_stats.t_tool_id,
-        job_stats.t_jobhandle,
-        job_stats.t_username,
-        job_stats.t_email,
+        job_stats.tool_id,
+        job_stats.jobhandle,
+        job_stats.user_id,
+        users.username,
+        job_stats.email,
         tgusage.*
-        from job_stats, tgusage where
+        from job_stats, tgusage, users  where
         %s
         job_stats.resource = tgusage.resource and
         job_stats.remote_job_id = tgusage.jobid and
-        abs(datediff(job_stats.job_start_time, tgusage.submit_time)) < 2
+        job_stats.user_id = users.user_id and
+        abs(datediff(job_stats.date_submitted, tgusage.submit_time)) < 2
         order by (tgusage.submit_time)
         """ % chargeNumberClause
+    print query
     # DictCursor isn't implemented in this version of pymysql
     # cur = conn.cursor(MySQLdb.cursors.DictCursor)
     cur = conn.cursor()
@@ -77,23 +79,25 @@ def suPerUserTotal(date):
     # If a range is given it must include a start date.  End date is optional.
     if date:
         dateRange = date.split(",")
-        dateClause = " and job_stats.job_start_time >= '" + dateRange[0] + "' " 
+        dateClause = " and job_stats.date_submitted >= '" + dateRange[0] + "' " 
         if len(dateRange) > 1 and dateRange[1]:
-            dateClause = " and job_stats.job_start_time <= '" + dateRange[1] + "' " 
+            dateClause = " and job_stats.date_submitted <= '" + dateRange[1] + "' " 
     else:
         dateClause = ""
     query = """
         select
-        job_stats.t_username,
-        job_stats.t_email,
+        users.username,
+        job_stats.user_id,
+        job_stats.email,
         sum(tgusage.su)
-        from job_stats, tgusage where
+        from job_stats, tgusage, users where
         %s
         job_stats.resource = tgusage.resource and
         job_stats.remote_job_id = tgusage.jobid and
-        abs(datediff(job_stats.job_start_time, tgusage.submit_time)) < 2
+        job_stats.user_id = users.user_id and
+        abs(datediff(job_stats.date_submitted, tgusage.submit_time)) < 2
         """ % chargeNumberClause 
-    query += dateClause + " group by job_stats.t_username, job_stats.t_email"
+    query += dateClause + " group by users.username, job_stats.email"
     cur = conn.cursor()
 
     cur.execute(query)
@@ -106,15 +110,17 @@ def suPerUser():
         select
         year(tgusage.end_time),
         monthname(tgusage.end_time),
-        job_stats.t_username,
-        job_stats.t_email,
+        job_stats.user_id,
+        users.username,
+        job_stats.email,
         sum(tgusage.su)
-        from job_stats, tgusage where
+        from job_stats, tgusage, users where
         %s
         job_stats.resource = tgusage.resource and
         job_stats.remote_job_id = tgusage.jobid and
-        abs(datediff(job_stats.job_start_time, tgusage.submit_time)) < 2
-        group by year(tgusage.end_time), month(tgusage.end_time), job_stats.t_username, job_stats.t_email
+        job_stats.user_id = users.user_id and
+        abs(datediff(job_stats.date_submitted, tgusage.submit_time)) < 2
+        group by year(tgusage.end_time), month(tgusage.end_time), users.username, job_stats.email
         """ % chargeNumberClause
     cur = conn.cursor()
     cur.execute(query)
@@ -132,19 +138,19 @@ def overLimitWarning():
 
     # Find everyone who's used more than the lowest limit of sus.
     query = """
-    select job_stats.t_user_id, users.username, users.email, sum(tgusage.su)
+    select job_stats.user_id, users.username, users.email, sum(tgusage.su)
     from job_stats, tgusage, users where
     %s
     job_stats.resource = tgusage.resource and
     job_stats.remote_job_id = tgusage.jobid and
-    abs(datediff(job_stats.job_start_time, tgusage.submit_time)) < 2 and
-    job_stats.t_user_id = users.user_id and
-    job_stats.job_start_time >= '%s'
-    group by job_stats.t_user_id
+    abs(datediff(job_stats.date_submitted, tgusage.submit_time)) < 2 and
+    job_stats.user_id = users.user_id and
+    job_stats.date_submitted >= '%s'
+    group by job_stats.user_id
     having sum(tgusage.su) > %d
     """ % (chargeNumberClause, startOfPeriod, maxSusLevel0)
 
-    # print "Executing query:\n%s" % query
+    print "Executing query:\n%s" % query
 
     cur = conn.cursor()
     cur.execute(query)
@@ -217,7 +223,7 @@ def main(argv=None):
         s = line.split('=')
         properties[s[0].strip()] = s[1].strip()
     
-    conn = pymysql.connect(host="mysql.sdsc.edu", port=3316, user=properties["username"], 
+    conn = pymysql.connect(host=properties["host"], port=int(properties["port"]), user=properties["username"], 
         passwd=properties["password"], db=properties["db"])
 
     options, remainder = getopt.getopt(argv[1:], "hauwtpc:d:")

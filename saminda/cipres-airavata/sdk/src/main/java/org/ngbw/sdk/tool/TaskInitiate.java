@@ -26,7 +26,6 @@ import org.ngbw.sdk.database.StatisticsEvent;
 import org.ngbw.sdk.database.Task;
 import org.ngbw.sdk.database.TaskInputSourceDocument;
 import org.ngbw.sdk.database.User;
-import org.ngbw.sdk.api.tool.JobValidationException;
 
 
 /**
@@ -88,6 +87,7 @@ public class TaskInitiate
 			{
 				throw new DisabledResourceException(disabledMessage);
 			}
+
 			stage = TaskRunStage.QUEUE;
 
 			task.setJobHandle(getNewJobHandle(task.getToolId()));
@@ -178,12 +178,16 @@ public class TaskInitiate
 					" was restarted while the job was being submitted.  There are no automatic retries in this situation." ); 
 			}
 
-			stage = TaskRunStage.COMMANDRENDERING;
+			/*
+				For each InFile parameter, this gives us a map of parameter name to taskInputSourceDocumentID 
+				In theory this could create brand new sourceDocuments by converting format of supplied document, 
+				or whatever.
+			*/
+			parameters = convertTaskInput();
+			TaskUpdater.logProgress(task, stage, "Input data successfully checked, data valid.");
+
+
 			command = validateAndRender();
-			String msg = "Parameters are valid.  Command rendered successfully: " + StringUtils.join(command.getCommand(), ' ');
-			log.debug(msg);
-			TaskUpdater.logProgress(task, stage, msg); 
-			WorkQueue.updateWork(rt, tool, command); // add info to WorkQueue and statistics records.
 
 			// This is the only place where we could do retries, anything else would be a fatal error.
 			String jobId = stageAndRun(); 
@@ -209,22 +213,23 @@ public class TaskInitiate
 
 	private RenderedCommand validateAndRender() throws Exception
 	{
-		/*
-			For each InFile parameter, this gives us a map of parameter name to taskInputSourceDocumentID 
-			In theory this could create brand new sourceDocuments by converting format of supplied document, 
-			or whatever.  
-		*/
-		parameters = convertTaskInput();
+		
+		boolean loggedInViaIplant = Boolean.valueOf(rt.parameters().get(Tool.IPLANT));
+		stage = TaskRunStage.COMMANDRENDERING;
 
-		/*
-			renderCommand adds non input file parameters, i.e. task.toolParameters(), to "parameters", then 
-			calls piseCommandRenderer.render, which also modifies "parameters".  For example, it adds a dummy 
-			parameter for each param file that the pisexml generates.
-		*/
+		// renderCommand adds non input file parameters to "parameters", then calls piseCommandRenderer.render, which
+		// also modifies "parameters".  For example, it adds a dummy parameter for each param file that the pisexml
+		// generates.
 		RenderedCommand command = renderCommand();
+
+		String msg = "Parameters are valid.  Command rendered successfully: " + StringUtils.join(command.getCommand(), ' ');
+		log.debug(msg);
+		TaskUpdater.logProgress(task, stage, msg); 
+
+		// add info from command rendering to WorkQueue and statistics records.
+		WorkQueue.updateWork(rt, tool, command);
 		return command;
 	}
-
 
 
 	/*
@@ -262,9 +267,6 @@ public class TaskInitiate
 		}
 	}
 
-	/*
-		Can throw JobValidationException (a type of RuntimeException)
-	*/
 	private RenderedCommand renderCommand() throws IOException, SQLException
 	{
 		// iterate over the task's non-file parameters and add  them to the file parameters.

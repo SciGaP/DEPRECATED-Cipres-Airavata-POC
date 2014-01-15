@@ -53,7 +53,7 @@ account = "TG-DEB090011"
 # account = "ddp116"
 scheduler_file = "scheduler.conf"
 
-email = "terri@sdsc.edu"
+email = "terri@sdsc.edu,mmiller@sdsc.edu"
 
 jobname = ""
 runfile = "./batch_command.run"

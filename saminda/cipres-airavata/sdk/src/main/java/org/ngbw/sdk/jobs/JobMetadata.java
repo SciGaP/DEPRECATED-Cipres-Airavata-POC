@@ -9,7 +9,6 @@ import org.ngbw.sdk.Workbench;
 import org.ngbw.sdk.WorkbenchException;
 import org.ngbw.sdk.WorkbenchSession;
 import java.util.Map;
-import java.util.HashMap;
 import org.apache.commons.beanutils.BeanUtils;
 
 
@@ -58,10 +57,6 @@ public class JobMetadata
 	public static JobMetadata fromMap(Map<String, String> properties) throws Exception
 	{
 		JobMetadata m = new JobMetadata();
-		if (properties == null)
-		{
-			properties = new HashMap<String, String>();
-		}
 		BeanUtils.populate(m, properties);
 		return m;
 	}
