@@ -14,7 +14,7 @@ import org.apache.airavata.registry.api.exception.RegistryException;
 import org.apache.airavata.schemas.gfac.ApplicationDeploymentDescriptionType;
 
 
-public class CIPRESWorkingDirSetup implements GFacHandler {
+public class CIPRESWorkingDirHandler implements GFacHandler {
 
 	@Override
 	public void initProperties(Map<String, String> arg0)
