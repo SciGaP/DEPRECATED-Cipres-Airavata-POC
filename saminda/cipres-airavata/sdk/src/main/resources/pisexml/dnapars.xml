@@ -1,0 +1,1122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pise SYSTEM "http://www.phylo.org/dev/rami/PARSER/pise.dtd">
+<pise>
+	<head>
+		<title>DNApars</title>
+		<version>Phylip 3.66</version>
+		<description>Parsimony for NS Alignments(Phylip)</description>
+		<authors>Felsenstein</authors>
+		<reference>Felsenstein, J.  2007.  PHYLIP -- Phylogeny Inference Package (Version 3.682) Distributed by the author.  Department of Genetics, University of Washington, Seattle.</reference>
+		<reference>Felsenstein, J.  1989.  PHYLIP -- Phylogeny Inference Package (Version 3.2). Cladistics  5: 164-166.</reference>
+		<category>Phylogeny / Alignment</category>
+		<!-- updated stale link for Swami -->
+		<doclink>http://evolution.genetics.washington.edu/phylip/doc/dnapars.html</doclink>
+	</head>
+	<!--***********************************************************************************************************************************************************************************************
+		 ***********************************************************************************************************************************************************************************************
+	     **    Update by MMiller, 6_9_2008 to include all of the command line options except for the terminal type; cleaned up command line ordering                                  **
+		 **                                                                                                                                                                                                                                          **
+		************************************************************************************************************************************************************************************************
+        ************************************************************************************************************************************************************************************************-->
+    <!--Settings for DNA Pars:
+	  **	U        	Search for best tree?  Yes															(group 1)
+	  **	S			Search option?  More thorough search 										(group 1)
+      **	V			Number of trees to save?  10000 ***this option is added here****	(group 4)
+	  **	J   		Randomize input order of sequences?  No. Use input order 			(group 19/20)
+      **	O      	Outgroup root?  No, use as outgroup species  1 							(group 1)
+      **	T        	Use Threshold parsimony?  No, use ordinary parsimony 				(group 2/3)
+	  **	N          Use Transversion parsimony?  No, count all steps 						(group 5)
+	  **	W         Sites weighted?  No 																	(groups 1, -1)
+	  ** 	M  		Analyze multiple data sets?  No  												(groups 9; 10)
+      **	I      		Input sequences interleaved?  Yes ***this option is added here**** (group 1)
+	  **	0   		Terminal type (IBM PC, ANSI, none)?  ANSI 								(group 0)
+	  **	1    		Print out the data at start of run  No 											(group 1)
+	  **	2  		Print indications of progress of run  Yes ****this option added; waiting for swami to be ready*** (group 1)
+	  **	3      	Print out tree  Yes 																	(group 1)
+	  **	4			Print out steps in each site  No 													(group 1)
+	  **	5  		Print sequences at all nodes of tree  No 										(group 1)
+	  **	6      	Write out trees onto tree file?  Yes 												(group 1)
+        -->
+ <!--
+	Here is how the groups are organized:
+	 group -10 = input file ("ln -s infile.phylip infile; ")
+ALL SEQBOOT REFERENCES ARE REMOVED FOR SWAMI
+	 group -5 = Perform a bootstrap before analysis (also submits a second file called <seqboot.params>)
+			contents of <seqboot.params> file
+					 group 0  = terminal type; hidden parameter
+					 group 1  = Resampling methods; jacknife/halfjacknife/etc; 
+					 group 2  = How many replicates?; (changed from group 1)
+					 group 50 = Confirm submit, fmust come before seed
+					 group 51 = Seqboot Random number seed (must be odd.
+ALL SEQBOOT REFERENCES ARE REMOVED FOR SWAMI
+
+	 group -1 = weights file includes a weights file; user tree file "ln -s tree_file.param intree; " : ""
+
+	 group 0 = invoking command, calls for <params> file; terminal_type
+			 contents of <params> file: where does interleaved go?
+					 group 1 = Weights Switch (W); The U (User tree) option; Outgroup species (O); Print out the data at start of run (1);
+                                    Print out tree (3); Print out steps in each site (4) (corrected an error where the submitted value was 5 instead of 4. Print sequences at all nodes of tree (5); Write out
+                                    trees onto tree file (6); 
+					 group 2 = Threshold value (if use threshold parsimony); but adds nothing to command line.
+					 group 3 = Threshold command string;
+					 group 4 = Number of trees to save. added for Swami.
+					 group 5 = Use Transversion parsimony (N)
+					 group 9 = Multiple commands that dont get put in command line
+					 group 10 = Multiple data sets (M); complete command line
+					 group 19 = Jumble commands that doint get put in command file
+					 group 20 = Jumble command (J) ($value &amp;&amp; ! $seqboot )? "j\\n$jumble_seed\\n$times\\n" : "" <
+					 group 50 = Confirm
+	 group 50 = indented tree file
+ -->
+	<command>dnapars</command>
+	<!--Updated by MMILLER  6_10_2008 to include the proper impleentation fo the multiple option -->
+	<parameters>
+									<parameter iscommand="1" ishidden="1" type="String">
+									<name>dnapars</name>
+										<attributes>
+											<format>
+												<language>perl</language>
+												<code> "dnapars &lt; params" </code>
+											</format>
+											<group>0</group>
+										</attributes>
+									</parameter>
+									<!-- <parameter ismandatory="1" issimple="1"  type="Sequence"> -->
+									<parameter ismandatory="1" issimple="1" isinput="1" type="Sequence">
+									<name>infile</name>
+										<attributes>
+											<prompt>Alignment File</prompt>
+											<format>
+												<language>perl</language>
+												<!-- <code>"ln -s $infile infile; "</code> -->
+												<code>""</code>
+											</format>
+											<group>-10</group>
+											<seqfmt>
+												<value>12</value>
+											</seqfmt>
+											<pipe>
+												<pipetype>readseq_ok_alig</pipetype>
+												<language>perl</language>
+												<code>1</code>
+											</pipe>
+				<!-- Added for Swami-->
+											<filenames>infile</filenames>
+				<!-- ******************* -->
+										</attributes>
+									</parameter>
+		<!--Added for SWAMI-->
+									 <parameter ismandatory="1" issimple="1" type="Excl">
+									 <name>interleavedinfile</name>
+										 <attributes>
+											<prompt>Input sequences interleaved?</prompt>
+											<vdef>
+												<value>yes</value>
+											</vdef>
+											<vlist>
+												<value>yes</value>
+												<label>Yes</label>
+												<value>no</value>
+												<label>No</label>
+											</vlist>
+											<flist>
+											 	<value>yes</value>
+												<code>""</code>
+												<value>no</value>
+												<code>"I\\n"</code>
+											</flist>
+											<group>1</group>
+											<paramfile>params</paramfile>
+										</attributes>
+									</parameter>
+		<!--Added for Swami -->
+									<parameter type="Integer">
+									<name>numtrees</name>
+											<attributes>
+												<prompt>Number of Trees to Save?</prompt>
+												<format>
+													<language>perl</language>
+													<code>"V\\n$numtrees\\n"</code>
+												</format>
+												<vdef><value>1000</value></vdef>
+												<group>4</group>
+												<ctrls>
+													<ctrl>
+														<message>Please enter a number greater than 1</message>
+														<language>perl</language>
+														<code>$numtrees &lt; 1</code>
+													</ctrl>
+												</ctrls>
+												<paramfile>params</paramfile>
+											</attributes>
+										</parameter>
+	<!--		*******  This can be implemented when Swami is ready for it ********
+										 <parameter ismandatory="1" issimple="1" type="Switch">
+										 <name>printintermediatedata</name>
+											 <attributes>
+												 <prompt>Print indications of progress of run  (2)</prompt>
+												 <format>
+													 <language>perl</language>
+													 <code>($value)? "2\\n" : ""</code>
+												 </format>
+												 <vdef><value>0</value></vdef>
+												 <group>1</group>
+												 <paramfile>params</paramfile>
+											 </attributes>
+								 </parameter> -->
+										<parameter ismandatory="1" type="Excl">
+										<name>search_opt</name>
+											<attributes>
+												<prompt>Search option (S)</prompt>
+													<vdef><value>0</value></vdef>
+													<flist>
+														<value>0</value>
+														<code>""</code>
+														<value>1</value>
+														<code>"S\\nY\\n"</code>
+														<value>2</value>
+														<code>"S\\nN\\n"</code>
+													</flist>
+													<vlist>
+														<value>0</value>
+														<label>More thorough search</label>
+														<value>1</value>
+														<label>Rearrange on one best tree</label>
+														<value>2</value>
+														<label>Less thorough search</label>
+													</vlist>
+													<group>1</group>
+													<paramfile>params</paramfile>
+													<comment>
+														<value>The S (search) option controls how, and how much, rearrangement is done on the tied trees that are saved by the program. If the "More thorough search" option (the default) is chosen, the program will save multiple tied trees, without collapsing internal branches that have no evidence of change on them. It will subsequently rearrange on all parts of each of those trees. If the "Less thorough search" option is chosen, before saving, the program will collapse all branches that have no evidence that there is any change on that branch. This leads to less attempted rearrangement. If the "Rearrange on one best tree" option is chosen, only the first of the tied trees is used for rearrangement. This is faster but less thorough. If your trees are likely to have large multifurcations, do not use the default "More thorough search" option as it could result in too large a number of trees being saved. 
+</value>
+													</comment>
+											</attributes>
+										</parameter>
+		<parameter type="Paragraph">
+			<paragraph>
+				<name>dnapars_opt</name>
+				<prompt>Parsimony options</prompt>
+						<parameters>
+										<parameter type="Switch">
+										<name>use_threshold</name>
+											<attributes>
+												<prompt>Use Threshold parsimony (T)</prompt>
+												<format>
+													<language>perl</language>
+													<code>($value)? "T\\n$threshold\\n" : ""</code>
+												</format>
+												<vdef><value>0</value></vdef>
+												<group>3</group>
+												<paramfile>params</paramfile>
+												<comment>
+													<value>The T (Threshold) option. This sets a threshold for the parsimony programs such that if the number of
+	 steps counted in a character is higher than the threshold, it will be taken to be the threshold value rather
+	 than the actual number of steps. The default is a threshold so high that it will never be surpassed (in which
+	 case the steps will simply be counted). If you select the T option, you must also supply a threshold. This
+	 will be a positive real number greater than 1. The T option is an important and underutilized one: it is, for
+	 example, the only way in the Phylip package to do a compatibility analysis when there are missing data. It is
+	 a method of de-weighting characters that evolve rapidly.</value>
+												</comment>
+											</attributes>
+										</parameter>
+										<parameter ismandatory="1" type="Integer">
+										<name>threshold</name>
+											<attributes>
+											<prompt>Threshold value (if use threshold parsimony)</prompt>
+												<format>
+													<language>perl</language>
+													<code>"" </code>
+												</format>
+												<group>2</group>
+												<precond>
+													<language>perl</language>
+													<code>$use_threshold</code>
+												</precond>
+												<ctrls>
+													<ctrl>
+														<message>Please enter a numeric value for threshold, greater than 1</message>
+														<language>perl</language>
+														<code>($threshold !~ /^\d+(\.\d+)?$/) || ($threshold &lt; 1)</code>
+													</ctrl>
+												</ctrls>
+												<paramfile>params</paramfile>
+												<comment>
+													<value>This program carries out unrooted parsimony (analogous to Wagner trees) (Eck and Dayhoff, 1966; Kluge
+ and Farris, 1969) on DNA sequences. The method of Fitch (1971) is used to count the number of changes of base
+needed on a given tree. The assumptions of this method are analogous to those of MIX:</value>
+													<value>Each site evolves independently.</value>
+													<value>Different lineages evolve independently.</value>
+													<value>The probability of a base substitution at a given site is small over the lengths of time involved in a branch of
+ the phylogeny.</value>
+													<value>The expected amounts of change in different branches of the phylogeny do not vary by so much that two changes in
+ a high-rate branch are more probable than one change in a low-rate branch.</value>
+													<value>The expected amounts of change do not vary enough among sites that two changes in one site are more probable than
+ one change in another.</value>
+													<value>That these are the assumptions of parsimony methods has been documented in a series of papers of mine:
+ (1973a, 1978b, 1979, 1981b, 1983b, 1988b). For an opposing view arguing that the parsimony methods make no substantive
+ assumptions such as these, see the papers by Farris (1983) and Sober (1983a, 1983b, 1988), but also read the exchange
+ between Felsenstein and Sober (1986).</value>
+													<value>Change from an occupied site to a deletion is counted as one change. Reversion from a deletion to an occupied
+ site is allowed and is also counted as one change. Note that this in effect assumes that a deletion N bases long is N
+ separate events.</value>
+													<value>Dnapars can handle both bifurcating and multifurcating trees. In doing its search for most parsimonious trees,
+ it adds species not only by creating new forks in the middle of existing branches, but it also tries putting them at
+ the end of new branches which are added to existing forks. Thus it searches among both bifurcating and multifurcating
+ trees. If a branch in a tree does not have any characters which might change in that branch in the most parsimonious tree, it does not save that tree. Thus in any tree that results, a branch exists only if some character has a most parsimonious reconstruction that would involve change in that branch.Thresholds less than or equal to 1.0 do not have any meaning and should not be used: they will result in a tree  dependent  only on the input order of species and not at all on the data</value>
+												</comment>
+											</attributes>
+										</parameter>
+										<parameter type="Switch">
+										<name>use_transversion</name>
+											<attributes>
+												<prompt>Use Transversion parsimony (N)</prompt>
+												<format>
+													<language>perl</language>
+													<code>($value)? "N\\n" : ""</code>
+												</format>
+												<vdef>
+													<value>0</value>
+												</vdef>
+												<group>5</group>
+												<paramfile>params</paramfile>
+											</attributes>
+										</parameter>
+				</parameters>
+			</paragraph>
+		</parameter>
+<!-- remove seqboot for Swami -->
+<!--	<parameter type="Paragraph">
+			<paragraph>
+				<name>bootstrap</name>
+				<prompt>Bootstrap options</prompt>
+				<parameters>
+					<parameter type="Switch">
+						<name>seqboot</name>
+						<attributes>
+							<prompt>Perform a bootstrap before analysis</prompt>
+							<format>
+								<language>perl</language>
+								<code>($value)? "seqboot &lt; seqboot.params &amp;&amp; mv -f outfile infile &amp;&amp; " : ""</code>
+							</format>
+							<vdef>
+								<value>0</value>
+							</vdef>
+							<group>-5</group>
+							<comment>
+								<value>This option will cause a bootstrap to be performed on your sequence file. Use this option instead of
+performing a seqboot and importing under the Multiple data option. </value>
+								<value>You must also provide parameters for jumble.</value>
+							</comment>
+						</attributes>
+					</parameter>
+					<parameter ismandatory="1" type="Excl">
+						<name>method</name>
+						<attributes>
+							<prompt>Resampling methods</prompt>
+							<vdef>
+								<value>bootstrap</value>
+							</vdef>
+							<group>1</group>
+							<vlist>
+								<value>bootstrap</value>
+								<label>Bootstrap</label>
+								<value>jackknife</value>
+								<label>Delete-half jackknife</label>
+								<value>permute</value>
+								<label>Permute species for each character</label>
+							</vlist>
+							<flist>
+								<value>permute</value>
+								<code>"J\\nJ\\n"</code>
+								<value>bootstrap</value>
+								<code>""</code>
+								<value>jackknife</value>
+								<code>"J\\n"</code>
+							</flist>
+							<precond>
+								<language>perl</language>
+								<code>$seqboot</code>
+							</precond>
+							<paramfile>seqboot.params</paramfile>
+							<comment>
+								<value>1. The bootstrap. Bootstrapping was invented by Bradley Efron in 1979, and its use in phylogeny estimation was introduced by Felsenstein, 1985b. It involves creating a new data set by sampling N characters randomly with replacement, so that the resulting data set has the same size as the original, but some characters have been left out and others are duplicated. The random variation of the results from analyzing these bootstrapped data sets can be shown statistically to be typical of the variation that you would get from collecting new data sets. The method assumes that the characters evolve independently, an assumption that may not be realistic for many kinds of data.</value>
+								<value>2. Delete-half-jackknifing. This alternative to the bootstrap involves sampling a random half of the characters, and including them in the data but dropping the others. The resulting data sets are half the size of the original, and no characters are duplicated. The random variation from doing this should be very similar to that obtained from the bootstrap. The method is advocated by Wu (1986).</value>
+								<value>3. Permuting species within characters. This method of resampling (well, OK, it may not be best to call it resampling) was introduced by Archie (1989) and Faith (1990; see also Faith and Cranston, 1991). It involves permuting the columns of the data matrix separately. This produces data matrices that have the same number and kinds of characters but no taxonomic structure. It is used for different purposes than the bootstrap, as it tests not the variation around an estimated tree but the hypothesis that there is no taxonomic structure in the data: if a statistic such as number of steps is significantly smaller in the actual data than it is in replicates that are permuted, then we can argue that there is some taxonomic structure in the data (though perhaps it might be just a pair of sibling species).</value>
+							</comment>
+						</attributes>
+					</parameter>
+					<parameter ismandatory="1" type="Integer">
+						<name>seqboot_seed</name>
+						<attributes>
+							<prompt>Random number seed (must be odd)</prompt>
+							<format>
+								<language>perl</language>
+								<code>"$value\\n"</code>
+							</format> -->
+							<!--<group>1010</group>-->
+<!--							<group>51</group> -->
+<!--						<ctrls>
+								<ctrl>
+									<message>Random number seed must be odd</message>
+									<language>perl</language>
+									<code>$value &lt;= 0 || (($value % 2) == 0)</code>
+								</ctrl>
+							</ctrls>
+							<precond>
+								<language>perl</language>
+								<code>$seqboot</code>
+							</precond>
+							<paramfile>seqboot.params</paramfile>
+						</attributes>
+					</parameter>
+					<parameter type="Integer">
+						<name>replicates</name>
+						<attributes>
+							<prompt>How many replicates</prompt>
+							<format>
+								<language>perl</language>
+								<code>($value &amp;&amp; $value != $vdef)? "R\\n$value\\n" : ""</code>
+							</format>
+							<vdef>
+								<value>100</value>
+							</vdef>  -->
+<!-- change from group 1 -->
+<!--							<group>2</group>
+							<ctrls>
+								<ctrl>
+									<message>this server allows no more than 1000 replicates</message>
+									<language>perl</language>
+									<code>$replicates &gt; 1000</code>
+								</ctrl>
+							</ctrls>
+							<precond>
+								<language>perl</language>
+								<code>$seqboot</code>
+							</precond>
+							<paramfile>seqboot.params</paramfile>
+						</attributes>
+					</parameter> -->
+<!-- consense is not supported by Swami -->
+<!--
+					<parameter type="Switch">
+						<name>consense</name>
+						<attributes>
+							<prompt>Compute a consensus tree</prompt>
+							<format>
+								<language>perl</language>
+								<code>($value)? ";cp -f infile infile.dnapars;mv -f outtree outtree.dnapars;mv -f outfile outfile.dnapars;cp -f outtree.dnapars intree;consense &lt; consense.params; cp -f outtree outtree.consense; cp -f outfile outfile.consense; mv -f outtree.dnapars outtree; mv -f infile.dnapars infile; mv outfile.dnapars outfile" : ""</code>
+							</format>
+							<vdef>
+								<value>0</value>
+							</vdef>
+							<group>10</group>
+							<precond>
+								<language>perl</language>
+								<code>$seqboot &amp;&amp; $print_treefile</code>
+							</precond>
+						</attributes>
+					</parameter>
+-->
+<!-- NOT SURE WHY THIS WORKS NOW! 
+					<parameter ishidden="1" type="String">
+						<name>multiple_dataset</name>
+						<attributes>
+							<format>
+								<language>perl</language>
+								<code>(defined $jumble_seed)?
+											"M\\nD\\n$replicates\\n$jumble_seed\\n$times\\n" : "M\\nD\\n$replicates\\n$seqboot_seed\\n$times\\n"</code>
+							</format>
+							<group>1</group>
+							<precond>
+								<language>perl</language>
+								<code>$seqboot</code>
+							</precond>
+							<paramfile>params</paramfile>
+						</attributes>
+					</parameter>
+NOT SURE WHY THIS WORKS NOW! -->	
+<!--			</parameters>
+			 </paragraph>
+		</parameter> -->
+<!--add the M option properly -->
+<!-- (missing in PiseXML) = M              Multiple,Weights or data?      Analyze multiple data sets?  No-->
+<!-- change for swami <prompt>Multiple Datasets</prompt>	 -->
+     <parameter type="Paragraph">
+		  <paragraph>
+		  <name>bootstrap</name>
+		  <prompt>Multiple Datasets: </prompt>
+				 <parameters>
+								 <parameter type="Switch">
+								 <name>multiple_dataset</name>
+									 <attributes>
+										 <prompt>Analyze multiple data sets (M), e.g. from Seqboot; infer Consensus Trees with the output using Consense</prompt>
+										 <format>
+<!--modified to accomodate the weights or data prompt -->
+											 <language>perl</language>
+<!---changed for Swami
+											 <code>($value) ? "M\\n$weightsordata$datasets_nb\\n$multi_seed\\n$multi_times\\n" : ""</code>
+-->
+											 <code>($value) ? "" : ""</code>
+										 </format>
+										 <vdef><value>0</value></vdef>
+<!-- changed for swami					 <group>10</group>                                -->
+										 <group>9</group>
+										 <paramfile>params</paramfile>
+										 <comment>
+<value>The M (Multiple data sets) option allows bootstrapping. The M (multiple data sets option) will ask you whether you want to use multiple sets of weights (from the weights file) or multiple data sets. The ability to use a single data set with multiple weights means that much less disk space will be used for this input data. The bootstrapping and jackknifing tool Seqboot has the ability to create a weights file with multiple weights.  The present version of the package allows bootstrapping with the useof Seqboot and Consense. Currently, in SWAMI, these programs must be run separately, rather than invoking it from this interface.</value>
+<value>Here is a (very small) sample input file with two five-species data sets: </value>
+<value></value>
+ <value>5    6</value>
+<value>Alpha     CCACCA</value>
+<value>Beta      CCAAAA</value>
+<value>Gamma     CAACCA</value>
+<value>Delta     AACAAC</value>
+<value>Epsilon   AACCCA</value>
+<value>5    6</value>
+<value>Alpha     CACACA</value>
+<value>Beta      CCAACC</value>
+<value>Gamma     CAACAC</value>
+<value>Delta     GCCTGG</value>
+<value>Epsilon   TGCAAT</value>
+										 </comment>
+									 </attributes>
+								 </parameter>
+								 <parameter ismandatory="1" type="Excl">
+								 <name>weightsordata</name>
+									 <attributes>
+										 <prompt>Multiple data sets or multiple weights? (type D or W)</prompt>
+										 <format>
+											 <language>perl</language>
+											 <code>""</code>
+										 </format>
+										 <vdef><value>data</value></vdef>
+										 <vlist>
+												 <value>data</value>
+												 <label>Data</label>
+												 <value>weights</value>
+												 <label>Weights</label>
+										 </vlist>
+										 <flist>
+										 		 <value>data</value>
+												 <code>"M\\nD\\n$datasets_nb\\n$multi_seed\\n$multi_times\\n"</code>
+												 <value>weights</value>
+												 <code>"M\\nW\\n$datasets_nb\\n$multi_seed\\n$multi_times\\n"</code>
+										 </flist>
+<!-- this is labelled group 9, but it is delivered in group 10 as part of the /m command <group>9</group> -->
+										 <group>10</group>
+										 <precond>
+											 <language>perl</language>
+											 <code>$multiple_dataset</code>
+										 </precond>
+										 <paramfile>params</paramfile>
+									 </attributes>
+								 </parameter>
+								 <parameter ismandatory="1" type="Integer">
+								 <name>datasets_nb</name>
+									 <attributes>
+										 <prompt>How many data sets?</prompt>
+										 <format>
+											 <language>perl</language>
+											 <code>""</code>
+										 </format>
+<!-- this is labelled group 9, but it is delivered in group 10 as part of the /m command <group>9</group>-->
+										 <group>9</group>
+										 <ctrls>
+											 <ctrl>
+											     <message>there must be no more than 1000 datasets for this server</message>
+												 <language>perl</language>
+												 <code>$value &gt; 1000</code>
+											 </ctrl>
+									     </ctrls>
+										 <precond>
+											 <language>perl</language>
+											 <code>$multiple_dataset</code>
+										 </precond>
+										 <paramfile>params</paramfile>
+									</attributes>
+								</parameter>
+<!-- fix the M option -->
+								<parameter ismandatory="1" type="Integer">
+								<name>multi_seed</name>
+									<attributes>
+										<prompt>Random number seed (must be odd)</prompt>
+										<format>
+											<language>perl</language>
+											<code>""</code>
+										</format>
+										<group>9</group>
+										<ctrls>
+											<ctrl>
+												<message>Random number seed must be odd</message>
+												<language>perl</language>
+												<code>$value &lt;= 0 || (($value % 2) == 0)</code>
+											</ctrl>
+										</ctrls>
+										<precond>
+											<language>perl</language>
+											<code>$multiple_dataset</code>
+										</precond>
+										<paramfile>params</paramfile>
+									</attributes>
+								</parameter>
+								<parameter type="Integer">
+								<name>multi_times</name>
+									<attributes>
+										<prompt>Number of times to jumble</prompt>
+										<format>
+											<language>perl</language>
+											<code>""</code>
+										</format>
+										<vdef><value>1</value></vdef>
+										<group>9</group>
+										<precond>
+											<language>perl</language>
+											<code>$multiple_dataset</code>
+										</precond>
+										<paramfile>params</paramfile>
+									</attributes>
+								</parameter>
+<!--add the M option properly -->	
+<!--remove all seqboot references -->
+<!--					<parameter ishidden="1" type="String">
+						<name>bootconfirm</name>
+						<attributes>
+							<format>
+								<language>perl</language>
+								<code>"y\\n"</code>
+							</format> -->
+							<!--<group>1000</group>-->
+<!--							<group>50</group>
+							<precond>
+								<language>perl</language>
+								<code>$seqboot</code>
+							</precond>
+							<paramfile>seqboot.params</paramfile>
+						</attributes>
+					</parameter>
+					<parameter ishidden="1" type="String">
+						<name>bootterminal_type</name>
+						<attributes>
+							<format>
+								<language>perl</language>
+								<code>"0\\n"</code>
+							</format> -->
+							<!--<group>-1</group>-->
+<!--							<group>0</group>
+							<precond>
+								<language>perl</language>
+								<code>$seqboot</code>
+							</precond>
+							<paramfile>seqboot.params</paramfile>
+						</attributes>
+					</parameter> -->
+				</parameters>
+			</paragraph>
+		</parameter>
+		<parameter type="Paragraph">
+			<paragraph>
+				<name>jumble_opt</name>
+				<prompt>Randomize options</prompt>
+				<parameters>
+								<parameter type="Switch">
+								<name>jumble</name>
+									<attributes>
+										<prompt>Randomize (jumble) input order (J)</prompt>
+										<format>
+											<language>perl</language>
+<!--			Swami, no seqboot								<code>($value &amp;&amp; ! $seqboot )? "j\\n$jumble_seed\\n$times\\n" : "" </code> -->
+												<code>$value ? "j\\n$jumble_seed\\n$times\\n" : "" </code>
+										</format>
+										<vdef>
+											<value>0</value>
+										</vdef>
+										<ctrls>
+											<ctrl>
+												<message>You may not choose both Multiple data sets and Jumble options</message>
+												<language>perl</language>
+												<code>$multiple_dataset &amp;&amp; $jumble</code>
+											</ctrl>
+										</ctrls>
+										<group>20</group>
+										<paramfile>params</paramfile>
+										<comment>
+											<value>The J (Jumble) option. In most tree construction programs, the search of different trees
+depends on the order of input of species. The J option tells the program to use a random number generator
+to choose the input order of species. If you select Jumble, you must provide a "seed" for the random number
+generator. The seed should be an integer between 1 and be of form 4n+1. Each different seed leads to a
+different sequence of addition of species. By simply changing the random number seed and re-running the
+programs one can look for other, and better trees.</value>
+											<value>Using the Jumble option, you must specify how many times you want to restart the process.
+ The value 10 causes ten different orders of species to be used in constructing the trees, and the results printed
+ out will reflect this entire search process (that is, the best trees found among all 10 runs will be printed out,
+ not the best trees from each individual run).</value>
+										</comment>
+									</attributes>
+								</parameter>
+								<parameter ismandatory="1" type="Integer">
+								<name>jumble_seed</name>
+									<attributes>
+										<prompt>Random number seed for jumble (must be odd)</prompt>
+										<format>
+											<language>perl</language>
+											<code>""</code>
+										</format>
+										<group>19</group>
+										<ctrls>
+											<ctrl>
+												<message>Random number seed for jumble must be odd. </message>
+												<language>perl</language>
+												<code>defined $value &amp;&amp; ($value &lt;= 0 || (($value % 2) == 0))</code>
+											</ctrl>
+										</ctrls>
+										<precond>
+											<language>perl</language>
+											<code>$jumble</code>
+										</precond>
+									</attributes>
+								</parameter>
+								<parameter ismandatory="1" type="Integer">
+								<name>times</name>
+									<attributes>
+										<prompt>Number of times to jumble</prompt>
+										<format>
+											<language>perl</language>
+											<code>""</code>
+										</format>
+										<vdef>
+											<value>1</value>
+										</vdef>
+										<group>19</group>
+										<precond>
+											<language>perl</language>
+<!-- swami: no seqboot anymore <code>$jumble || $seqboot</code>-->
+											<code>$jumble</code>
+										</precond>
+									</attributes>
+								</parameter>
+						</parameters>
+				</paragraph>
+		</parameter>
+		<parameter type="Paragraph">
+			<paragraph>
+				<name>user_tree_opt</name>
+				<prompt>User tree options</prompt>
+				<parameters>
+								<parameter type="Switch">
+								<name>user_tree</name>
+									<attributes>
+										<prompt>Use User tree (default: no, search for best tree) (U)</prompt>
+										<format>
+											<language>perl</language>
+											<code>($value)? "U\\n" : "" </code>
+										</format>
+										<vdef>
+											<value>0</value>
+										</vdef>
+										<group>1</group>
+<!--Swami bootstrap option removed -->
+										<ctrls>
+<!--											<ctrl>
+												<message>you cannot bootstrap your dataset and give a user tree at the same time</message>
+												<language>perl</language>
+												<code>$user_tree &amp;&amp; $seqboot</code>
+											</ctrl>
+-->
+											<ctrl>
+												<message>you cannot randomize (jumble) your dataset and give a user tree at the same time</message>
+												<language>perl</language>
+												<code>$user_tree &amp;&amp; $jumble</code>
+											</ctrl>
+										</ctrls>
+										<paramfile>params</paramfile>
+										<comment>
+											<value>The U (User tree) option. This option toggles between the default setting, which allows the program to
+search for the best tree, and the User tree setting, which reads a tree or trees ("user trees") from an input
+tree file. The input tree file default name is intree.</value>
+											<value>((Alligator,Bear),((Cow,(Dog,Elephant)),Ferret));</value>
+											<value>((Alligator,Bear),(((Cow,Dog),Elephant),Ferret));</value>
+											<value>((Alligator,Bear),((Cow,Dog),(Elephant,Ferret)));</value>
+											<value>Multifurcating trees are permitted. You must then enter the number of trees submitted. In using the
+user tree option, check the pattern of parentheses carefully. The programs do not always detect whether
+the tree makes sense, and if it does not there will probably be a crash (hopefully, but not inevitably,
+with an error message indicating the nature of the problem). Trees written out by programs are typically
+in the proper form.</value>
+										</comment>
+									</attributes>
+								</parameter>
+								<parameter type="InFile">
+								<name>tree_file</name>
+									<attributes>
+										<prompt>User Tree file</prompt>
+										<format>
+											<language>perl</language>
+											<!-- <code>($value)? "ln -s $tree_file intree; " : ""</code> -->
+											<code>($value)? "ln -s $tree_file.param intree; " : ""</code>
+										</format>
+										<group>-1</group>
+										<comment>
+											<value>Give a tree whenever the infile does not already contain the tree.</value>
+										</comment>
+										<precond>
+											<language>perl</language>
+											<code>$user_tree</code>
+										</precond>
+		<!-- Added for Swami-->
+										<filenames>tree_file.param</filenames>
+		<!-- ********************-->
+									</attributes>
+								</parameter>
+						</parameters>
+			</paragraph>
+		</parameter>
+		<parameter type="Paragraph">
+			<paragraph>
+			<name>weight_opt</name>
+			<prompt>Weight options</prompt>
+						<parameters>
+								<parameter type="Switch">
+								<name>weights</name>
+									<attributes>
+										<prompt>Use weights for sites (W)</prompt>
+										<format>
+											<language>perl</language>
+											<code>($value)? "W\\n" : ""</code>
+										</format>
+										<group>1</group>
+										<paramfile>params</paramfile>
+										<comment>
+										<value>The W (Weights) option. This allows the user to read in a series of weights that tell how many times each character is to be counted.
+ If the weight for a character is zero (0) then that character is effectvely omitted when the tree is evaluated. If it is (1),
+ the character is to be counted once.
+ A value greater than one means the character is counted as if it were present that many times, a weight of 4 means
+ the character is counted 4 times. The values 0-9 give weights 0 through 9, while values A-Z give weights 10 through 35.</value>
+										<value> Weights are used to analyze s:ubsets of characters, and can also be used for resampling of the data as in bootstrap and jackknife
+ resampling. For programs that allow weights to be greater than 1, they can also be used to emphasize information from some characters
+ more strongly than others. Of course, you must have some rationale for doing this. </value>
+										<value>Weights are provided as a sequence of digits. For example:</value>
+										<value>10011111100010100011110001100 </value>
+										<value>The weights are to be provided in an input file. The weights in it are a simple string of digits or letters. Blanks in the
+ weightfile are skipped over and ignored, and new lines are ignored.</value>
+									</comment>
+								</attributes>
+							</parameter>
+							<parameter type="InFile">
+							<name>weights_file</name>
+								<attributes>
+									<prompt>Weights file</prompt>
+									<format>
+										<language>perl</language>
+										<!--  <code>($value)? "ln -s $weights_file weights; " : ""</code> -->
+										<code>($value)? "ln -s weights_file.param weights; " : ""</code>
+									</format>
+									<group>-1</group>
+									<precond>
+										<language>perl</language>
+										<code>$weights</code>
+									</precond>
+									<pipe>
+										<pipetype>phylip_weights</pipetype>
+											<language>perl</language>
+											<code>1</code>
+									</pipe>
+									<withpipe>
+										<pipetype>phylip_weights</pipetype>
+											<parametername>infile</parametername>
+									</withpipe>
+	<!-- Added for Swami-->
+									<filenames>weights_file.param</filenames>
+	<!--******************* -->
+								</attributes>
+							</parameter>
+					</parameters>
+			</paragraph>
+		</parameter>
+		<parameter type="Paragraph">
+			<paragraph>
+				<name>output</name>
+				<prompt>Output options</prompt>
+				<parameters>
+									<parameter type="Switch">
+									<name>print_tree</name>
+										<attributes>
+											<prompt>Print out tree (3)</prompt>
+											<format>
+												<language>perl</language>
+												<code>($value)? "" : "3\\n"</code>
+											</format>
+											<vdef>
+											<value>1</value>
+											</vdef>
+											<group>1</group>
+											<comment>
+												<value>Tells the program to print a semi-graphical picture of the tree in the outfile.</value>
+											</comment>
+											<paramfile>params</paramfile>
+										</attributes>
+									</parameter>
+									<parameter type="Switch">
+									<name>print_steps</name>
+										<attributes>
+											<prompt>Print out steps in each site (4)</prompt>
+											<format>
+												<language>perl</language>
+	<!-- there was a mistake here, the oringal value submitted was 5! -->
+												<code>($value)? "4\\n" : ""</code>
+											</format>
+											<vdef>
+												<value>0</value>
+											</vdef>
+											<group>1</group>
+											<paramfile>params</paramfile>
+										</attributes>
+									</parameter>
+									<parameter type="Switch">
+									<name>print_sequences</name>
+										<attributes>
+											<prompt>Print sequences at all nodes of tree (5)</prompt>
+											<format>
+												<language>perl</language>
+												<code>($value)? "5\\n" : ""</code>
+											</format>
+											<vdef>
+												<value>0</value>
+											</vdef>
+											<group>1</group>
+											<paramfile>params</paramfile>
+										</attributes>
+									</parameter>
+									<parameter type="Switch">
+									<name>print_treefile</name>
+										<attributes>
+											<prompt>Write out trees onto tree file (6)</prompt>
+											<format>
+													<language>perl</language>
+													<code>($value)? "" : "6\\n"</code>
+											</format>
+											<vdef>
+												<value>1</value>
+											</vdef>
+											<group>1</group>
+											<comment>
+												<value>Save the tree in a Newick tree file (outtree).</value>
+											</comment>
+											<paramfile>params</paramfile>
+										</attributes>
+									</parameter>
+									<parameter type="Switch">
+									<name>printdata</name>
+										<attributes>
+											<prompt>Print out the data at start of run (1)</prompt>
+											<format>
+												<language>perl</language>
+												<code>($value)? "1\\n" : ""</code>
+											</format>
+											<vdef>
+												<value>0</value>
+											</vdef>
+											<group>1</group>
+											<paramfile>params</paramfile>
+										</attributes>
+									</parameter>
+									<parameter type="Switch">
+									<name>indent_tree</name>
+										<attributes>
+											<prompt>Indent treefile</prompt>
+											<format>
+												<language>perl</language>
+												<code>($value)? " &amp;&amp; indenttree -o outtree.indent outtree" : "" </code>
+											</format>
+										<vdef>
+											<value>0</value>
+										</vdef>
+										<!--<group>1000</group>-->
+										<group>50</group>
+<!-- no specified parameter file; not sure how this is handled      -->
+									</attributes>
+								</parameter>
+						</parameters>
+			</paragraph>
+		</parameter>
+		<parameter type="Paragraph">
+			<paragraph>
+			<name>other_options</name>
+			<prompt>Other options</prompt>
+						<parameters>
+								<parameter type="Integer">
+								<name>outgroup</name>
+									<attributes>
+										<prompt>Outgroup species (default, use as outgroup species 1) (O)</prompt>
+										<format>
+											<language>perl</language>
+											<code>($value &amp;&amp; $value != $vdef)? "o\\n$value\\n" : "" </code>
+										</format>
+										<vdef>
+											<value>1</value>
+										</vdef>
+										<group>1</group>
+										<paramfile>params</paramfile>
+										<comment>
+<value> The O (Outgroup) option is valid only if the tree is not rooted by the Ancestral States option.
+It specifies which species is on the line leading to the root of the tree. 
+For example, if the outgroup is a species "Mouse" then the root of the tree will be placed in the middle of the
+branch connected to this species, with Mouse branching off on one side of the root and the lineage leading
+to the rest of the tree on the other. When selected, the number of the outgroup must be identified (the species are
+numbered in the order they occur in the input file). Entering 6 causes the sixth species in the data set
+to be taken as the outgroup (the sixth in the first data set if there are multiple data sets).
+Outgroup-rooting will not be attempted if the data have already established a root for the
+tree, such as from a user-defined tree. The inferred tree as printed out is still an unrooted tree,
+though the outgroup is connected to the bottommost node so that it is easy to visually convert the tree
+into rooted form.</value>
+<value>&#169;Copyright 1980-2007. University of Washington.</value>
+										</comment>
+										<ctrls>
+											<ctrl>
+												<message>Please enter a value greater than 0</message>
+												<language>perl</language>
+												<code>$value &amp;&amp; $value &lt; 1</code>
+											</ctrl>
+										</ctrls>
+									</attributes>
+								</parameter>
+						</parameters>
+			</paragraph>
+		</parameter>
+								<parameter type="Results">
+								<name>outfile</name>
+									<attributes>
+										<filenames>outfile</filenames>
+									</attributes>
+								</parameter>
+								<parameter type="Results">
+								<name>treefile</name>
+									<attributes>
+										<precond>
+											<language>perl</language>
+											<code>$print_treefile</code>
+										</precond>
+										<filenames>outtree</filenames>
+										<pipe>
+											<pipetype>phylip_tree</pipetype>
+												<language>perl</language>
+												<code>1</code>
+											</pipe>
+									</attributes>
+								</parameter>
+								<parameter type="Results">
+								<name>indented_treefile</name>
+									<attributes>
+										<precond>
+											<language>perl</language>
+											<code>$print_treefile &amp;&amp; $indent_tree</code>
+										</precond>
+										<filenames>outtree.indent</filenames>
+									</attributes>
+								</parameter>
+								<parameter type="Results">
+								<name>params</name>
+									<attributes>
+										<filenames>params</filenames>
+									</attributes>
+								</parameter>
+								<parameter ishidden="1" type="String">
+								<name>confirm</name>
+									<attributes>
+										<format>
+											<language>perl</language>
+											<code>"y\\n"</code>
+										</format>
+										<!--<group>1000</group>-->
+										<group>50</group>
+										<paramfile>params</paramfile>
+									</attributes>
+								</parameter>
+								<parameter ishidden="1" type="String">
+								<name>terminal_type</name>
+									<attributes>
+										<format>
+											<language>perl</language>
+											<code>"0\\n"</code>
+										</format>
+										<!--<group>-1</group>-->
+										<group>0</group>
+										<paramfile>params</paramfile>
+									</attributes>
+								</parameter>
+<!-- not supported by Swami -->
+<!--		<parameter type="Results">
+			<name>tmp_params</name>
+			<attributes>
+				<filenames>*.params</filenames>
+			</attributes>
+		</parameter>
+		<parameter ishidden="1" type="String">
+			<name>consense_confirm</name>
+			<attributes>
+				<format>
+					<language>perl</language>
+					<code>"Y\\n"</code>
+				</format>
+				<group>1000</group>
+				<group>50</group>
+				<precond>
+					<language>perl</language>
+					<code>$consense</code>
+				</precond>
+				<paramfile>consense.params</paramfile>
+			</attributes>
+		</parameter>
+		<parameter ishidden="1" type="String">
+			<name>consense_terminal_type</name>
+			<attributes>
+				<format>
+					<language>perl</language>
+					<code>"T\\n"</code>
+				</format>
+				<group>-2</group>
+				<group>0</group>
+				<precond>
+					<language>perl</language>
+					<code>$consense</code>
+				</precond>
+				<paramfile>consense.params</paramfile>
+			</attributes>
+		</parameter>
+		<parameter type="Results">
+			<name>consense_outfile</name>
+			<attributes>
+				<precond>
+					<language>perl</language>
+					<code>$consense</code>
+				</precond>
+				<filenames>outfile.consense</filenames>
+			</attributes>
+		</parameter>
+		<parameter ishidden="1" type="String">
+			<name>consense_outgroup</name>
+			<attributes>
+				<format>
+					<language>perl</language>
+					<code>"O\\n$outgroup\\n"</code>
+				</format>
+				<group>1000</group>
+				<group>50</group>
+				<precond>
+					<language>perl</language>
+					<code>$consense and $outgroup and $outgroup != 1</code>
+				</precond>
+				<paramfile>consense.params</paramfile>
+			</attributes>
+		</parameter>
+		<parameter type="Results">
+			<name>consense_treefile</name>
+			<attributes>
+				<precond>
+					<language>perl</language>
+					<code>$consense</code>
+				</precond>
+				<filenames>outtree.consense</filenames>
+			</attributes>
+		</parameter>-->
+	</parameters>
+</pise>

@@ -1,0 +1,583 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE pise SYSTEM "http://www.phylo.org/dev/rami/PARSER/pise.dtd">
+
+<pise>
+
+  <head>
+    <title>Protdist</title>
+    <version>Phylip 3.66</version>
+    <description>Compute distance matrix from PS</description>
+    <authors>Felsenstein</authors>
+    <reference>Felsenstein, J.  2007.  PHYLIP -- Phylogeny Inference Package (Version 3.682). Distributed by the author.  Department of Genetics, University of Washington, Seattle.</reference>
+    <reference>Felsenstein, J.  1989.  PHYLIP -- Phylogeny Inference Package (Version 3.2). Cladistics  5: 164-166.</reference>
+	<category>Phylogeny / Alignment</category>
+    <doclink>http://bioweb.pasteur.fr/docs/gensoft-evol.html#PHYLIP</doclink>
+  </head>
+
+  <command>protdist</command>
+
+  <parameters>
+
+    <parameter iscommand="1" ishidden="1" type="String">
+      <name>protdist</name>
+      <attributes>
+	<format>
+	  <language>perl</language>
+	  <code>"protdist &lt; params"</code>
+	</format>
+	<group>0</group>
+      </attributes>
+    </parameter>
+
+	<!-- <parameter ismandatory="1" issimple="1"  type="Sequence"> -->
+    <parameter ismandatory="1" issimple="1" isinput="1" type="Sequence">
+      <name>infile</name>
+      <attributes>
+	<prompt>Alignement File</prompt>
+	<format>
+	  <language>perl</language>
+	  <!-- <code>"ln -sf $infile infile; "</code> -->
+	   <code>"ln -sf infile.phylip infile; "</code>
+	</format>
+	<group>-10</group>
+	<seqfmt>
+	  <value>12</value>
+	</seqfmt>
+	<pipe>
+	  <pipetype>readseq_ok_alig</pipetype>
+	  <language>perl</language>
+	  <code>1</code>
+	</pipe>
+		  <!-- Added for Swami-->
+	  <filenames>infile.phylip</filenames>
+	  <!-- -->
+      </attributes>
+    </parameter>
+
+    <parameter type="Excl">
+      <name>method</name>
+      <attributes>
+	<prompt>Distance model (P)</prompt>
+	<vdef><value>J</value></vdef>
+	<group>2</group>
+	<vlist>
+	  <value>J</value>
+	  <label>Jones-Taylor-Thornton matrix</label>
+	  <value>D</value>
+	  <label>Dayhoff PAM matrix</label>
+	  <value>K</value>
+	  <label>Kimura formula</label>
+	  <value>S</value>
+	  <label>Similarity table</label>
+	  <value>C</value>
+	  <label>Categories model</label>
+	</vlist>
+	<flist>
+	  <value>J</value>
+	  <code>""</code>
+	  <value>D</value>
+	  <code>"P\\n"</code>
+	  <value>K</value>
+	  <code>"P\\nP\\n"</code>
+	  <value>S</value>
+	  <code>"P\\nP\\nP\\n"</code>
+	  <value>C</value>
+	  <code>"P\\nP\\nP\\nP\\n"</code>
+	</flist>
+	<paramfile>params</paramfile>
+		      <comment><value>The P option selects one of the five distance methods, or the similarity table.
+		       The default method, if none is specified, is the Jones-Taylor-Thornton model. If the Categories
+		       distance is selected, the option T allows the user to supply the Transition/Transversion ratio
+		       that should be assumed at the underlying DNA level, and the option C, which allows the user to
+		       select among various nuclear and mitochondrial genetic codes. The transition/transversion ratio
+		       can be any number from 0.5 upwards.</value></comment>
+      </attributes>
+    </parameter>
+
+    <parameter type="Excl">
+      <name>gamma_dist</name>
+      <attributes>
+	<prompt>Gamma distribution of rates among positions (G)</prompt>
+	<vlist>
+	  <value>N</value>
+	  <label>No</label>
+	  <value>Y</value>
+	  <label>Yes</label>
+	  <value>G</value>
+	  <label>Gamma+Invariant</label>
+	</vlist>
+	<flist>
+	  <value>N</value>
+	  <code>""</code>
+	  <value>Y</value>
+	  <code>"G\\n"</code>
+	  <value>G</value>
+	  <code>"G\\nG\\n"</code>
+	</flist>
+	<precond>
+	  <language>perl</language>
+	  <code>$method eq "J" or $method eq "D" or $method eq "C"</code>
+	</precond>
+	<group>2</group>
+	<paramfile>params</paramfile>
+	<comment><value>The G option chooses Gamma distributed rates of evolution across amino acid positions.
+	 The program will prompt you for the Coefficient of Variation of rates. This is 1/sqrt(alpha), 
+	 where alpha is the more familiar "shape coefficient" of the Gamma distribution. If the "G" option is not selected,
+	 the program defaults to having no variation of rates among sites.</value></comment>
+      </attributes>
+    </parameter>
+
+    <parameter type="Paragraph">
+      <paragraph>
+	<name>bootstrap</name>
+	<prompt>Bootstrap options</prompt>
+	<parameters>
+
+	  <parameter type="Switch">
+	    <name>seqboot</name>
+	    <attributes>
+	      <prompt>Perform a bootstrap before analysis</prompt>
+	      <format>
+		<language>perl</language>
+		<code>($value) ? "seqboot &lt; seqboot.params &amp;&amp; mv -f outfile infile &amp;&amp; " : ""</code>
+	      </format>
+	      <vdef><value>0</value></vdef>
+	      <group>-5</group>
+	      <comment>
+				<value>This option sends the sequence file to seqboot for bootstrapping.  The -M option is not available
+				 here, so don't provide a bootstrapped file to the program.!</value>
+	      </comment>
+	    </attributes>
+	  </parameter>
+
+	  <parameter ismandatory="1" type="Excl">
+	    <name>resamp_method</name>
+	    <attributes>
+	      <prompt>Resampling methods</prompt>
+	      <vdef><value>bootstrap</value></vdef>
+	      <group>1</group>
+	      <vlist>
+		<value>bootstrap</value>
+		<label>Bootstrap</label>
+		<value>jackknife</value>
+		<label>Delete-half jackknife</label>
+		<value>permute</value>
+		<label>Permute species for each character</label>
+	      </vlist>
+	      <flist>
+		<value>permute</value>
+		<code>"J\\nJ\\n"</code>
+		<value>bootstrap</value>
+		<code>""</code>
+		<value>jackknife</value>
+		<code>"J\\n"</code>
+	      </flist>
+	      <comment>
+		<value>1. The bootstrap. Bootstrapping was invented by Bradley Efron in 1979, and its use in phylogeny
+		 estimation was introduced by me (Felsenstein, 1985b). It involves creating a new data set by sampling N
+		 characters randomly with replacement, so that the resulting data set has the same size as the original,
+		 but some characters have been left out and others are duplicated. The random variation of the results from
+		 analyzing these bootstrapped data sets can be shown statistically to be typical of the variation that you
+		 would get from collecting new data sets. The method assumes that the characters evolve independently, an
+		 assumption that may not be realistic for many kinds of data.</value>
+		<value>2. Delete-half-jackknifing. This alternative to the bootstrap involves sampling a random half of the
+		 characters, and including them in the data but dropping the others. The resulting data sets are half the size
+		 of the original, and no characters are duplicated. The random variation from doing this should be very similar
+		 to that obtained from the bootstrap. The method is advocated by Wu (1986).</value>
+		<value>3. Permuting species within characters. This method of resampling (well, OK, it may not be best to call
+		 it resampling) was introduced by Archie (1989) and Faith (1990; see also Faith and Cranston, 1991). It
+		 involves permuting the columns of the data matrix separately. This produces data matrices that have the
+		 same number and kinds of characters but no taxonomic structure. It is used for different purposes than the
+		 bootstrap, as it tests not the variation around an estimated tree but the hypothesis that there is no
+		 taxonomic structure in the data: if a statistic such as number of steps is significantly smaller in the
+		 actual data than it is in replicates that are permuted, then we can argue that there is some taxonomic
+		 structure in the data (though perhaps it might be just a pair of sibling species).</value>
+	      </comment>
+	      <precond>
+		<language>perl</language>
+		<code>$seqboot</code>
+	      </precond>
+	      <paramfile>seqboot.params</paramfile>
+	    </attributes>
+	  </parameter>
+
+	  <parameter ismandatory="1" type="Integer">
+	    <name>seqboot_seed</name>
+	    <attributes>
+	      <prompt>Random number seed (must be odd)</prompt>
+	      <format>
+		<language>perl</language>
+		<code>"$value\\n"</code>
+	      </format>
+		  <!--	<group>10000</group> -->
+	      <group>99</group>
+	      <ctrls>
+		<ctrl>
+		  <message>Random number seed must be odd</message>
+		  <language>perl</language>
+		  <code>$value &lt;= 0 || (($value % 2) == 0)</code>
+		</ctrl>
+	      </ctrls>
+	      <precond>
+		<language>perl</language>
+		<code>$seqboot</code>
+	      </precond>
+	      <paramfile>seqboot.params</paramfile>
+	    </attributes>
+	  </parameter>
+
+	  <parameter type="Integer">
+	    <name>replicates</name>
+	    <attributes>
+	      <prompt>How many replicates</prompt>
+	      <format>
+		<language>perl</language>
+		<code>($value &amp;&amp; $value != $vdef)? "R\\n$value\\n" : ""</code>
+	      </format>
+	      <vdef><value>100</value></vdef>
+	      <group>1</group>
+	      <ctrls>
+		<ctrl>
+		  <message>this server allows no more than 1000 replicates</message>
+		  <language>perl</language>
+		  <code>$replicates &gt; 1000</code>
+		</ctrl>
+	      </ctrls>
+	      <precond>
+		<language>perl</language>
+		<code>$seqboot</code>
+	      </precond>
+	      <paramfile>seqboot.params</paramfile>
+	    </attributes>
+	  </parameter>
+
+	</parameters>
+      </paragraph>
+
+    </parameter>
+
+
+    <parameter type="Paragraph">
+      <paragraph>
+	<name>weight_opt</name>
+	<prompt>Weight options</prompt>
+	<parameters>
+
+	  <parameter type="Switch">
+	    <name>weights</name>
+	    <attributes>
+	      
+	      <prompt>Use weights for sites (W)</prompt>
+	      <format>
+		<language>perl</language>
+		<code>($value)? "W\\n" : ""</code>
+	      </format>
+	      <group>1</group>
+	      <paramfile>params</paramfile>
+<comment><value>
+The W (Weights) option. This allows the user to read in a series of weights that tell how many times each character is to be counted.
+ If the weight for a character is zero (0) then that character is effectvely omitted when the tree is evaluated. If it is (1),
+ the character is to be counted once.
+ A value greater than one means the character is counted as if it were present that many times, a weight of 4 means
+ the character is counted 4 times. The values 0-9 give weights 0 through 9, while values A-Z give weights 10 through 35.</value>
+<value>
+ Weights are used to analyze subsets of characters, and can also be used for resampling of the data as in bootstrap and jackknife
+ resampling. For programs that allow weights to be greater than 1, they can also be used to emphasize information from some characters
+ more strongly than others. Of course, you must have some rationale for doing this. </value>
+
+<value>Weights are provided as a sequence of digits. For example:</value>
+<value>10011111100010100011110001100 </value>
+<value>The weights are to be provided in an input file. The weights in it are a simple string of digits or letters. Blanks in the
+ weightfile are skipped over and ignored, and new lines are ignored.
+</value>
+</comment>
+	    </attributes>
+	  </parameter>
+
+	  <parameter type="InFile">
+	    <name>weights_file</name>
+	    <attributes>
+	      
+	      <prompt>Weights file</prompt>
+	      <format>
+		<language>perl</language>
+
+		<!-- <code>($value)? "ln -s $weights_file weights; " : ""</code> -->
+		<code>($value)? "ln -s weights_file.param weights; " : ""</code>
+	      </format>
+	      <group>-1</group>
+	      <precond>
+		<language>perl</language>
+		<code>$weights</code>
+	      </precond>
+		<!-- Added for Swami-->
+	  <filenames>weights_file.param</filenames>
+	  <!-- -->
+	    </attributes>
+	  </parameter>
+
+	</parameters>
+      </paragraph>
+
+    </parameter>
+    
+    
+    <parameter ishidden="1" type="String">
+      <name>multiple_dataset</name>
+      <attributes>
+	<format>
+	  <language>perl</language>
+	  <code>"M\\nD\\n$replicates\\n"</code>
+	</format>
+	<group>1</group>
+	<precond>
+	  <language>perl</language>
+	  <code>$seqboot</code>
+	</precond>
+	<paramfile>params</paramfile>
+      </attributes>
+    </parameter>
+
+    <parameter ishidden="1" type="String">
+      <name>bootconfirm</name>
+      <attributes>
+	<format>
+	  <language>perl</language>
+	  <code>"Y\\n"</code>
+	</format>
+	<!--	<group>1000</group> -->
+	<group>90</group>
+	<precond>
+	  <language>perl</language>
+	  <code>$seqboot</code>
+	</precond>
+	<paramfile>seqboot.params</paramfile>
+      </attributes>
+    </parameter>
+
+    <parameter ishidden="1" type="String">
+      <name>bootterminal_type</name>
+      <attributes>
+	<format>
+	  <language>perl</language>
+	  <code>"0\\n"</code>
+	</format>
+	<!-- <group>-1</group>-->
+	<group>0</group>
+	<precond>
+	  <language>perl</language>
+	  <code>$seqboot</code>
+	</precond>
+	<paramfile>seqboot.params</paramfile>
+      </attributes>
+    </parameter>
+
+
+    <parameter type="Paragraph">
+      <paragraph>
+	<name>output</name>
+	<prompt>Output options</prompt>
+	<parameters>
+
+	  <parameter type="Switch">
+	    <name>printdata</name>
+	    <attributes>
+	      <prompt>Print out the data at start of run (1)</prompt>
+	      <format>
+		<language>perl</language>
+		<code>($value) ? "1\\n" : ""</code>
+	      </format>
+	      <vdef><value>0</value></vdef>
+	      <group>1</group>
+	      <paramfile>params</paramfile>
+	    </attributes>
+	  </parameter>
+
+	</parameters>
+      </paragraph>
+
+    </parameter>
+
+    <parameter type="Paragraph">
+      <paragraph>
+	<name>categ_opt</name>
+	<prompt>Categories model options</prompt>
+	<precond>
+	  <language>perl</language>
+	  <code>$method eq "C"</code>
+	</precond>
+	<group>3</group>
+	<parameters>
+
+	  <parameter type="Excl">
+	    <name>code</name>
+	    <attributes>
+	      <prompt>Genetic code (U)</prompt>
+	      <format>
+		<language>perl</language>
+		<code>($value and $value ne $vdef)? "U\\n$code\\n" : "" </code>
+	      </format>
+	      <vdef><value>U</value></vdef>
+	      <group>3</group>
+	      <vlist>
+		<value>U</value>
+		<label>U: Universal</label>
+		<value>M</value>
+		<label>M: Mitochondrial</label>
+		<value>V</value>
+		<label>V: Vertebrate mitochondrial</label>
+		<value>F</value>
+		<label>F: Fly mitochondrial</label>
+		<value>Y</value>
+		<label>Y: Yeast mitochondrial</label>
+	      </vlist>
+	      <precond>
+		<language>perl</language>
+		<code>$method eq "C"</code>
+	      </precond>
+	      <paramfile>params</paramfile>
+	    </attributes>
+	  </parameter>
+
+	  <parameter type="Excl">
+	    <name>categorization</name>
+	    <attributes>
+	      <prompt>Categorization of amino acids (A)</prompt>
+	      <format>
+		<language>perl</language>
+		<code>($value and $value ne $vdef) ? "A\\n$categorization\\n" : ""</code>
+	      </format>
+	      <vdef><value>G</value></vdef>
+	      <group>10</group>
+	      <vlist>
+		<value>G</value>
+		<label>G: George/Hunt/Barker</label>
+		<value>C</value>
+		<label>C: Chemical</label>
+		<value>H</value>
+		<label>H: Hall</label>
+	      </vlist>
+	      <comment>
+		<value>All have groups: (Glu Gln Asp Asn), (Lys Arg His), (Phe Tyr Trp) plus:</value>
+		<value>George/Hunt/Barker: (Cys), (Met Val Leu Ileu), (Gly Ala Ser Thr Pro)</value>
+		<value>Chemical: (Cys Met), (Val Leu Ileu Gly Ala Ser Thr), (Pro)</value>
+		<value>Hall: (Cys), (Met Val Leu Ileu), (Gly Ala Ser Thr), (Pro)</value>
+	    <value>&#169;Copyright 1980-2007. University of Washington.</value>
+	      </comment>
+	      <precond>
+		<language>perl</language>
+		<code>$method eq "C"</code>
+	      </precond>
+	      <paramfile>params</paramfile>
+
+	    </attributes>
+	  </parameter>
+
+	<!-- <parameter type="Integer"> -->  
+	<parameter type="Float">
+	    <name>change_prob</name>
+	    <attributes>
+	      <prompt>Prob change category (1.0=easy) (E)</prompt>
+	      <format>
+		<language>perl</language>
+		<code>($value and $value != $vdef) ? "E\\n$value\\n" : ""</code>
+	      </format>
+	      <vdef><value>0.4570</value></vdef>
+	      <group>3</group>
+	      <ctrls>
+		<ctrl>
+		  <message>Enter a value between 0.0 and 1.0</message>
+		  <language>perl</language>
+		  <code>$change_prob &lt; 0.0 || $change_prob &gt; 1.0</code>
+		</ctrl>
+	      </ctrls>
+	      <precond>
+		<language>perl</language>
+		<code>$method eq "C"</code>
+	      </precond>
+	      <paramfile>params</paramfile>
+	    </attributes>
+	  </parameter>
+
+	  <!-- <parameter type="Integer"> -->
+	  <parameter type="Float">
+	    <name>ratio</name>
+	    <attributes>
+	      <prompt>Transition/transversion ratio (T)</prompt>
+	      <format>
+		<language>perl</language>
+		<code>($value &amp;&amp; $value != $vdef)? "T\\n$value\\n" : ""</code>
+	      </format>
+	      <vdef><value>2.000</value></vdef>
+	      <group>3</group>
+	      <precond>
+		<language>perl</language>
+		<code>$method eq "C"</code>
+	      </precond>
+	      <paramfile>params</paramfile>
+	    </attributes>
+	  </parameter>
+
+
+
+	</parameters>
+      </paragraph>
+
+    </parameter>
+
+    <parameter type="Results">
+      <name>outfile</name>
+      <attributes>
+	<filenames>outfile</filenames>
+	<pipe>
+	  <pipetype>phylip_dist</pipetype>
+	  <language>perl</language>
+	  <code>$method ne "S"</code>
+	</pipe>
+
+      </attributes>
+    </parameter>
+
+    <parameter type="Results">
+      <name>params</name>
+      <attributes>
+	<filenames>params</filenames>
+      </attributes>
+    </parameter>
+
+    <parameter ishidden="1" type="String">
+      <name>confirm</name>
+      <attributes>
+	<format>
+	  <language>perl</language>
+	  <code>"Y\\n"</code>
+	</format>
+	<!--	<group>1000</group> -->
+	<group>90</group>
+	<paramfile>params</paramfile>
+      </attributes>
+    </parameter>
+
+    <parameter ishidden="1" type="String">
+      <name>terminal_type</name>
+      <attributes>
+	<format>
+	  <language>perl</language>
+	  <code>"0\\n"</code>
+	</format>
+	<!--	<group>-1</group> -->
+	<group>0</group>
+	<paramfile>params</paramfile>
+      </attributes>
+    </parameter>
+
+    <parameter type="Results">
+      <name>tmp_params</name>
+      <attributes>
+	<filenames>*.params</filenames>
+      </attributes>
+    </parameter>
+
+  </parameters>
+
+</pise>

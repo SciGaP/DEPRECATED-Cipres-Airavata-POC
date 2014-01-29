@@ -1,0 +1,1567 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pise SYSTEM "http://www.phylo.org/dev/rami/PARSER/pise.dtd" [
+<!ENTITY runtime SYSTEM "http://www.phylo.org/dev/rami/XMLDIR/triton_run_time.xml">
+]>
+<pise>
+	<head>
+		<title>Muscle</title>
+		<version>3.7</version>
+		<description>Create Multiple Alignments from Sequences or Profiles</description>
+		<authors>Robert C. Edgar</authors>
+		<reference>
+			Edgar, Robert C. (2004) MUSCLE: multiple sequence alignment
+			with high accuracy and high throughput, Nucleic Acids
+			Research 32(5), 1792-97.
+		</reference>
+		<reference>
+			Edgar, R.C. (2004) MUSCLE: a multiple sequence alignment
+			method with reduced time and space complexity. BMC
+			Bioinformatics 5(1): 113.
+		</reference>
+		<category>Phylogeny / Alignment</category>
+<!--Created by Mark Miller for Swami 6_04_2008 or thereabouts-->
+	</head>
+<!--order of command line flags doesn't matter in Muscle; the last value to the right for any parameter wins-->
+	<command>muscle</command>
+	<parameters>
+		&runtime;
+
+<!-- *************************************************************************
+	 Errors in the Manual (which is for Muscle 3.6, no manual for 3.7 exists:
+	 *************************************************************************
+	 The parameter -cluster has a modifier, which is not shown in the manual. The modifier can be upgma or neighborjoining
+	 I did not implement neghborjoining, because the author states this is slower AND less accurate than upgma.
+
+	 The choices for Datatype do not include nucleo, as stated in the manual. Instead, the modifiers are "dna" adnd "rna"
+	 
+	 The flag -clustalstrictout is used to get strict clustlw output, in contrast to the error in the manual.
+	 -->
+<!-- Group ordering for Muscle Group 0 = invocation from the command line  -->
+		<parameter ismandatory="1" ishidden="1" type="String">
+<!-- delivers the command line-->
+			<name>muscle</name>
+			<attributes>
+				<format>
+					<language>perl</language>
+					<code>"muscle"</code>
+				</format>
+				<group>0</group>
+			</attributes>
+		</parameter>
+<!-- <parameter ismandatory="1" issimple="1"  type="Sequence"> -->
+		<parameter ismandatory="1" isinput="1" type="Sequence">
+			<name>infile</name>
+			<attributes>
+				<prompt>Sequences File (must be in fasta format) (-infile)</prompt>
+				<format>
+					<language>perl</language>
+					<code>" -in infile.fasta"</code>
+<!-- Changed for Swami 
+						<code>  " -infile=$value"</code> 
+						<language>seqlab</language>
+						<code>  " -infile=value"</code                       
+						Changed for Swami -->
+				</format>
+				<group>2</group>
+<!-- Added for Swami to specify the input name -->
+				<filenames>infile.fasta</filenames>
+			</attributes>
+		</parameter>
+		<parameter issimple="1" ismandatory="1" type="Excl">
+			<name>data_type</name>
+			<attributes>
+				<prompt>Data type (-seqtype)</prompt>
+				<format>
+					<language>perl</language>
+					<code>"-seqtype $value"</code>
+				</format>
+				<vlist>
+					<value>protein</value>
+					<label>Amino acid</label>
+					<value>dna</value>
+					<label>DNA</label>
+					<value>rna</value>
+					<label>RNA</label>
+					<value>auto</value>
+					<label>Auto</label>
+				</vlist>
+				<vdef>
+					<value>auto</value>
+				</vdef>
+				<group>3</group>
+			</attributes>
+		</parameter>
+		<parameter issimple="1" type="Switch">
+		<name>stable</name>
+			<attributes>
+				<prompt>Preserve the order of the input sequences</prompt>
+				<format>
+					<language>perl</language>
+					<code>($value)? " -stable":""</code>
+				</format>
+				<vdef>
+					<value>0</value>
+				</vdef>
+				<group>4</group>
+				<comment>
+<value>By default, Muscle re-arranges sequences so that similar sequences are adjacent in the output
+file. (This is done by ordering sequences according to a prefix traversal of the guide tree).
+This makes the alignment easier to evaluate by eye. If you want to the sequences to be output in
+the same order as the input file, you can use the –stable option.</value>
+				</comment>
+			</attributes>
+		</parameter>
+<!--  matrixscorefile provides name where to write a score file. -->
+		<parameter issimple="1" type="Switch">
+		<name>make_scorefile</name>
+			<attributes>
+				<prompt>Write a Matrix Score File</prompt>
+				<format>
+					<language>perl</language>
+					<code>($value)? "-scorefile matrixscorefile.txt" : ""</code>
+				</format>
+				<vdef><value>0</value></vdef>
+				<group>5</group>
+				<comment>
+<value>Write a score file. This contains one line for each column in the alignment.
+Each line contains the letters in the column followed by the
+average BLOSUM62 score over pairs of letters in the column.</value>
+				</comment>
+			</attributes>
+		</parameter>
+<!--  not correct for PiseXML; Swami only, for PiseXML,  the output file name is non-deterministic -->
+		<parameter ishidden="1" type="Results">
+			<name>matrixscorefile</name>
+			<attributes>
+				<filenames>matrixscorefile.txt</filenames>
+				<precond>
+					<language>perl</language>
+					<code>$make_scorefile</code>
+				</precond>
+			</attributes>
+		</parameter>
+		<parameter type="Paragraph">
+			<paragraph>
+				<name>clusteronly_para</name>
+				<prompt>Cluster Only Parameters</prompt>
+				<parameters>
+<!--   comment Choose between alignment or just clustering --> 
+					<parameter type="Switch">
+						<name>clusteronly</name>
+						<attributes>
+							<prompt>Use clustering only (upgma)</prompt>
+							<format>
+								<language>perl</language>
+								<code>($value)? "-cluster upgma":""</code>
+							</format>
+							<vdef>
+								<value>0</value>
+							</vdef>
+							<group>1</group>
+							<comment>
+<value>The fast clustering algorithm in Muscle can be used to prepare data for other applications.</value>
+<value>Typical usage is:</value>
+<value>muscle -cluster -tree1 tree.phy -maxiters 1</value>
+<value>The sequences will be clustered, and a tree written to an tree.phy.
+Options -weight1, -distance1, -cluster1 and -root1 can be applied if desired. UPGMA 
+clustering is used.</value>
+							</comment>
+						</attributes>
+					</parameter>
+					<parameter type="Integer">
+						<name>clusteronlymaxiters</name>
+						<attributes>
+							<prompt>Number of iterations for Clustering (-maxiters)</prompt>
+ 							<precond>
+								<language>perl</language>
+								<code>$clusteronly</code>
+							</precond>
+							<format>
+								<language>perl</language>
+								<code> " -maxiters $value" </code>
+							</format>
+							<vdef><value>1</value></vdef>
+							<group>6</group>
+  							<ctrls>
+								<ctrl>
+									<message>At least one iteration is required</message>
+									<language>perl</language>
+									<code>$clusteronlymaxiters &lt;  1</code>
+								</ctrl>
+							</ctrls>
+						</attributes>
+					</parameter>
+				</parameters>
+			</paragraph>
+		</parameter>
+<parameter type="Paragraph">
+	<paragraph>
+	<name>runparams</name>
+	<prompt>Alignment Parameters</prompt>         
+<!-- By default, output is written in FASTA format. All letters are upper-case and gaps are represented by dashes.
+			Output is written to the following destination(s):
+			If no other output option is given, then standard output.
+			If out filename is given, to the specified file.
+			For all of the xxxout options (e.g. fastaout, clwout), to the specified files. -->
+				<parameters>
+					<parameter type="Integer">
+					<name>maxiterations</name>
+						<attributes>
+							<prompt>Number of iterations (-maxiters)</prompt>
+ 							<precond>
+								<language>perl</language>
+								<code>!$clusteronly</code>
+							</precond>
+							<format>
+								<language>perl</language>
+								<code> " -maxiters $value" </code>
+							</format>
+							<vdef><value>16</value></vdef>
+							<group>8</group>
+	  						<ctrls>
+								<ctrl>
+									<message>At least one iteration must be specified</message>
+									<language>perl</language>
+									<code>$maxiterations &lt; 1</code>
+								</ctrl>
+							</ctrls>	
+							<comment>
+<value>If you specify 1, 2 or 3, then this is exactly the number of iterations that will be performed. If the value is greater than 3, then Muscle will continue up to the
+maximum you specify or until convergence is reached, which ever happens sooner. The default is 16. If you have a large number of sequences, refinement may be rather slow.
+If you have a large number of sequences (a few thousand), or they are very long, then the default settings of may be too slow for practical use. A good compromise between
+speed and accuracy is to run just the first two iterations of the algorithm. On average, this gives accuracy comparable to T-Coffee and speeds much faster than CLUSTALW. This is done
+by setting maxiters = 2.</value>
+							</comment>
+							<comment>
+<value>The default settings may be too slow for practical use if you have a few thousand sequences or more, or if they are very long. In this situation, use the option maxiters 2,
+running just the first two iterations. This offers a good compromise between speed and accuracy (accuracy with these settings is comparable to T-Coffee, with speeds much faster than ClustalW).</value>
+							</comment>
+						</attributes>
+					</parameter>
+  					<parameter ismandatory="1" ishidden="1" type="Float">
+						  <!-- hid this parameter, and made it equal to runtime -->
+					<name>max_hours</name>
+						<attributes>
+						<!--	<prompt>Maximum time (hours) to run the program (-maxhours) </prompt> -->
+							<precond>
+								<language>perl</language>
+								<code>!$clusteronly</code>
+							</precond>
+							<format>
+								<language>perl</language>
+								<code> "-maxhours $runtime" </code>
+							</format>
+						<!--	<vdef><value>1</value></vdef> -->
+ 						<!--	<ctrls>
+								<ctrl>
+									<message>The max hours value must be greater than zero</message>
+									<language>perl</language>
+									<code>$max_hours &lt;=  runtime</code>
+								</ctrl>
+							</ctrls> -->
+							<group>9</group>
+						<!--	<comment>
+ <value>Used for large alignments, gives best alignment in the designated time. If this time is exceeded, muscle will write out current alignment and stop. Decimal point numbers
+are allowed. No alignment will be produced if the time limit is too small.</value> 
+							</comment> -->
+						</attributes>
+					</parameter>
+
+<!-- Specifies the amount of memory MUSCLE uses. For Swami, we are setting this value and making it invisible. 
+If the limit is exceeded, MUSCLE quits, saving the best alignment so far produced (if any). This feature has been hacked on
+top of code that wasn't really designed for it. So it doesn't always work perfectly, but is better than nothing. The ideal solution
+would be to implement linear space dynamic programming code (e.g., the Myers-Miller algorithm) for situations where memory is tight -->
+ 				<parameter ismandatory="1" type="Integer">	
+					<name>max_mem</name>
+						<attributes>
+							<prompt>Set the Maximum Memory to be allocated for this job</prompt>
+							<format>
+								<language>perl</language>
+								<code>"-maxmb $value"</code>
+							</format>
+							<vdef><value>30000000</value></vdef>
+							<group>10</group>
+							 <ctrls>
+								<ctrl>
+									<message>The max memory value must be greater than 500</message>
+									<language>perl</language>
+									<code>$max_mem &lt; 500</code>
+								</ctrl>
+								<ctrl>
+									<message>The max memory value must be less than or equal to 30000000</message>
+									<language>perl</language>
+									<code>$max_mem &gt; 30000000</code>
+								</ctrl>
+							</ctrls>
+							<comment>
+<value>Specifies the amount of memory (in mb) that MUSCLE uses. Allowed values are 500-2000 mb. If the limit is exceeded, MUSCLE quits, saving the best alignment so far produced (if any). This feature has been hacked on
+top of code that wasn't really designed for it. So it doesn't always work perfectly, but is better than nothing. The ideal solution
+would be to implement linear space dynamic programming code (e.g., the Myers-Miller algorithm) for situations where memory is tight.</value>
+							</comment>
+						</attributes>
+					</parameter>
+<!--  The profile scoring function -->
+					<parameter ismandatory="1" type="Excl">
+					<name>protprofilefunction</name>
+						<attributes>
+							<prompt>Specify Protein Profile Scoring Function</prompt>
+							<precond>
+								<language>perl</language>
+								<code>$data_type eq "protein"</code>
+							</precond>
+							<format>
+								<language>perl</language>
+								<code> "$value"</code>
+							</format>
+							<vlist>
+								<value>-le</value>
+								<label>Log-expectation</label>
+								<value>-sp</value>
+								<label>PAM200</label>
+								<value>-sv</value>
+								<label>VTML240</label>
+							</vlist>
+							<group>11</group>
+							<comment>
+<value>Three different protein profile scoring functions are supported: the log-expectation score (–le option)
+and  2 sum of pairs scores: either the PAM200  (–sp) or the VTML240 matrix (–sv). The log-expectation score is the default as it gives better results on our tests, but is typically
+somewhere between two or three times slower than the sum-of-pairs score. For nucleotides, –spn is currently
+the only option (which is of course the default for nucleotide data, so you don't need to specify this option)</value>
+							</comment>
+						</attributes>
+					</parameter> 
+<!--   hydro	Integer	5	Window size for determining whether a region is hydrophobic.  -->
+  					<parameter type="Integer">
+					<name>hydrowindow</name>
+						<attributes>
+							<prompt>Window size for determining whether a region is hydrophobic. Protein only. (-hydro)</prompt>
+ 							<precond>
+								<language>perl</language>
+								<code>!$clusteronly &amp;&amp; $data_type eq "protein"</code>
+							</precond>
+							<format>
+								<language>perl</language>
+								<code> "-hydro $value" </code>
+							</format>
+							<vdef><value>5</value></vdef>
+							<group>12</group>
+							<ctrls>
+								<ctrl>
+									<message>The hydrophobic window size must be must be greater than or equal to 1</message>
+									<language>perl</language>						 
+									<code>$hydrowindow  &lt; 1</code>
+								</ctrl>
+							</ctrls>
+							<comment>
+<value> </value>
+							</comment>
+						</attributes>
+					</parameter> 
+					<parameter type="Float">
+					<name>hydrofactormultiplier</name>
+						<attributes>
+							<prompt>Multiplier for gap open/close penalties in hydrophobic regions, protein only (-hydrofactor)</prompt>
+	 						<precond>
+								<language>perl</language>
+								<code>!$clusteronly &amp;&amp; $data_type eq "protein"</code>
+							</precond>
+							<format>
+								<language>perl</language>
+								<code> " -hydrofactor $value" </code>
+							</format>
+							<vdef><value>1.2</value></vdef>
+							<group>13</group>
+							<ctrls>
+								<ctrl>
+									<message>The hydrophobic multiplier must be greater than 0</message>
+									<language>perl</language>							   
+									<code>$hydrofactormultiplier  &lt;= 0</code>
+								</ctrl>
+							</ctrls>
+						</attributes>
+					</parameter>
+<!--     DNA profile scoring matrix set  to -spn by default for dna data -->
+<!--				<parameter ismandatory="1" ishidden="1" type="String">
+					<name>dnaprofile</name>
+						<attributes>
+							<precond>
+								<language>perl</language>
+								<code>$data_type eq "dna" || $data_type eq "rna"</code>
+							</precond>
+							<format>
+								<language>perl</language>
+								<code>"-spn"</code>
+							</format>
+							<group>14</group>	
+						</attributes>
+					</parameter> -->
+			</parameters>
+	</paragraph>
+</parameter>
+<!--    logfile option  -->              
+					<parameter type="Switch">
+					<name>logfile</name>
+						<attributes>
+							<prompt>Produce a logfile containing the command line? (-log)</prompt>
+							<format>
+								<language>perl</language>
+								<code>($value) ? " -log logfile.txt":""</code>
+							</format>
+							<vdef><value>1</value></vdef>
+							<group>15</group>
+							<comment>
+<value>You can specify a log file by using this option. A message will be written to the log file when muscle starts and stops. Error and warning messages will also be written to the log.</value>
+							</comment>
+						</attributes>
+					</parameter>
+<!--    verbose option  --> 	            
+					<parameter type="Switch">
+					<name>verboselogfile</name>
+						<attributes>
+							<prompt>Produce a more verbose logfile? (-verbose)</prompt>
+							<format>
+								<language>perl</language>
+								<code>($value) ? " -verbose":""</code>
+							</format>
+							<vdef><value>0</value></vdef>
+							<group>16</group>
+							<comment>
+<value>If –verbose is specified, then more information will be written, including the command line used to invoke muscle, the resulting internal parameter settings, and also progress messages.IThe author highly recommends using –verbose and –log;. This enables a user to verify whether a particular alignment was completed and to review any errors or warnings that occurred.</value>
+						</comment>
+					</attributes>
+				</parameter>
+				<parameter type="Results">
+				<name>logfileout</name>
+						<attributes>
+							<precond>
+								<language>perl</language>
+								<code>$logfile</code>
+							</precond>
+							<filenames>logfile.txt</filenames>
+						</attributes>
+				</parameter>
+				<parameter type="Results">
+				<name>verboselogfileout</name>
+						<attributes>
+							<precond>
+								<language>perl</language>
+								<code>$verboselogfile</code>
+							</precond>
+							<filenames>vlogfile.txt</filenames>
+						</attributes>
+				</parameter>
+<!--    The possibility of using the quiet option --> 
+<!--			<parameter type="Switch">
+				<name>quiet</name>
+					<attributes>
+						<prompt>Run without writing messages to an output. (-quiet)</prompt>
+						<format>
+							<language>perl</language>
+							<code>($value) ? " -quiet:""</code>
+						</format>
+						<vdef><value>0</value></vdef>
+						<group>17</group>
+						<comment>
+<value>If –verbose is specified, then more information will be written, including the command line used to invoke muscle, the resulting internal parameter settings, and also progress messages.IThe author highly recommends using –verbose and –log;. This enables a user to verify whether a particular alignment was completed and to review any errors or warnings that occurred.</value>
+						</comment>
+					</attributes>
+				</parameter>-->	 
+<parameter type="Paragraph">
+	<paragraph>
+	<name>User_matrix</name>
+	<prompt>User Supplied Matrices</prompt>
+			<parameters> 
+  					<parameter type="Switch">
+					<name>add_matrix</name>
+						<attributes>
+							<prompt>User Supplied Matrix </prompt>
+							<precond>
+								<language>perl</language>
+								<code>!$clusteronly</code>
+							</precond>
+							<format>
+								<language>perl</language>
+								<code>($value)? "-matrix" : ""</code>
+							</format>
+							<vdef><value>0</value></vdef>
+							<group>18</group>
+							<comment>
+<value>You can specify your own substitution matrix by using the -matrix option. This reads a protein substitution matrix in NCBI or WU-BLAST format. The alphabet is assumed to be amino acid, and sum-of-pairs scoring is used. The -gapopen, -gapextend and -center parameters should be specified; normally you will specify a zero value for the center. Note that gap penalties MUST be negative. The environment variable MUSCLE_MXPATH can be used to specify a path where the matrices are stored. </value>
+<value> </value>
+<value>For example:</value>
+<value>muscle -in seqs.fa -out seqs.afa -matrix blosum62 -gapopen -12.0 -gapextend -1.0 -center 0.0</value>
+<value> </value>
+<value>You can hack a nucleotide matrix by pretending that AGCT are amino acids and making a 20x20 matrix out of the original 4x4 matrix.</value>
+							</comment>
+						</attributes>
+					</parameter>
+ 					<parameter type="InFile">
+					<name>mymatrix</name>
+						<attributes>
+							<prompt>Matrix File (NCBI or WU-BLAST format)</prompt>
+							<precond>
+								<language>perl</language>
+								<code>$add_matrix</code>
+							</precond>
+							<format>
+								<language>perl</language>
+								<code>""</code>
+							</format>
+							<group>19</group>
+							<filenames>user_matrix</filenames>
+						</attributes>
+					</parameter>  
+					<parameter type="Float">
+					<name>gpopen</name>
+						<attributes>
+							<prompt>Gap Open Penalty (must be negative)</prompt>
+							<precond>
+								<language>perl</language>
+								<code>$add_matrix</code>
+							</precond>
+							<format>
+								<language>perl</language>
+								<code> " -gapopen $value"</code>
+							</format>
+							<ctrls>
+								<ctrl>
+									<message>The gap open penalty must be a negative number</message>
+									<language>perl</language>
+									<code>$gpopen &gt;=  0</code>
+								</ctrl>
+							</ctrls>
+							<group>20</group>
+						</attributes>
+					</parameter>  
+					<parameter type="Float">
+					<name>gpextend</name>
+						<attributes>
+							<prompt>Gap Extend Penalty (must be negative)</prompt>
+							<precond>
+								<language>perl</language>
+								<code>$add_matrix</code>
+							</precond>
+							<format>
+								<language>perl</language>
+								<code> " -gapextend $value"</code>
+							</format>
+							<ctrls>
+								<ctrl>
+									<message>The gap extend penalty must be a negative number</message>
+									<language>perl</language>
+									<code>$gpextend &gt;=  0</code>
+								</ctrl>
+							</ctrls>
+							<group>21</group>
+						</attributes>
+					</parameter>  
+					<parameter type="Float">
+					<name>ctr</name>
+						<attributes>
+							<prompt>Center Value (must be zero or negative)</prompt>
+							<precond>
+								<language>perl</language>
+								<code>$add_matrix</code>
+							</precond>
+							<format>
+								<language>perl</language>
+								<code> " -center $value"</code>
+							</format>
+							<vdef><value>0</value></vdef>
+							<ctrls>
+								<ctrl>
+									<message>The center value is usually 0, MUST be less than or equal to zero</message>
+									<language>perl</language>
+									<code>$ctr &gt; 0</code>
+								</ctrl>
+							</ctrls>
+							<group>22</group>
+						</attributes>
+					</parameter>
+				</parameters>
+		</paragraph>
+	</parameter>
+<parameter type="Paragraph">
+	<paragraph>
+	<name>Diagonal_Options</name>
+	<prompt>Diagonal Options</prompt>
+		<parameters>
+  					<parameter type="Switch">
+					<name>use_diags</name>
+						<attributes>
+							<prompt>Use Diagonals</prompt>
+							<precond>
+								<language>perl</language>
+								<code>!$clusteronly</code>
+							</precond>
+							<format>
+								<language>perl</language>
+								<code>($value) ? "" : ""</code>
+							</format>
+							<vdef><value>0</value></vdef>
+							<group>23</group>
+							<comment>
+<value></value>
+							</comment>
+						</attributes>
+					</parameter>
+					<parameter type="List">
+					<name>diagfunction</name>
+						<attributes>
+							<prompt>Diagonal Functions (-diags)</prompt>
+							<precond>
+								<language>perl</language>
+								<code>$use_diags</code>
+							</precond>
+							<format>
+								<language>perl</language>
+								<code> "$value"</code>
+							</format>
+							<vdef>
+								<value>-diags</value>
+							</vdef>
+							<vlist>
+								<value>-diags1</value>
+								<label>Iteration1</label>
+								<value>-diags2</value>
+								<label>Iteration2</label>
+								<value>-diags</value>
+								<label>Iterations 1and 2</label>
+							</vlist>
+							<group>24</group>
+							<comment>
+<value>The –diags option optimizes for speed by finding common words (6-mers in a compressed amino acid alphabet) between the two sequences as seeds for diagonals. For large numbers of closely related sequences, this option works very well, but sometimes has lower average accuracy. If you want the fastest possible speed, then the following example shows the applicable options for proteins:</value>
+<value></value>
+<value>Maxiters=1; Diagonal Iterations 1 and 2; Profile Matrix=VTML240; Distance measure =kbit20_3</value>
+<value></value>
+<value>If the number of sequences exceeds, say, several thousand, or if they are very long, the kbit20_3 option may cause a memory issue. If so, you can try using the default distance settings.</value>
+<value></value>
+<value>Maxiters=1; Diagonal Iteration 1; Profile Matrix=VTML240</value>
+<value></value>
+<value>For nucleotides, use:</value>
+<value></value>
+<value>Maxiters=1; Diagonal Iterations 1 and 2</value>
+<value></value>
+<value>Muscle uses k-mer extension to find diagonals. It is disabled by default, as it causes a slight reduction in average accuracy. You may select k-mer extension separately for iteratons 1 or 2 (or both) because it would be reasonable to enable diagonals in the first iteration but not the second. The main goal of the first iteration is to construct a multiple alignment quickly in order to improve the distance matrix, which is not very sensitive to alignment quality. The goal of the second iteration is to make the best possible progressive alignment</value>
+							</comment>
+						</attributes>
+					</parameter> 
+					<parameter type="Integer">
+					<name>maxdiagdist</name>
+						<attributes>
+							<prompt>Maximum distance between two diagonals that allows them to merge into one diagonal. (-diagbreak)</prompt>
+							<precond>
+								<language>perl</language>
+								<code>$use_diags</code>
+							</precond>
+							<format>
+								<language>perl</language>
+								<code> " -diagbreak $value" </code>
+							</format>
+							<vdef><value>1</value></vdef>
+							<ctrls>
+								<ctrl>
+									<message>The maximum distance between two diagonals must be greater than or equal to 1</message>
+									<language>perl</language>
+									<code>$maxdiagdist &lt; 1</code>
+								</ctrl>
+							</ctrls>
+							<group>25</group>
+						</attributes>
+					</parameter>  
+					<parameter type="Integer">
+					<name>mindiaglength</name>
+						<attributes>
+							<prompt>Minimum length of diagonal (-diaglength)</prompt>
+							<precond>
+								<language>perl</language>
+								<code>$use_diags</code>
+							</precond>
+							<format>
+								<language>perl</language>
+								<code> " -diaglength $value" </code>
+							</format>
+							<vdef><value>24</value></vdef>
+							<group>26</group>
+							<ctrls>
+								<ctrl>
+									<message>The minimum length of the diagonal must not be less than 1</message>
+									<language>perl</language>
+									<code>$mindiaglength  &lt; 1</code>
+								</ctrl>
+							</ctrls>
+							<comment>
+<value></value>
+							</comment>
+						</attributes>
+					</parameter>
+					<parameter type="Integer">
+					<name>diagmarginpos</name>
+						<attributes>
+							<prompt>Discard this many positions at ends of diagonal (-diagmargin)</prompt>
+							<precond>
+								<language>perl</language>
+								<code>$use_diags</code>
+							</precond>
+							<format>
+								<language>perl</language>
+								<code> " -diagmargin $value" </code>
+							</format>
+							<vdef><value>5</value></vdef>
+							<group>27</group>
+							<ctrls>
+								<ctrl>
+									<message>You must discard at least 1 position at the end of a diagonal</message>
+									<language>perl</language>
+									<code>$diagmarginpos  &lt; 1</code>
+								</ctrl>
+							</ctrls>
+							<comment>
+<value></value>
+							</comment>
+						</attributes>
+					</parameter>
+			</parameters>
+		</paragraph>
+	</parameter>                           
+<!--   use guide tree option  -->      
+<parameter type="Paragraph">
+	<paragraph>
+	<name>tree_options</name>
+	<prompt>Tree parameters</prompt>
+		<parameters>
+				<parameter type="Switch">
+				<name>use_guide_tree</name>
+					<attributes>
+						<prompt>Provide a Guide Tree</prompt>					
+							<precond>
+								<language>perl</language>
+								<code>!$clusteronly</code>
+							</precond>
+						<format>
+							<language>perl</language>
+							<code>($value)? "-usetree_nowarn" : ""</code>
+						</format>
+						<group>28</group>
+						<comment>
+<value>Users can provide a guide tree to help with their sequence alignments.	</value>
+						</comment>
+					</attributes>
+				</parameter>
+<!--   guide tree upload -->
+  				<parameter type="InFile">
+				<name>guidetree</name>
+					<attributes>
+						<prompt>Guide Tree File; Newick/Phylip format (-usetree)</prompt>
+						<precond>
+							<language>perl</language>
+							<code>$use_guide_tree</code>
+						</precond>
+						<format>
+							<language>perl</language>
+<!--  changed for swami   <code> ($value)?" -usetree=$value":""</code>  -->
+							<code> "guidetree.dnd"</code> 
+						</format>
+						<group>29</group> 
+<!--  Added for Swami -->
+						<filenames>guidetree.dnd</filenames>
+						<comment>
+<value>You can specify a guide tree for your alignment. It must be in Phylip/Newick format (.dnd file). WARNING: Do not use this option just because you believe
+that you have an accurate evolutionary tree for your sequences. The best guide tree for multiple sequence alignment is not the correct evolutionary tree. This can be
+understood by the following argument. Alignment accuracy decreases with lower sequence identity. It follows that a given set of profiles the two that can be aligned
+most accurately will tend to be the pair with the highest identity, i.e. at the shortest evolutionary distance. This is exactly the pair selected by the nearest-neighbor
+criterion that Muscle uses by default. When mutation rates are variable, the evolutionary neighbor may not be the nearest neighbor. This explains why a nearest-neighbor
+tree may be superior to the true evolutionary tree for for guiding a progressive alignment.</value>
+						</comment>
+					</attributes>
+				</parameter>		
+<!--	Save tree produced in first or second iteration to given file in Newick (Phylip-compatible) format. --> 
+				<parameter type="Switch">
+				<name>make_tree1file</name>
+					<attributes>
+						<prompt>Save tree produced in first iteration in Newick (Phylip-compatible) format</prompt>
+						<format>
+							<language>perl</language>
+							<code>($value)? "-tree1 treeiteration1.dnd" : ""</code>
+						</format>
+						<group>30</group>
+					</attributes>
+				</parameter>
+<!--   not correct for PiseXML; Swami only  Results file for treefile1 --> 
+				<parameter ishidden="1" type="Results">
+				<name>maketree1filename</name>
+					<attributes>
+						<prompt>Save tree produced in second iteration to given file in Newick (Phylip-compatible) format</prompt>
+						<precond>
+							<language>perl</language>
+							<code>$make_tree1file</code>
+						</precond>
+						<filenames>treeiteration1.dnd</filenames>
+					</attributes>
+				</parameter>
+  				<parameter type="Switch">
+					<name>make_tree2file</name>
+					<attributes>
+						<prompt>Save tree produced in second iteration in Newick (Phylip-compatible) format</prompt>
+							<precond>
+								<language>perl</language>
+								<code>!$clusteronly</code>
+							</precond>
+						<format>
+							<language>perl</language>
+							<code>($value)? "-tree2 treeiteration2.dnd" : ""</code>
+						</format>
+						<group>31</group>
+					</attributes>
+				</parameter>
+<!--  not correct for PiseXML; Swami only Results file for treefile2 -->
+  				<parameter ishidden="1" type="Results">
+				<name>maketree2filename</name>
+					<attributes>
+						<prompt>Save tree produced in second iteration to given file in Newick (Phylip-compatible) format</prompt>
+						<precond>
+							<language>perl</language>
+							<code>$make_tree2file</code>
+						</precond>
+						<filenames>treeiteration2.dnd</filenames>
+					</attributes>
+				</parameter>
+			</parameters>
+		</paragraph>
+	</parameter>
+	<parameter type="Paragraph">
+		<paragraph>
+		<name>options1</name>
+		<prompt>First Stage Options</prompt>
+			<parameters>
+				<parameter ismandatory="1" type="Switch">
+				<name>use_weights_1</name>
+					<attributes>
+						<prompt>Use Weights for Iterations 1 and 2</prompt>
+						<format>
+							<language>perl</language>
+							<code>($value)? "" : ""</code>
+						</format>
+						<group>30</group>
+						<vdef><value>0</value></vdef>
+					</attributes>
+				</parameter>
+				<parameter ismandatory="1" type="Excl">
+				<name>weight1</name>
+<!-- comment used with alignment or clustering -->
+					<attributes>
+						<prompt>Sequence weighting scheme for Iteration 1: (-weight1)</prompt>
+						<format>
+							<language>perl</language>
+							<code> " -weight1 $value"</code>
+						</format>
+						<vdef><value>clustalw</value></vdef>
+						<vlist>
+							<value>henikoff</value>
+							<label>Henikoff</label>
+							<value>henikoffpb</value>
+							<label>Mod. Henikoff</label>
+							<value>gsc</value>
+							<label>GSC</label>
+							<value>clustalw</value>
+							<label>ClustalW</label>
+							<value>threeway</value>
+							<label>Gotoh</label>
+						</vlist>
+						<group>32</group>
+						<comment>
+<value>weight1 is used in iterations 1 and 2; none=all sequences have equal weight; Henokoff = Henikoff and Henikoff, Modified Henikoff = Henikoff as used in Psi-BLAST[
+ClustalW=CLUSTALW method, Gotoh = Gotoh three-way method.</value>
+						</comment>
+					</attributes>
+				</parameter>                     
+<!--  comment  used with protein alignment only -->
+				<parameter type="Excl">
+				<name>distance1p</name>
+					<attributes>
+						<prompt>Distance measure for iteration 1; Protein only (-distance1)</prompt>
+<!--  &amp;&amp; $clusteronly = "-align"</code> -->
+						<precond>
+							<language>perl</language>
+							<code>$data_type eq "protein" </code>
+						</precond>
+						<format>
+							<language>perl</language>
+							<code>"-distance1 $value"</code>
+						</format>
+						<vdef><value>kmer6_6 </value></vdef>
+						<vlist>
+							<value>kmer6_6</value>
+							<label>kmer6_6</label>
+							<value>kmer20_3</value>
+							<label>kmer20_3</label>
+							<value>kmer20_4</value>
+							<label>kmer20_4</label>
+							<value>kbit20_3</value>
+							<label>kbit20_3</label>
+							<value>kmer4_6</value>
+							<label>kmer4_6</label>
+						</vlist>
+						<group>33</group>
+					</attributes>
+				</parameter>
+<!--			<parameter type="String">
+				<name>distance1n</name>
+ 			comment used with dna alignment only, just default value
+					<attributes>
+						<prompt>Distance measure for iteration 1 (-distance1)</prompt>
+						<precond>
+							<language>perl</language>
+							<code>$data_type="nucleo" </code>
+						</precond>
+						<format>
+							<language>perl</language>
+							<code>""</code>
+						</format>
+						<group>34</group>
+					</attributes>
+				</parameter> -->
+				<parameter ismandatory="1" type="Excl">
+				<name>cluster1</name>
+					<attributes>
+						<prompt>Clustering for Iterations 1 and 2: (-cluster1)</prompt>
+						<format>
+							<language>perl</language>
+							<code> " -cluster1 $value "</code>
+						</format>
+						<vdef><value>upgmb</value></vdef>
+						<vlist>
+							<value>upgma</value>
+							<label>UPGMA</label>
+							<value>upgmb</value>
+							<label>UPGMB</label>
+							<value>neighborjoining</value>
+							<label>Neighbor Joining</label>
+						</vlist>
+						<group>35</group>
+						<comment>
+<value>UPGMB is a method based on a combination of both UPGMA and Neighbor Joining (called here UPGMB).</value>
+						</comment>
+					</attributes>
+				</parameter> 
+<!--  comment SUEFF	Floating point value between 0 and 1.	valid if upgmb is valid for cluster1.
+Constant used in UPGMB clustering. Determines the relative fraction of average linkage (SUEFF) vs. 
+nearest-neighbor linkage (1 – SUEFF) -->
+  				<parameter type="Float">
+				<name>sueff1</name>
+					<attributes>
+						<prompt>SUEFF(must be between 0 and 1)</prompt>
+						<precond>
+							<language>perl</language>
+							<code>$cluster1 eq "upgmb"</code>
+						</precond>
+						<format>
+							<language>perl</language>
+							<code> " -sueff $value"</code>
+						</format>
+						<vdef><value>0.1</value></vdef>
+						<ctrls>
+							<ctrl>
+								<message>The SUEFF Value Must be > 0 and 1 or less</message> 
+								<language>perl</language>
+  								<code>$sueff1 &lt;= 0 </code>
+							</ctrl>
+						</ctrls>
+						<ctrls>
+ 						<ctrl>
+								<message>The SUEFF Value Must be > 0 and 1 or less</message> 
+								<language>perl</language>
+  								<code>$sueff1 &gt; 1</code>
+							</ctrl>
+						</ctrls>	
+						<group>36</group>
+					</attributes>
+				</parameter>
+<!--  	comment tree root1 is for alignment or clustering -->	
+				<parameter ismandatory="1" type="Excl">
+				<name>root1</name>
+					<attributes>
+						<prompt>Method used to root tree in iterations 1 and 2 (-root1)</prompt>
+						<format> 
+							<language>perl</language>
+							<code>"-root1 $value"</code>
+						</format>
+						<vdef><value>pseudo</value></vdef>
+						<vlist>
+							<value>pseudo</value>
+							<label>Pseudo</label>
+							<value>midlongestspan</value>
+							<label>Mid longest Span</label>
+							<value>minavgleafdist</value>
+							<label>Min Avg Leaf Distance</label>
+						</vlist>
+						<group>37</group>
+					</attributes>
+				</parameter>	 
+		</parameters>
+	</paragraph>
+</parameter>
+<parameter type="Paragraph">
+	<paragraph>
+	<name>options2</name>
+	<prompt>Later Stage Options</prompt>  
+		<parameters>
+			<parameter ismandatory="1" type="Integer">
+			<name>maxtrees</name>
+				<attributes>
+					<prompt>Maximum trees in Iteration 2 (-maxtrees) </prompt>
+							<precond>
+								<language>perl</language>
+								<code>!$clusteronly</code>
+							</precond>
+					<format>
+						<language>perl</language>
+						<code>"-maxtrees $value" </code>
+					</format>
+					<vdef><value>1</value></vdef>
+					<group>38</group>
+					<ctrls>
+						<ctrl>
+							<message>The value must be greater than or equal to 1</message>
+							<language>perl</language>
+							<code>$maxtrees  &lt;  1</code>
+						</ctrl>
+					</ctrls>
+					<comment>
+<value>This option controls the maximum number of new trees to create in iteration 2. A point of diminishing returns is typically reached after the first tree. If a larger value is
+given, the process will repeat until convergence or until this number of trees has been created, whichever comes first.</value>
+					</comment>
+				</attributes>
+			</parameter> 
+			<parameter ismandatory="1" type="Switch">
+			<name>use_weights_2</name>
+				<attributes>
+					<prompt>Use Weights for Iterations 3 and beyond</prompt>
+					<format>
+							<language>perl</language>
+							<code>($value)? "" : ""</code>
+					</format>
+					<group>30</group>
+					<vdef><value>0</value></vdef>
+					</attributes>
+				</parameter>		
+			<parameter type="Excl">
+			<name>weight2</name>
+				<attributes>
+					<prompt>Sequence weighting for tree-dependent refinement.</prompt>
+							<precond>
+								<language>perl</language>
+								<code>!$clusteronly</code>
+							</precond>										 
+					<format>
+						<language>perl</language>
+						<code>" -weight2 $value"</code>
+					</format>
+					<vdef><value>clustalw</value></vdef>
+						<vlist>
+							<value>henikoff</value>
+							<label>Henikoff</label>
+							<value>henikoffpb</value>
+							<label>Mod. Henikoff</label>
+							<value>gsc</value>
+							<label>GSC</label>
+							<value>clustalw</value>
+							<label>ClustalW</label>
+							<value>threeway</value>
+							<label>Gotoh</label>
+						</vlist>
+						<group>39</group>
+						<comment>
+<value>weight2 is used in iterations 1 and 2; none=all sequences have equal weight; Henokoff = Henikoff and Henikoff, Modified Henikoff = Henikoff as used in Psi-BLAST[
+ClustalW=CLUSTALW method, Gotoh = Gotoh three-way method.</value>
+						</comment>
+				</attributes>
+			</parameter>
+ 			<parameter type="Excl">
+			<name>distance2</name>
+				<attributes>
+					<prompt>Distance Measure for Iterations 2 and above (-distance2)</prompt>
+							<precond>
+								<language>perl</language>
+								<code>!$clusteronly &amp;&amp; $data_type eq "protein"</code>
+							</precond>
+					<format>
+						<language>perl</language>
+						<code>" -distance2 $value"</code>
+					</format>
+					<vlist>
+						<value>kmer20_3</value>
+						<label>kmer20_3</label>
+						<value>kmer20_4</value>
+						<label>kmer20_4</label>
+						<value>kbit20_3</value>
+						<label>kbit20_3</label>
+						<value>pctid_kimura</value>
+						<label>pctid_kimura</label>
+						<value>pctid_log</value>
+						<label>pctid_log</label>
+					</vlist>
+					<vdef><value>pctid_kimura</value></vdef>
+					<group>40</group>
+				</attributes>
+			</parameter>  
+			<parameter ismandatory="1" type="Excl">
+			<name>cluster2</name>
+				<attributes>
+					<prompt>Clustering method for later iterations: (-cluster2)</prompt>
+							<precond>
+								<language>perl</language>
+								<code>!$clusteronly</code>
+							</precond> 
+					<format>
+						<language>perl</language>
+						<code>" -cluster2 $value"</code>
+					</format>
+					<vdef><value>upgmb</value></vdef>
+					<vlist>
+						<value>upgma</value>
+						<label>UPGMA</label>
+						<value>upgmb</value>
+						<label>UPGMB</label>
+						<value>neighborjoining</value>
+						<label>Neighbor Joining</label>
+					</vlist>
+					<group>41</group>
+				</attributes>
+			</parameter> 
+<!--  SUEFF	Floating point value between 0 and 1.	0.1	Constant used in UPGMB clustering. 
+Determines the relative fraction of average linkage (SUEFF) vs. nearest-neighbor linkage 
+(1 – SUEFF). -->
+			<parameter type="Float">
+			<name>sueff2</name>
+				<attributes>
+					<prompt>SUEFF(must be between 0 and 1)</prompt>
+					<precond>
+						<language>perl</language>
+						<code>$cluster2 eq "upgmb"</code>
+					</precond>
+					<format>
+						<language>perl</language>
+						<code> " -sueff $value"</code>
+					</format>
+					<vdef><value>0.1</value></vdef>
+<!-- this needs to be checked  -->
+					<ctrls>
+						<ctrl>
+							<message>The SUEFF Value Must be > 0 and 1 or less</message> 
+							<language>perl</language>
+  							<code>$sueff2 &lt;= 0 </code>
+						</ctrl>
+						<ctrl>
+							<message>The SUEFF Value Must be > 0 and 1 or less</message> 
+							<language>perl</language>
+  							<code>$sueff2 &gt; 1</code>
+						</ctrl>
+					</ctrls>	
+					<group>42</group>
+				</attributes>
+			</parameter>
+			<parameter ismandatory="1" type="Excl">
+			<name>root2</name>
+					<attributes>
+						<prompt>Method used to root tree in iterations 3 and beyond (-root2)</prompt>
+						<precond>
+								<language>perl</language>
+								<code>!$clusteronly</code>
+							</precond>
+						<format> 
+							<language>perl</language>
+							<code>"-root2 $value"</code>
+						</format>
+						<vdef><value>pseudo</value></vdef>
+						<vlist>
+							<value>pseudo</value>
+							<label>Pseudo</label>
+							<value>midlongestspan</value>
+							<label>Mid longest Span</label>
+							<value>minavgleafdist</value>
+							<label>Min Avg Leaf Distance</label>
+						</vlist>
+						<group>43</group>
+					</attributes>
+				</parameter> 
+<!-- comment objscore	sp, ps, dp, xp, spf, spm, default = sp	Objective score used by
+ tree dependent refinement. -->
+			<parameter type="Excl">
+  			<name>objectivescore</name>
+				<attributes>
+					<prompt>Objective score used by tree dependent refinement (-objscore)</prompt>
+							<precond>
+								<language>perl</language>
+								<code>!$clusteronly</code>
+							</precond>
+					<format>
+						<language>perl</language>
+						<code>"-objscore $value"</code>
+					</format>
+					<vdef><value>sp</value></vdef>
+					<vlist>
+						<value>sp</value>
+						<label>sum-of-pairs score</label>
+						<value>spf</value>
+						<label>sum-of-pairs score (dimer approximation)</label>
+						<value>spm</value>
+						<label>sp for less then 100 seqs, otherwise spf</label>
+						<value>ps</value>
+						<label>average profile-sequence score</label>
+						<value>dp</value>
+						<label>dynamic programming score</label>
+						<value>xp</value>
+						<label>cross profile score</label>
+					</vlist>
+					<group>44</group>
+				</attributes>
+			</parameter>
+			<parameter type="Switch">
+			<name>anchor</name>
+				<attributes>
+					<prompt>Use Anchor Optimization (-noanchors) This option has no effect if -maxiters 1 or -maxiters 2 is specified.</prompt>
+<!--  					<precond>
+						<language>perl</language>	
+ 						<code> maxiters ne "2"  &amp;&amp; maxiters ne "1"</code>
+					</precond> -->
+					<format>
+						<language>perl</language>
+						<code>($value)? "":"-noanchors"</code>
+					</format>
+					<vdef><value>0</value></vdef>
+					<group>45</group>
+					<comment>
+<value>Tree-dependent refinement (iterations 3, 4 ... ) can be speeded up by dividing the
+alignment vertically into blocks. Block boundaries are found by identifying high-scoring columns
+(e.g., a perfectly conserved column of Cs or Ws would be a candidate). Each vertical block is then
+refined independently before reassembling the complete alignment, which is faster because of the
+L2 factor in dynamic programming (e.g., suppose the alignment is split into two vertical blocks,
+then 2 x (0.5)e2 = 0.5, so the dynamic programming time is roughly halved).
+The –noanchors option is used to disable this feature. This option has no effect if –maxiters 1
+or –maxiters 2 is specified. On benchmark tests, enabling anchors has little or no effect on
+accuracy, but if you want to be very conservative and are striving for the best possible accuracy
+then –noanchors is a reasonable choice.</value>
+					</comment>
+				</attributes>
+			</parameter>
+			<parameter type="Integer">
+			<name>minanchorcolumnspacing</name>
+				<attributes>
+					<prompt>Minimum spacing between anchor columns</prompt>
+					<precond>
+						<language>perl</language>
+						<code>$anchor</code>
+					</precond>
+					<vdef><value>32</value></vdef>
+					<format>
+						<language>perl</language>
+						<code>" -anchorspacing $value"</code>
+					</format>
+					<group>46</group>
+					<ctrls>
+						<ctrl>
+							<message>The minimum spacing between anchor columns must not be less than 1</message>
+							<language>perl</language>	
+					 		<code>$minanchorcolumnspacing &lt;1</code>
+						</ctrl>
+					</ctrls>
+				</attributes>
+			</parameter> 
+<!--  		comment  anchorspacing	Integer	32	Minimum spacing between anchor columns.										 
+			comment 		not supported yet	-->
+			<parameter type="Float">
+			<name>minanchorcolumnscore</name>
+				<attributes>
+					<prompt>Minimum score a column must have to be an anchor</prompt>
+					<precond>
+						<language>perl</language>
+						<code>$anchor</code>
+					</precond>
+					<vdef>
+						<value>1</value>
+					</vdef>
+					<format>
+						<language>perl</language>
+						<code>" -anchorspacing $value"</code>
+					</format>
+					<group>47</group>
+					<ctrls>
+						<ctrl>
+							<message>The minimum score a column to be an anchor cannot be less than 1</message>
+							<language>perl</language>	
+					 		<code>$minanchorcolumnscore &lt;1</code>
+						</ctrl>
+					</ctrls>
+				</attributes>
+			</parameter>
+<!--  	minbestcolscore	Floating point 	[1]	Minimum score a column must have to be an anchor.	
+        comment not supported yet -->									 
+	 		<parameter type="Float">
+			<name>minsmoothanchorscore</name>
+				<attributes>
+					<prompt>Minimum smoothed score a column must have to be an anchor</prompt>
+					<precond>
+						<language>perl</language>
+						<code>$anchor</code>
+					</precond>
+					<vdef>
+						<value>1</value>
+					</vdef>
+					<group>48</group>
+					<ctrls>
+						<ctrl>
+							<message>The minimum smoothed score to be an anchor cannot be less than 1</message>
+							<language>perl</language>	
+					 		<code>$minsmoothanchorscore &lt;1</code>
+						</ctrl>
+					</ctrls>
+				</attributes>
+			</parameter>
+<!--  comment minsmoothscore Floating point	[1]	Minimum smoothed score a column must have to
+ be an anchor.  -->							 
+	 		<parameter type="Integer">
+			<name>anchorsmoothingwindow</name>
+				<attributes>
+					<prompt>Window Used for Anchor Smoothing</prompt>
+					<precond>
+						<language>perl</language>
+						<code>$anchor</code>
+					</precond>
+					<vdef>
+						<value>7</value>
+					</vdef>
+					<format>
+						<language>perl</language>
+						<code>" -smoothwindow $value"</code>
+					</format>
+					<group>49</group>
+					<ctrls>
+						<ctrl>
+							<message>The window smoothing value must be at least 1</message>
+							<language>perl</language> 
+							<code>$anchorsmoothingwindow &lt;=1</code>
+						</ctrl>
+					</ctrls>
+				</attributes>
+			</parameter> 
+		</parameters>
+	</paragraph>
+</parameter>
+<parameter type="Paragraph">
+	<paragraph>
+	<name>output_options</name>
+	<prompt>Output Options (select as many as you like)		</prompt>
+		<parameters>
+<!-- specifies the default output string removed in Swami; all out selected explicitly  -->
+<!--           <parameter ismandatory="1" ishidden="1" type="Results">
+					<name>out</name>
+						<attributes>
+							<format>
+								<language>perl</language>
+								<code>"-out output.fasta"</code>
+							</format>
+							<filenames>output.fasta</filenames>
+							<group>50</group>               
+						</attributes>
+					</parameter> -->
+<!-- This specifies all the other possible output strings -->
+					<parameter type="Switch">
+						<name>output_fasta</name>
+						<attributes>
+							<prompt>Fasta output</prompt>
+							<format>
+								<language>perl</language>
+								<code>
+									($value) ? " -fastaout output.fasta":""
+								</code>
+							</format>
+							<vdef>
+								<value>0</value>
+							</vdef>
+							<group>51</group>
+						</attributes>
+					</parameter>
+					<parameter type="Switch">
+						<name>output_clustal</name>
+						<attributes>
+							<prompt>Clustal output (.aln)</prompt>
+							<format>
+								<language>perl</language>
+								<code>
+									($value) ? " -clwout output.aln":""
+								</code>
+							</format>
+							<vdef>
+								<value>1</value>
+							</vdef>
+							<group>52</group>
+						</attributes>
+					</parameter>
+					<parameter type="Switch">
+						<name>output_clustals</name>
+						<attributes>
+							<prompt>
+								Strict Clustal output (.aln; has the Clustal header)
+							</prompt>
+							<format>
+								<language>perl</language>
+								<code>
+									($value) ? " -clwstrictout outputs.aln":""
+								</code>
+							</format>
+							<vdef>
+								<value>0</value>
+							</vdef>
+							<group>53</group>
+						</attributes>
+					</parameter>
+					<parameter type="Switch">
+						<name>output_html</name>
+						<attributes>
+							<prompt>HTML output (.html)</prompt>
+							<format>
+								<language>perl</language>
+								<code>
+									($value) ? " -htmlout output.html":""
+								</code>
+							</format>
+							<vdef>
+								<value>0</value>
+							</vdef>
+							<group>54</group>
+						</attributes>
+					</parameter>
+					<parameter type="Switch">
+						<name>output_gcg</name>
+						<attributes>
+							<prompt>GCG output (.msf)</prompt>
+							<format>
+								<language>perl</language>
+								<code>
+									($value) ? "-msfout output.msf":""
+								</code>
+							</format>
+							<vdef>
+								<value>0</value>
+							</vdef>
+							<group>55</group>
+						</attributes>
+					</parameter>
+					<parameter type="Switch">
+						<name>output_phyi</name>
+						<attributes>
+							<prompt>Interleaved Phylip output</prompt>
+							<format>
+								<language>perl</language>
+								<code>
+									($value) ? " -phyiout outputi.phy":""
+								</code>
+							</format>
+							<vdef>
+								<value>0</value>
+							</vdef>
+							<group>56</group>
+						</attributes>
+					</parameter>
+					<parameter type="Switch">
+						<name>output_phys</name>
+						<attributes>
+							<prompt>
+								Sequential Phylip output (.phy)
+							</prompt>
+							<format>
+								<language>perl</language>
+								<code>
+									($value) ? " -physout outputs.phy":""
+								</code>
+							</format>
+							<vdef>
+								<value>0</value>
+							</vdef>
+							<group>57</group>
+						</attributes>
+					</parameter>
+				</parameters>
+			</paragraph>
+		</parameter>
+<!-- pick up clustal results, if invoked -->
+					<parameter ishidden="1" type="Results">
+					<name>fasta_output</name>
+						<attributes>
+							<precond>
+								<language>perl</language>
+								<code>$output_fasta</code>
+							</precond>
+							<filenames>*.fasta</filenames>
+						</attributes>
+					</parameter>
+					<parameter ishidden="1" type="Results">
+					<name>clustal_output</name>
+						<attributes>
+							<precond>
+								<language>perl</language>
+								<code>$output_clustal</code>
+							</precond>
+							<filenames>output.aln</filenames>
+						</attributes>
+					</parameter>
+					<parameter ishidden="1" type="Results">
+					<name>clustal_output_strict</name>
+						<attributes>
+							<precond>
+								<language>perl</language>
+								<code>$output_clustals</code>
+							</precond>
+							<filenames>outputs.aln</filenames>
+						</attributes>
+					</parameter>
+					<parameter ishidden="1" type="Results">
+					<name>html_output</name>
+						<attributes>
+							<precond>
+								<language>perl</language>
+								<code>$output_html</code>
+							</precond>
+							<filenames>*.html</filenames>
+						</attributes>
+					</parameter>
+					<parameter ishidden="1" type="Results">
+					<name>gcg_output</name>
+						<attributes>
+							<precond>
+								<language>perl</language>
+								<code>$output_gcg</code>
+							</precond>
+							<filenames>*.msf</filenames>
+						</attributes>
+					</parameter>
+					<parameter ishidden="1" type="Results">
+					<name>phylip_output_interleaved</name>
+						<attributes>
+							<precond>
+								<language>perl</language>
+								<code>$output_phyi</code>
+							</precond>
+							<filenames>outputi.phy</filenames>
+						</attributes>
+					</parameter>
+					<parameter ishidden="1" type="Results">
+					<name>phylip_ouput_sequential</name>
+						<attributes>
+							<precond>
+								<language>perl</language>
+								<code>$output_phyi</code>
+							</precond>
+							<filenames>outputs.phy</filenames>
+						</attributes>
+					</parameter>
+<!-- uncomment to pick up all output, remove on deployment  -->
+<!--				<parameter ismandatory="1" ishidden="1" type="Results">
+					<name>allout</name>
+						<attributes>
+							<filenames>*</filenames>
+						</attributes>
+					</parameter>   -->	
+	</parameters>
+</pise>

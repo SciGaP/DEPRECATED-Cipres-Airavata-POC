@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<!-- Not yet Finished -->
+<pise>
+
+<!-- Created for Swami by Rami Rifaieh-->
+
+<head>
+<title>TMHMM</title>
+<description>Predict Transmembrane regions</description>
+<version>2.0</version>
+<category>Protein Sequence</category>
+<doclink></doclink>
+</head>
+
+<command>decodeanhmm</command>
+
+<!-- 	
+decodeanhmm 1.1f
+Copyright (C) 1998 by Anders Krogh
+Mon Nov  5 15:13:39 2007
+
+Arguments:
+        Arg. 1: ARG: Name of file containing model
+                Current value: 
+        Arg. 2: ARG: Data file (if not given: stdin)
+                Current value: 
+Options:
+        -f <val>
+        -optionfile <val>: Name of file containing more options
+                Current value: 
+        -a <val>
+        -statefile <val>: Name of file with state annotation
+                Current value: 
+        -parsefile <val>: Print predicted labels etc in file with the ending given here
+                Current value: 
+        -plpfile <val>: Print out put from -PostLabProb (-plp) in file ending with this
+                Current value: 
+        -workdir <val>: Directory in which output files are written (must exist)
+                Current value: 
+        -N <val>: Number of final hyphotheses in the N-best algorithm
+                Current value: 0
+        -Nbest <val>
+        -NBEST <val>: Internal N in N-best (defaults to N)
+                Current value: 0
+        -ZeroBorder <val>: Number of border labels set to zero
+                Current value: 0
+        -bg <val>
+        -background <val>: Background distribution (VECTOR!)
+                Current value: <NULL>
+        -nullmodel <val>: Name of file containing null model
+                Current value: 
+        -PosteriorStates <val>: Calc. post. prob for these states. Names separated by #
+                Current value: 
+        -NullLab <val>: String of labels that are converted to zero
+                Current value: 
+        -breakl <val>: Length of lines (if 0, no line breaking)
+                Current value: 75
+Switches:
+        -v
+        -viterbi: Do Viterbi decoding
+                Current value: off
+        -fb
+        -posterior: Posterior decoding (max prob label)
+                Current value: off
+        -one
+        -onestate: Do one state decoding
+                Current value: off
+        -plp
+        -PostLabProb: Posterior probs of labels
+                Current value: off
+        -PrintID: Print the fasta ID ('>id'). Used with -plp for backward compatibility
+                Current value: on
+        -pp
+        -PrintPred: Print predicted labels
+                Current value: on
+        -ps
+        -PrintSeq: Print sequence
+                Current value: off
+        -pl
+        -PrintLab: Print labels (as read)
+                Current value: off
+        -pt
+        -PrintTag: Print a tag in front of each line
+                Current value: on
+        -pa
+        -PrintStates: Print state annotation
+                Current value: off
+        -pscore
+        -PrintScore: Print score
+                Current value: off
+        -PrintStat: Print statistics for each sequence
+                Current value: off
+        -PrintNumbers: Prediction with stop/start
+                Current value: off
+        -bits: Use log base 2 for scores instead of natural log
+                Current value: on
+        -n
+        -normalize: Normalize model after reading.
+                Current value: on
+        -printnull: Print null model and exit
+                Current value: off
+        -h
+        -printusage: Prints all arguments with values
+                Current value: on
+        -l
+        -labels: Data are labeled - use labels in Nbest
+                Current value: off
+        -zero2zero: Change labels '0' to '
+                Current value: on
+	-->
+<parameters>
+
+</parameters>
+</pise>
+
+<!--
+	TMHMM2.0 User's guide
+This program is for prediction of transmembrane helices in proteins.
+
+July 2001: TMHMM has been rated best in an independent comparison of programs for prediction of TM helices:
+
+    * S. Moller, M.D.R. Croning, R. Apweiler.
+      Evaluation of methods for the prediction of membrane spanning regions.
+      Bioinformatics, 17(7):646-653, July 2001. (medline) 
+
+Quote from the abstract:
+`Our results show that TMHMM is currently the best performing transmembrane prediction program.'
+
+TMHMM is described in
+
+    * A. Krogh, B. Larsson, G. von Heijne, and E. L. L. Sonnhammer.
+      Predicting transmembrane protein topology with a hidden Markov model: Application to complete genomes.
+      Journal of Molecular Biology, 305(3):567-580, January 2001.
+      (PDF, 959503 bytes)
+
+    * E. L.L. Sonnhammer, G. von Heijne, and A. Krogh.
+      A hidden Markov model for predicting transmembrane helices in protein sequences.
+      In J. Glasgow, T. Littlejohn, F. Major, R. Lathrop, D. Sankoff, and C. Sensen, editors, Proceedings of the Sixth International Conference on Intelligent Systems for Molecular Biology, pages 175-182, Menlo Park, CA, 1998. AAAI Press.
+      (Gzipped PostScript, 8 pages, 42470 bytes) (PDF, 844205 bytes)
+
+Please cite.
+
+Press here to see other material (training data, etc).
+ 
+ 
+Setup
+The tmhmm script and the auxiliary script tmhmmformat.pl are written in perl and requires perl 5.0 or higher. The main program is written in C and runs on Unix computers. An executable version is needed for your platform. See the README file for instructions on how to set up the package. For graphics, the package uses: gnuplot, ghostscript and ppmtogif.
+ 
+Input
+The program takes proteins in FASTA format. It  recognizes the 20 amino acids and B, Z, and X, which are all treated equally as unknown. Any other character is changed to X, so please make sure the sequences are sensible proteins
+
+This is an example (one protein):
+
+>5H2A_CRIGR you can have comments after the ID
+MEILCEDNTSLSSIPNSLMQVDGDSGLYRNDFNSRDANSSDASNWTIDGENRTNLSFEGYLPPTCLSILHL
+QEKNWSALLTAVVIILTIAGNILVIMAVSLEKKLQNATNYFLMSLAIADMLLGFLVMPVSMLTILYGYRWP
+LPSKLCAVWIYLDVLFSTASIMHLCAISLDRYVAIQNPIHHSRFNSRTKAFLKIIAVWTISVGVSMPIPVF
+GLQDDSKVFKQGSCLLADDNFVLIGSFVAFFIPLTIMVITYFLTIKSLQKEATLCVSDLSTRAKLASFSFL
+PQSSLSSEKLFQRSIHREPGSYTGRRTMQSISNEQKACKVLGIVFFLFVVMWCPFFITNIMAVICKESCNE
+HVIGALLNVFVWIGYLSSAVNPLVYTLFNKTYRSAFSRYIQCQYKENRKPLQLILVNTIPALAYKSSQLQA
+GQNKDSKEDAEPTDNDCSMVTLGKQQSEETCTDNINTVNEKVSCV
+ 
+ 
+How to run it
+If your proteins are in file 'seq.fasta' you run it like this
+
+    cat seq.fasta | tmhmm
+
+or
+
+     tmhmm seq.fasta
+
+Both versions can take several files with several proteins in each. You can edit the tmhmm script (perl5) to your liking.
+
+You can also by-pass the script and run the program directly
+
+    cat seq.fasta  | decodeanhmm -f <path>/TMHMM2.0.options -modelfile <path>/TMHMM2.0.model
+
+where <path> is the directory of the TMHMM files.
+
+decodeanhmm takes some options that are specified in TMHMM2.0.options. Take a look at that file if you don't like the output.  These options can also be given on the command line.
+ 
+ 
+Output
+There are two output formats: Long and short.
+Long output format
+For the long format (default), tmhmm gives some statistics and a list of the location of the predicted transmembrane helices and the predicted location of the intervening loop regions.
+
+Here is an example:
+
+# COX2_BACSU Length: 278
+# COX2_BACSU Number of predicted TMHs:  3
+# COX2_BACSU Exp number of AAs in TMHs: 68.6888999999999
+# COX2_BACSU Exp number, first 60 AAs:  39.8875
+# COX2_BACSU Total prob of N-in:        0.99950
+# COX2_BACSU POSSIBLE N-term signal sequence
+COX2_BACSU        TMHMM2.0        inside       1     6
+COX2_BACSU        TMHMM2.0        TMhelix      7    29
+COX2_BACSU        TMHMM2.0        outside     30    43
+COX2_BACSU        TMHMM2.0        TMhelix     44    66
+COX2_BACSU        TMHMM2.0        inside      67    86
+COX2_BACSU        TMHMM2.0        TMhelix     87   109
+COX2_BACSU        TMHMM2.0        outside    110   278
+
+If the whole sequence is labeled as inside or outside, the prediction  is that it contains no membrane
+helices.  It is probably not wise to interpret it as a prediction of location. The prediction gives the most probable location and orientation of transmembrane helices in the sequence. It is found by an algorithm called N-best (or 1-best in this case) that sums over all paths through the model with the same location and direction of the helices.
+
+The first few lines gives some statistics:
+
+  # Length: the length of the protein sequence.
+  # Number of predicted TMHs: The number of predicted transmembrane helices.
+  # Exp number of AAs in TMHs: The expected number of amino acids intransmembrane helices. If this number is larger than 18 it is very likely to be a transmembrane protein (OR have a signal peptide).
+  # Exp number, first 60 AAs: The expected number of amino acids in transmembrane helices in the first 60 amino acids of the protein. If this number more than a few, you should be warned that a predicted transmembrane helix in the N-term could be a signal peptide.
+  # Total prob of N-in: The total probability that the N-term is on the cytoplasmic side of the membrane.
+  # POSSIBLE N-term signal sequence: a warning that is produced when "Exp number, first 60 AAs" is larger than 10.
+
+Plot of probabilities
+A plot is made in postscript. The plot shows the posterior probabilities of inside/outside/TM helix. Here one can see possible weak TM helices that were not predicted,  and one can get an idea of the certainty of each segment in the prediction.
+
+At the top of the plot (between 1 and 1.2) the N-best prediction is shown.
+
+The plot is obtained by calculating the total probability that a  residue sits in helix, inside, or outside summed over all possible  paths through the model.  Sometimes it seems like the plot and the prediction are contradictory, but that is because the plot shows probabilities for each residue, whereas the prediction is the over-all most probable structure.  Therefore the plot should be seen as a complementary source of information.
+
+Below the plot there are links to
+
+    * The plot in encapsulated postscript
+    * A script for making the plot in  gnuplot.
+    * The data for the plot.
+
+Short output format
+In the short output format one line is produced for each protein with no graphics. Each line starts with the sequence identifier and then these fields:
+
+  # "len=": the length of the protein sequence.
+  # "ExpAA=": The expected number of amino acids intransmembrane helices (see above).
+  # "First60=": The expected number of amino acids in transmembrane helices in the first 60 amino acids of the protein (see above).
+  # "PredHel=": The number of predicted transmembrane helices by N-best.
+  # "Topology=": The topology predicted by N-best.
+
+For the example above the short output would be (except that it would be on one line):
+
+COX2_BACSU
+len=278
+ExpAA=68.69
+First60=39.89
+PredHel=3
+Topology=i7-29o44-66i87-109o
+
+The topology is given as the position of the transmembrane helices separated by 'i' if the loop is on the inside or 'o' if it is on the outside. The above example 'i7-29o44-66i87-109o' means that it starts on the inside, has a predicted TMH at position 7 to 29, the outside, then a TMH at position 44-66 etc.
+ 
+Final remarks
+Predicted TM segments in the n-terminal region sometime turn out to be signal peptides.
+
+One of the most common mistakes by the program is to reverse the direction of proteins with one TM segment.
+
+Do not use the program to predict whether a non-membrane protein is cytoplasmic or not. 
+	
+	
+	-->

@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE pise SYSTEM "http://www.phylo.org/dev/rami/PARSER/pise.dtd" [
+<!ENTITY nucdbs SYSTEM "http://www.phylo.org/dev/rami/XMLDIR/nucdbs.xml">
+<!ENTITY protdbs SYSTEM "http://www.phylo.org/dev/rami/XMLDIR/protdbs.xml">
+<!ENTITY blastDBpath SYSTEM "http://www.phylo.org/dev/rami/XMLDIR/blastDBpath.xml">
+<!ENTITY fastaDBpath SYSTEM "http://www.phylo.org/dev/rami/XMLDIR/fastaDBpath.xml">
+<!ENTITY blocksDBpath SYSTEM "http://www.phylo.org/dev/rami/XMLDIR/blocksDBpath.xml">
+<!ENTITY nucDBfasta SYSTEM "http://www.phylo.org/dev/rami/XMLDIR/nucDBfasta.xml">
+<!ENTITY protDBfasta SYSTEM "http://www.phylo.org/dev/rami/XMLDIR/protDBfasta.xml">
+]> 
+
+<!-- To be tested -->
+
+<!-- Created for Swami by Rami Rifaieh with the help of Dr.Brian Golding (MCMaster University, CA) -->
+
+<pise>
+
+  <head>
+    <title>PRSS</title>
+    <version>34.26.5</version>
+    <description>Evaluate significance of PS similarity match</description>
+    <authors>W. Pearson</authors>
+    <reference>Pearson, W. R. (1999) Flexible sequence similarity searching with the FASTA3 program package. Methods in Molecular Biology</reference>
+    <reference>W. R. Pearson and D. J. Lipman (1988), Improved Tools for Biological Sequence Analysis, PNAS 85:2444-2448</reference>
+    <reference> W. R. Pearson (1998) Empirical statistical estimates for sequence similarity searches. In J. Mol. Biol. 276:71-84</reference>
+    <reference>Pearson, W. R. (1996) Effective protein sequence comparison. In Meth. Enz., R. F. Doolittle, ed. (San Diego: Academic Press) 266:227-258</reference>
+	<category>Protein Sequence</category>
+  </head>
+
+<!--
+
+SYNOPSIS
+     
+
+     prss3 [-dfghsw] - interactive mode
+
+
+EXAMPLES
+     (1)  prss3  -w 10 musplfm.aa lcbo.aa
+
+     Compare the amino acid sequence in the file musplfm.aa  with
+     that  in  lcbo.aa,  then  shuffle  lcbo.aa 200 times using a
+     local shuffle with a window of 10.  Report the  significance
+     of   the  unshuffled  musplfm/lcbo  comparison  scores  with
+     respect to the shuffled scores.
+
+     (2)  prss3 -d 1000 musplfm.aa lcbo.aa
+
+     Compare the amino acid sequence in the file musplfm.aa  with
+     the  sequences  in  the file lcbo.aa, shuffling lcbo.aa 1000
+     times.
+
+
+     (3)  prss3
+
+     Run prss in interactive mode.  The program will  prompt  for
+     the file name of the two query sequence files and the number
+     of shuffles to be used.
+
+OPTIONS
+     prss3 can be directed to  change  the  scoring  matrix,  gap
+     penalties, and shuffle parameters by entering options on the
+     command line (preceeded by a `-'). All of the options should
+     preceed the file names number of shuffles.
+
+     -d #  Number of shuffles (200 is the default)
+
+     -f #  Penalty for  the  first  residue  in  a  gap  (-12  by
+          default) for proteins.
+
+     -g #  Penalty for  additional  residues  in  a  gap  (-2  by
+          default) for proteins.
+
+     -h    Do not display histogram of similarity scores.
+
+     -Q -q
+          "quiet" - do not prompt for filename.
+
+     -O filename
+          send copy of results to "filename."
+
+     -s str
+
+     -w #  Use a local window shuffle with a window  size  of  #.
+          (SMATRIX) the filename of an alternative scoring matrix
+          file.  For  protein  sequences,  BLOSUM50  is  used  by
+          default;  PAM250  can  be  used  with  the command line
+          option -s P250(or with -s  pam250.mat).   BLOSUM62  (-s
+          BL62) and PAM120 (-S P120).
+
+	
+	-->
+	
+
+<command>prss</command>
+
+
+
+<parameters>
+		<parameter ishidden="1" type="String">
+		<name>description</name>
+			<attributes>
+
+				<group>-1</group>
+			</attributes>
+	</parameter>
+	
+	<parameter ishidden="1" type="String">
+	<name>init</name>
+	<attributes>
+		<format>
+			 <language>perl</language>
+			 <code> "prss -q"</code>
+	        </format>
+			<group>0</group>
+	</attributes>
+	</parameter>
+	
+    <parameter ismandatory="1" issimple="1" isinput="1" type="Sequence"> 
+      <name>query1</name>
+      <attributes>
+	<prompt>test sequence </prompt>
+	
+	<format>
+	  <language>perl</language>
+		<!-- <code>" $value"</code> -->
+	  <code>" sequence1.fasta"</code>
+	</format>
+	
+	<!-- Added for Swami -->
+	<filenames>sequence1.fasta</filenames>
+    <!--   --> 
+
+	<group>2</group>
+<!-- <seqfmt>
+	  <value>8</value>
+	</seqfmt>
+	<pipe>
+	  <pipetype>seqfile</pipetype>
+	  <language>perl</language>
+	  <code>1</code>
+	</pipe>
+	-->
+      </attributes>
+    </parameter>
+
+
+    <parameter ismandatory="1" issimple="1" type="Sequence">
+     <name>query2</name>
+     <attributes>
+       <prompt>sequence to shuffle</prompt>
+		<format>
+		  <language>perl</language>
+			<!-- <code>" $value"</code> -->
+		  <code>" sequence2.fasta"</code>
+		</format>
+		
+		<!-- Added for Swami -->
+		<filenames>sequence2.fasta</filenames>
+	    <!--   --> 
+	    
+       <group>2</group>
+ <!-- 
+       <seqfmt>
+         <value>8</value>
+       </seqfmt>
+-->
+       </attributes>
+     </parameter>
+
+
+    <parameter type="Paragraph">
+      <paragraph>
+	<name>slectivity_opt</name>
+	<prompt>Selectivity options</prompt>
+	<group>1</group>
+			<comment>
+			<value>PRSS3 is used to evaluate the significance of a  protein  or DNA sequence similarity score
+			 by comparing two sequences and calculating optimal similarity scores, and then repeatedly shuffling
+			  the second sequence, and calculating optimal similarity scores using the Smith-Waterman algorithm.
+			  An extreme value  distribution is then fit to the shuffled-sequence scores. The characteristic parameters
+			  of the extreme value distribution are then used to estimate the probability that each of the unshuffled
+			  sequence scores would be obtained by chance in one sequence, or in a number of sequences equal to the
+			  number of shuffles.  This program is derived from  rdf2, described  by  Pearson and Lipman, PNAS (1988) 85:2444-2448,
+			  and Pearson (Meth. Enz.  183:63-98). Use of the extreme value distribution for estimating the probabilities
+			  of similarity scores was described by Altshul and Karlin, PNAS (1990) 87:2264-2268. The and expectations calculated
+			  by prdf. prss3 uses calculates optimal scores using the same rigorous Smith-Waterman algorithm (Smith and
+			  Waterman, J. Mol. Biol. (1983) 147:195-197) used by the ssearch3 program. prss3 also allows a  more  sophisticated
+			  shuffling  method: residues can be shuffled within a local window, so that the order of residues 1-10, 11-20, etc,
+			   is destroyed but a residue in the first 10 is never swapped with a residue outside the first ten, and so on for each local window.
+			</value>
+		</comment>
+	<parameters>
+
+		
+         <parameter type="Integer">
+	    <name>shufflenum</name>
+	    <attributes>
+	       <prompt>Number of random shuffles(100 by default .) (-d)</prompt>
+	       <format>
+	          <language>perl</language>
+	 	  <code>(defined $value)? " -d $value":""</code>
+	       </format>
+		   <group>1</group>
+            </attributes>
+          </parameter>
+
+
+
+
+
+      <parameter type="Excl">
+	    <name>matrix</name>
+	    <attributes>
+
+	      <prompt>Scoring matrix file (-s)</prompt>
+	      <format>
+		<language>perl</language>
+		<code> ($value ne $vdef) ? " -s $value" : ""</code>
+	      </format>
+	      <vdef><value>BL50</value></vdef>
+	      <vlist>
+		<value>BL50</value>
+		<label>BLOSUM50</label>
+		<value>BL62</value>
+		<label>BLOSUM62</label>
+		<value>BL80</value>
+		<label>BLOSUM80</label>
+		<value>P20</value>
+		<label>PAM20</label>
+		<value>P40</value>
+		<label>PAM40</label>
+		<value>P120</value>
+		<label>PAM120</label>
+		<value>P250</value>
+		<label>PAM250</label>
+		<value>M10</value>
+		<label>MDM_10</label>
+		<value>M20</value>
+		<label>MDM_20</label>
+		<value>M40</value>
+		<label>MDM_40</label>
+	      </vlist>
+		  <group>1</group>
+	    </attributes>
+	  </parameter>
+
+
+
+         <parameter type="Integer">
+	    <name>gapinit</name>
+	    <attributes>
+	      <prompt>Penalty for the first residue in a gap(-12 by default for proteins, -16 for DNA) (-f)</prompt>
+	      <format>
+		<language>perl</language>
+		<code>(defined $value)? " -f $value":""</code>
+	      </format>
+		  <group>1</group>
+	    </attributes>
+	  </parameter>
+
+	  <parameter type="Integer">
+	    <name>gapext</name>
+	    <attributes>
+	      <prompt>Penalty for additional residues in a gap(-2 by default for proteins, -4 for DNA) (-g)</prompt>
+		<format>
+			<language>perl</language>
+			<code>(defined $value)? " -g $value":""</code>
+		</format>
+		<group>1</group>
+	    </attributes>
+	  </parameter>
+
+
+
+	</parameters>
+      </paragraph>
+     </parameter>
+
+
+
+
+
+     <parameter type="Paragraph">
+       <paragraph>
+         <name>shuffle_opt</name>
+         <prompt>Shuffle options</prompt>
+         <group>1</group>
+         <parameters>
+
+
+           <parameter type="Integer">
+	      <name>shuffle</name>
+	      <attributes>
+	         <prompt>Use local window(w) shuffle with a window size of (10 by default.) (-w)</prompt>
+	         <format>
+	            <language>perl</language>
+	            <code>(defined $value)? " -w $value":""</code>
+	         </format>
+			 <group>1</group>
+             </attributes>
+           </parameter>
+
+
+	</parameters>
+      </paragraph>
+    </parameter>
+
+
+
+    <parameter ishidden="1" isstandout="1" type="OutFile">
+      <name>outfile</name>
+      <attributes>
+
+	<format>
+	  <language>perl</language>
+	  <code>" -O prss.out"</code>
+	</format>
+
+	<group>1</group>
+	<filenames>prss.out</filenames>
+      </attributes>
+    </parameter>
+
+    <parameter ishidden="1" isstandout="1" type="OutFile">
+      <name>html_outfile</name>
+      <attributes>
+	<format>
+	  <language>perl</language>
+	  <code>" &gt; prss.html"</code>
+	</format>
+	<group>99</group>
+	<precond>
+	  <language>perl</language>
+	  <code>$html_output</code>
+	</precond>
+	
+	<filenames>prss.html</filenames>
+
+      </attributes>
+    </parameter>
+
+</parameters>
+</pise>

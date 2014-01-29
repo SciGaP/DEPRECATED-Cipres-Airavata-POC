@@ -1,0 +1,1891 @@
+target = portal
+mode = dev
+MVNARGS = -DPORTAL -DSDK
+skipsdk = false
+mvn command: mvn -Denv=cipres-dev -Diplant=1 -DPORTAL -DSDK clean install
+Using CATALINA_BASE:   /mnt/dev/testbed/apache-tomcat-7.0.26
+Using CATALINA_HOME:   /mnt/dev/testbed/apache-tomcat-7.0.26
+Using CATALINA_TMPDIR: /mnt/dev/testbed/apache-tomcat-7.0.26/temp
+Using JRE_HOME:        /home/samindaw/software/jdk1.6.0_20
+Using CLASSPATH:       /mnt/dev/testbed/apache-tomcat-7.0.26/bin/bootstrap.jar:/mnt/dev/testbed/apache-tomcat-7.0.26/bin/tomcat-juli.jar
+[INFO] Scanning for projects...
+[INFO] Reactor build order: 
+[INFO]   Cipres
+[INFO]   Cipres SDK
+[INFO]   Cipres Portal Web Application
+[INFO] ------------------------------------------------------------------------
+[INFO] Building Cipres
+[INFO]    task-segment: [clean, install]
+[INFO] ------------------------------------------------------------------------
+[INFO] [clean:clean]
+Downloading: https://repository.apache.org/content/groups/staging//org/apache/maven/doxia/doxia-module-fml/1.0-alpha-11/doxia-module-fml-1.0-alpha-11.pom
+2/2K2K downloaded
+Downloading: https://repository.apache.org/content/groups/staging//org/apache/maven/doxia/doxia-module-xdoc/1.0-alpha-11/doxia-module-xdoc-1.0-alpha-11.pom
+2/2K2K downloaded
+Downloading: http://repo1.maven.org/maven2/org/apache/maven/shared/maven-doxia-tools/1.0.1/maven-doxia-tools-1.0.1.pom
+0/5K2/5K5/5K5K downloaded
+Downloading: http://repo1.maven.org/maven2/org/mortbay/jetty/jetty/6.1.5/jetty-6.1.5.pom
+4/4K4/4K4K downloaded
+Downloading: http://repo1.maven.org/maven2/org/mortbay/jetty/project/6.1.5/project-6.1.5.pom
+4/12K7/12K9/12K12/12K12K downloaded
+Downloading: https://repository.apache.org/content/groups/staging//org/mortbay/jetty/jetty-util/6.1.5/jetty-util-6.1.5.pom
+[INFO] Unable to find resource 'org.mortbay.jetty:jetty-util:pom:6.1.5' in repository apache.nexus (https://repository.apache.org/content/groups/staging/)
+Downloading: http://billiards.sdsc.edu:9999/maven2/org/mortbay/jetty/jetty-util/6.1.5/jetty-util-6.1.5.pom
+[INFO] Unable to find resource 'org.mortbay.jetty:jetty-util:pom:6.1.5' in repository internal (http://billiards.sdsc.edu:9999/maven2)
+Downloading: https://oss.sonatype.org/content/groups/staging/org/mortbay/jetty/jetty-util/6.1.5/jetty-util-6.1.5.pom
+[INFO] Unable to find resource 'org.mortbay.jetty:jetty-util:pom:6.1.5' in repository oss.sonatype.org (https://oss.sonatype.org/content/groups/staging)
+Downloading: http://snapshots.repository.codehaus.org/org/mortbay/jetty/jetty-util/6.1.5/jetty-util-6.1.5.pom
+[INFO] Unable to find resource 'org.mortbay.jetty:jetty-util:pom:6.1.5' in repository codehaus.org (http://snapshots.repository.codehaus.org)
+Downloading: http://people.apache.org/repo/m2-snapshot-repository//org/mortbay/jetty/jetty-util/6.1.5/jetty-util-6.1.5.pom
+[INFO] Unable to find resource 'org.mortbay.jetty:jetty-util:pom:6.1.5' in repository apache.m2.incubator (http://people.apache.org/repo/m2-snapshot-repository/)
+Downloading: http://repo1.maven.org/maven2/org/mortbay/jetty/jetty-util/6.1.5/jetty-util-6.1.5.pom
+3/3K3K downloaded
+Downloading: https://repository.apache.org/content/groups/staging//org/mortbay/jetty/servlet-api-2.5/6.1.5/servlet-api-2.5-6.1.5.pom
+[INFO] Unable to find resource 'org.mortbay.jetty:servlet-api-2.5:pom:6.1.5' in repository apache.nexus (https://repository.apache.org/content/groups/staging/)
+Downloading: http://billiards.sdsc.edu:9999/maven2/org/mortbay/jetty/servlet-api-2.5/6.1.5/servlet-api-2.5-6.1.5.pom
+[INFO] Unable to find resource 'org.mortbay.jetty:servlet-api-2.5:pom:6.1.5' in repository internal (http://billiards.sdsc.edu:9999/maven2)
+Downloading: https://oss.sonatype.org/content/groups/staging/org/mortbay/jetty/servlet-api-2.5/6.1.5/servlet-api-2.5-6.1.5.pom
+[INFO] Unable to find resource 'org.mortbay.jetty:servlet-api-2.5:pom:6.1.5' in repository oss.sonatype.org (https://oss.sonatype.org/content/groups/staging)
+Downloading: http://snapshots.repository.codehaus.org/org/mortbay/jetty/servlet-api-2.5/6.1.5/servlet-api-2.5-6.1.5.pom
+[INFO] Unable to find resource 'org.mortbay.jetty:servlet-api-2.5:pom:6.1.5' in repository codehaus.org (http://snapshots.repository.codehaus.org)
+Downloading: http://people.apache.org/repo/m2-snapshot-repository//org/mortbay/jetty/servlet-api-2.5/6.1.5/servlet-api-2.5-6.1.5.pom
+[INFO] Unable to find resource 'org.mortbay.jetty:servlet-api-2.5:pom:6.1.5' in repository apache.m2.incubator (http://people.apache.org/repo/m2-snapshot-repository/)
+Downloading: http://repo1.maven.org/maven2/org/mortbay/jetty/servlet-api-2.5/6.1.5/servlet-api-2.5-6.1.5.pom
+2/3K3/3K3K downloaded
+Downloading: http://repo1.maven.org/maven2/org/apache/maven/doxia/doxia-module-xhtml/1.0-alpha-11/doxia-module-xhtml-1.0-alpha-11.jar
+4/20K5/20K6/20K7/20K9/20K13/20K17/20K18/20K20/20K20K downloaded
+Downloading: https://repository.apache.org/content/groups/staging//org/apache/maven/doxia/doxia-core/1.0-alpha-11/doxia-core-1.0-alpha-11.jar
+4/53K7/53K11/53K15/53K19/53K22/53K26/53K30/53K34/53K38/53K42/53K46/53K50/53K53/53K53K downloaded
+Downloading: http://repo1.maven.org/maven2/org/apache/maven/doxia/doxia-decoration-model/1.0-alpha-11/doxia-decoration-model-1.0-alpha-11.jar
+4/48K7/48K9/48K13/48K14/48K15/48K19/48K21/48K22/48K26/48K26/48K28/48K30/48K33/48K34/48K37/48K40/48K41/48K42/48K45/48K48/48K48/48K48K downloaded
+Downloading: http://repo1.maven.org/maven2/org/apache/maven/doxia/doxia-site-renderer/1.0-alpha-11/doxia-site-renderer-1.0-alpha-11.jar
+4/44K8/44K9/44K10/44K14/44K18/44K18/44K19/44K22/44K26/44K28/44K29/44K30/44K33/44K37/44K37/44K38/44K42/44K44/44K44K downloaded
+Downloading: https://repository.apache.org/content/groups/staging//org/apache/maven/doxia/doxia-module-apt/1.0-alpha-11/doxia-module-apt-1.0-alpha-11.jar
+4/45K7/45K11/45K13/45K17/45K21/45K25/45K29/45K33/45K37/45K41/45K44/45K45/45K45K downloaded
+Downloading: https://repository.apache.org/content/groups/staging//org/apache/maven/doxia/doxia-module-fml/1.0-alpha-11/doxia-module-fml-1.0-alpha-11.jar
+4/17K7/17K11/17K15/17K17/17K17K downloaded
+Downloading: https://repository.apache.org/content/groups/staging//org/apache/maven/doxia/doxia-module-xdoc/1.0-alpha-11/doxia-module-xdoc-1.0-alpha-11.jar
+4/26K7/26K11/26K15/26K19/26K20/26K24/26K26/26K26K downloaded
+Downloading: http://repo1.maven.org/maven2/org/apache/maven/shared/maven-doxia-tools/1.0.1/maven-doxia-tools-1.0.1.jar
+0/37K4/37K7/37K10/37K11/37K15/37K18/37K19/37K22/37K26/37K29/37K30/37K32/37K33/37K34/37K36/37K37/37K37K downloaded
+Downloading: http://repo1.maven.org/maven2/org/mortbay/jetty/jetty/6.1.5/jetty-6.1.5.jar
+4/474K7/474K9/474K13/474K17/474K17/474K18/474K22/474K26/474K28/474K30/474K34/474K38/474K38/474K40/474K44/474K48/474K50/474K52/474K56/474K60/474K64/474K68/474K72/474K72/474K75/474K79/474K82/474K83/474K86/474K90/474K92/474K94/474K95/474K96/474K100/474K103/474K105/474K106/474K107/474K109/474K113/474K114/474K115/474K117/474K118/474K122/474K125/474K126/474K128/474K129/474K133/474K136/474K137/474K138/474K140/474K144/474K146/474K148/474K149/474K151/474K155/474K157/474K159/474K160/474K161/474K164/474K168/474K168/474K169/474K171/474K172/474K176/474K179/474K180/474K182/474K183/474K187/474K190/474K191/474K194/474K196/474K198/474K202/474K202/474K203/474K205/474K206/474K209/474K213/474K214/474K215/474K218/474K219/474K221/474K225/474K226/474K228/474K232/474K236/474K240/474K240/474K241/474K245/474K246/474K250/474K253/474K255/474K259/474K260/474K264/474K267/474K268/474K272/474K272/474K274/474K278/474K280/474K282/474K286/474K286/474K287/474K291/474K294/474K295/474K299/474K299/474K301/474K305/474K306/474K307/474K309/474K313/474K314/474K315/474K319/474K319/474K321/474K322/474K324/474K328/474K328/474K329/474K330/474K333/474K334/474K336/474K337/474K338/474K341/474K342/474K344/474K345/474K346/474K350/474K351/474K352/474K353/474K355/474K356/474K357/474K359/474K360/474K361/474K363/474K367/474K367/474K368/474K369/474K371/474K372/474K374/474K375/474K376/474K378/474K379/474K382/474K383/474K384/474K386/474K387/474K388/474K390/474K391/474K392/474K394/474K396/474K398/474K399/474K401/474K402/474K403/474K405/474K406/474K407/474K409/474K411/474K413/474K414/474K415/474K417/474K418/474K419/474K421/474K422/474K425/474K426/474K430/474K430/474K432/474K433/474K434/474K436/474K438/474K441/474K444/474K445/474K447/474K448/474K449/474K451/474K452/474K453/474K455/474K456/474K457/474K459/474K460/474K463/474K465/474K467/474K468/474K471/474K474/474K474/474K474K downloaded
+Downloading: https://repository.apache.org/content/groups/staging//org/mortbay/jetty/jetty-util/6.1.5/jetty-util-6.1.5.jar
+[INFO] Unable to find resource 'org.mortbay.jetty:jetty-util:jar:6.1.5' in repository apache.nexus (https://repository.apache.org/content/groups/staging/)
+Downloading: http://billiards.sdsc.edu:9999/maven2/org/mortbay/jetty/jetty-util/6.1.5/jetty-util-6.1.5.jar
+[INFO] Unable to find resource 'org.mortbay.jetty:jetty-util:jar:6.1.5' in repository internal (http://billiards.sdsc.edu:9999/maven2)
+Downloading: https://oss.sonatype.org/content/groups/staging/org/mortbay/jetty/jetty-util/6.1.5/jetty-util-6.1.5.jar
+[INFO] Unable to find resource 'org.mortbay.jetty:jetty-util:jar:6.1.5' in repository oss.sonatype.org (https://oss.sonatype.org/content/groups/staging)
+Downloading: http://snapshots.repository.codehaus.org/org/mortbay/jetty/jetty-util/6.1.5/jetty-util-6.1.5.jar
+[INFO] Unable to find resource 'org.mortbay.jetty:jetty-util:jar:6.1.5' in repository codehaus.org (http://snapshots.repository.codehaus.org)
+Downloading: http://people.apache.org/repo/m2-snapshot-repository//org/mortbay/jetty/jetty-util/6.1.5/jetty-util-6.1.5.jar
+[INFO] Unable to find resource 'org.mortbay.jetty:jetty-util:jar:6.1.5' in repository apache.m2.incubator (http://people.apache.org/repo/m2-snapshot-repository/)
+Downloading: http://repo1.maven.org/maven2/org/mortbay/jetty/jetty-util/6.1.5/jetty-util-6.1.5.jar
+4/134K7/134K11/134K15/134K17/134K18/134K22/134K25/134K26/134K30/134K34/134K36/134K37/134K38/134K42/134K44/134K45/134K49/134K53/134K55/134K56/134K60/134K63/134K64/134K68/134K72/134K73/134K75/134K79/134K82/134K83/134K87/134K90/134K92/134K94/134K98/134K102/134K102/134K103/134K107/134K110/134K113/134K114/134K118/134K121/134K122/134K123/134K127/134K130/134K133/134K134/134K134K downloaded
+Downloading: https://repository.apache.org/content/groups/staging//org/mortbay/jetty/servlet-api-2.5/6.1.5/servlet-api-2.5-6.1.5.jar
+[INFO] Unable to find resource 'org.mortbay.jetty:servlet-api-2.5:jar:6.1.5' in repository apache.nexus (https://repository.apache.org/content/groups/staging/)
+Downloading: http://billiards.sdsc.edu:9999/maven2/org/mortbay/jetty/servlet-api-2.5/6.1.5/servlet-api-2.5-6.1.5.jar
+[INFO] Unable to find resource 'org.mortbay.jetty:servlet-api-2.5:jar:6.1.5' in repository internal (http://billiards.sdsc.edu:9999/maven2)
+Downloading: https://oss.sonatype.org/content/groups/staging/org/mortbay/jetty/servlet-api-2.5/6.1.5/servlet-api-2.5-6.1.5.jar
+[INFO] Unable to find resource 'org.mortbay.jetty:servlet-api-2.5:jar:6.1.5' in repository oss.sonatype.org (https://oss.sonatype.org/content/groups/staging)
+Downloading: http://snapshots.repository.codehaus.org/org/mortbay/jetty/servlet-api-2.5/6.1.5/servlet-api-2.5-6.1.5.jar
+[INFO] Unable to find resource 'org.mortbay.jetty:servlet-api-2.5:jar:6.1.5' in repository codehaus.org (http://snapshots.repository.codehaus.org)
+Downloading: http://people.apache.org/repo/m2-snapshot-repository//org/mortbay/jetty/servlet-api-2.5/6.1.5/servlet-api-2.5-6.1.5.jar
+[INFO] Unable to find resource 'org.mortbay.jetty:servlet-api-2.5:jar:6.1.5' in repository apache.m2.incubator (http://people.apache.org/repo/m2-snapshot-repository/)
+Downloading: http://repo1.maven.org/maven2/org/mortbay/jetty/servlet-api-2.5/6.1.5/servlet-api-2.5-6.1.5.jar
+4/129K8/129K12/129K14/129K18/129K19/129K21/129K25/129K28/129K32/129K36/129K40/129K40/129K41/129K42/129K46/129K50/129K54/129K58/129K61/129K63/129K64/129K65/129K69/129K72/129K76/129K79/129K83/129K83/129K84/129K86/129K87/129K88/129K92/129K94/129K95/129K99/129K103/129K105/129K106/129K107/129K109/129K113/129K115/129K119/129K122/129K126/129K128/129K129/129K129K downloaded
+[INFO] [site:attach-descriptor]
+[INFO] [install:install]
+[INFO] Installing /home/samindaw/prj-co/cipres-trunk/cipres-portal/cipres-build/pom.xml to /home/samindaw/.m2/repository/org/ngbw/cipres/2.0/cipres-2.0.pom
+[INFO] ------------------------------------------------------------------------
+[INFO] Building Cipres SDK
+[INFO]    task-segment: [clean, install]
+[INFO] ------------------------------------------------------------------------
+Downloading: http://repo1.maven.org/maven2/org/apache/maven/plugins/maven-assembly-plugin/2.2-beta-2/maven-assembly-plugin-2.2-beta-2.pom
+2/16K3/16K5/16K6/16K7/16K10/16K11/16K13/16K14/16K16/16K16K downloaded
+Downloading: http://repo1.maven.org/maven2/org/apache/maven/plugins/maven-assembly-plugin/2.2-beta-2/maven-assembly-plugin-2.2-beta-2.jar
+4/184K7/184K10/184K14/184K18/184K21/184K22/184K25/184K26/184K30/184K34/184K38/184K38/184K40/184K44/184K44/184K45/184K49/184K53/184K57/184K59/184K60/184K64/184K65/184K67/184K71/184K75/184K79/184K82/184K83/184K87/184K87/184K88/184K90/184K91/184K95/184K99/184K103/184K103/184K105/184K107/184K111/184K111/184K113/184K114/184K115/184K119/184K123/184K127/184K128/184K129/184K133/184K136/184K137/184K140/184K141/184K145/184K149/184K153/184K153/184K155/184K159/184K161/184K163/184K164/184K165/184K167/184K171/184K175/184K179/184K179/184K180/184K184/184K184/184K184K downloaded
+Downloading: http://repo1.maven.org/maven2/org/apache/maven/plugins/maven-source-plugin/2.0.4/maven-source-plugin-2.0.4.pom
+0/3K3/3K3K downloaded
+Downloading: http://repo1.maven.org/maven2/org/apache/maven/plugins/maven-source-plugin/2.0.4/maven-source-plugin-2.0.4.jar
+4/14K7/14K9/14K13/14K14/14K14K downloaded
+[INFO] [clean:clean]
+Downloading: http://repo1.maven.org/maven2/org/apache/maven/plugins/maven-surefire-plugin/2.4.3/maven-surefire-plugin-2.4.3.pom
+1/6K5/6K6/6K6K downloaded
+Downloading: http://repo1.maven.org/maven2/org/apache/maven/surefire/surefire/2.4.3/surefire-2.4.3.pom
+1/7K5/7K7/7K7K downloaded
+Downloading: http://repo1.maven.org/maven2/org/apache/maven/plugins/maven-surefire-plugin/2.4.3/maven-surefire-plugin-2.4.3.jar
+0/22K4/22K7/22K9/22K10/22K11/22K15/22K18/22K19/22K21/22K22/22K22K downloaded
+Downloading: http://repo1.maven.org/maven2/org/apache/maven/plugins/maven-jar-plugin/2.2/maven-jar-plugin-2.2.pom
+3/8K6/8K8/8K8K downloaded
+Downloading: http://repo1.maven.org/maven2/org/apache/maven/plugins/maven-jar-plugin/2.2/maven-jar-plugin-2.2.jar
+4/26K6/26K7/26K9/26K13/26K13/26K14/26K18/26K19/26K21/26K25/26K26/26K26K downloaded
+[INFO] [resources:copy-resources {execution: copy-scripts}]
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 216 resources
+[INFO] [exec:exec {execution: code-generation}]
+[INFO] Buildfile: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/codeGeneration/build.xml
+[INFO] 
+[INFO] clean:
+[INFO] 
+[INFO] makedirs:
+[INFO]     [mkdir] Created dir: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation
+[INFO] 
+[INFO] generate:
+[INFO] [freemarker] Transforming into: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation
+[INFO] [freemarker] Input:  align.xml
+[INFO] [freemarker] Jan 13, 2014 12:10:42 PM freemarker.log.JDK14LoggerFactory$JDK14Logger warn
+[INFO] [freemarker] WARNING: No XPath support is available.
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/alignValidator.java
+[INFO] [freemarker] Input:  beast_tg.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/beast_tgValidator.java
+[INFO] [freemarker] Input:  beast_tg_test.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/beast_tg_testValidator.java
+[INFO] [freemarker] Input:  bl2seq.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/bl2seqValidator.java
+[INFO] [freemarker] Input:  blast2.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/blast2Validator.java
+[INFO] [freemarker] Input:  blastn.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/blastnValidator.java
+[INFO] [freemarker] Input:  blastp.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/blastpValidator.java
+[INFO] [freemarker] Input:  blastx.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/blastxValidator.java
+[INFO] [freemarker] Input:  blimps.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/blimpsValidator.java
+[INFO] [freemarker] Input:  boxshade.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/boxshadeValidator.java
+[INFO] [freemarker] Input:  bucky.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/buckyValidator.java
+[INFO] [freemarker] Input:  clearcut.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/clearcutValidator.java
+[INFO] [freemarker] Input:  clique.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/cliqueValidator.java
+[INFO] [freemarker] Input:  clustalw.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/clustalwValidator.java
+[INFO] [freemarker] Input:  clustalw_dist.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/clustalw_distValidator.java
+[INFO] [freemarker] Input:  clustalw_n.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/clustalw_nValidator.java
+[INFO] [freemarker] Input:  clustalw_p.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/clustalw_pValidator.java
+[INFO] [freemarker] Input:  clustalw_profile.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/clustalw_profileValidator.java
+[INFO] [freemarker] Input:  clustalw_tree.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/clustalw_treeValidator.java
+[INFO] [freemarker] Input:  compass.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/compassValidator.java
+[INFO] [freemarker] Input:  consense.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/consenseValidator.java
+[INFO] [freemarker] Input:  contralign.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/contralignValidator.java
+[INFO] [freemarker] Input:  degapseq.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/degapseqValidator.java
+[INFO] [freemarker] Input:  dnadist.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/dnadistValidator.java
+[INFO] [freemarker] Input:  dnapars.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/dnaparsValidator.java
+[INFO] [freemarker] Input:  dollop.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/dollopValidator.java
+[INFO] [freemarker] Input:  dppdiv.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/dppdivValidator.java
+[INFO] [freemarker] Input:  drawgram.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/drawgramValidator.java
+[INFO] [freemarker] Input:  drawtree.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/drawtreeValidator.java
+[INFO] [freemarker] Input:  dssp.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/dsspValidator.java
+[INFO] [freemarker] Input:  epestfind.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/epestfindValidator.java
+[INFO] [freemarker] Input:  eprimer3.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/eprimer3Validator.java
+[INFO] [freemarker] Input:  extractalign.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/extractalignValidator.java
+[INFO] [freemarker] Input:  extractseq.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/extractseqValidator.java
+[INFO] [freemarker] Input:  fasta_n.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/fasta_nValidator.java
+[INFO] [freemarker] Input:  fasta_p.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/fasta_pValidator.java
+[INFO] [freemarker] Input:  fastx.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/fastxValidator.java
+[INFO] [freemarker] Input:  fasty.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/fastyValidator.java
+[INFO] [freemarker] Input:  fingerprintscan.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/fingerprintscanValidator.java
+[INFO] [freemarker] Input:  fitch.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/fitchValidator.java
+[INFO] [freemarker] Input:  formatvalidator.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/formatvalidatorValidator.java
+[INFO] [freemarker] Input:  fsa.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/fsaValidator.java
+[INFO] [freemarker] Input:  garli.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/garliValidator.java
+[INFO] [freemarker] Input:  garli2_tgb.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/garli2_tgbValidator.java
+[INFO] [freemarker] Input:  garli_abe.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/garli_abeValidator.java
+[INFO] [freemarker] Input:  garli_conf_creator.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/garli_conf_creatorValidator.java
+[INFO] [freemarker] Input:  garli_lonestar.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/garli_lonestarValidator.java
+[INFO] [freemarker] Input:  garli_tg.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/garli_tgValidator.java
+[INFO] [freemarker] Input:  helixturnhelix.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/helixturnhelixValidator.java
+[INFO] [freemarker] Input:  hmmpfam.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/hmmpfamValidator.java
+[INFO] [freemarker] Input:  kitsch.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/kitschValidator.java
+[INFO] [freemarker] Input:  lalign.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/lalignValidator.java
+[INFO] [freemarker] Input:  mafft.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/mafftValidator.java
+[INFO] [freemarker] Input:  mafft_861.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/mafft_861Validator.java
+[INFO] [freemarker] Input:  mafft_tg.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/mafft_tgValidator.java
+[INFO] [freemarker] Input:  mafftnew.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/mafftnewValidator.java
+[INFO] [freemarker] Input:  mbsum.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/mbsumValidator.java
+[INFO] [freemarker] Input:  merger.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/mergerValidator.java
+[INFO] [freemarker] Input:  mfold.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/mfoldValidator.java
+[INFO] [freemarker] Input:  mix.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/mixValidator.java
+[INFO] [freemarker] Input:  mrbayes.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/mrbayesValidator.java
+[INFO] [freemarker] Input:  mrbayes321_restartbeta.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/mrbayes321_restartbetaValidator.java
+[INFO] [freemarker] Input:  mrbayes_321beta.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/mrbayes_321betaValidator.java
+[INFO] [freemarker] Input:  mrbayes_321restartbeta.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/mrbayes_321restartbetaValidator.java
+[INFO] [freemarker] Input:  mrbayes_abe.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/mrbayes_abeValidator.java
+[INFO] [freemarker] Input:  mrbayes_lonestar.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/mrbayes_lonestarValidator.java
+[INFO] [freemarker] Input:  mrbayes_xsede.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/mrbayes_xsedeValidator.java
+[INFO] [freemarker] Input:  mrbayeshybrid312_tg.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/mrbayeshybrid312_tgValidator.java
+[INFO] [freemarker] Input:  mrbayeshybrid_abe.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/mrbayeshybrid_abeValidator.java
+[INFO] [freemarker] Input:  mrbayeshybrid_gordon.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/mrbayeshybrid_gordonValidator.java
+[INFO] [freemarker] Input:  mrbayeshybrid_tg.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/mrbayeshybrid_tgValidator.java
+[INFO] [freemarker] Input:  msa.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/msaValidator.java
+[INFO] [freemarker] Input:  muscle.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/muscleValidator.java
+[INFO] [freemarker] Input:  mview_alig.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/mview_aligValidator.java
+[INFO] [freemarker] Input:  mview_blast.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/mview_blastValidator.java
+[INFO] [freemarker] Input:  nclconverter.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/nclconverterValidator.java
+[INFO] [freemarker] Input:  neighbor.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/neighborValidator.java
+[INFO] [freemarker] Input:  new_tool.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/new_toolValidator.java
+[INFO] [freemarker] Input:  oldmrbayeshybrid_tg.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/oldmrbayeshybrid_tgValidator.java
+[INFO] [freemarker] Input:  pars.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/parsValidator.java
+[INFO] [freemarker] Input:  paup.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/paupValidator.java
+[INFO] [freemarker] Input:  pauprat.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/paupratValidator.java
+[INFO] [freemarker] Input:  pauprat_exp.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/pauprat_expValidator.java
+[INFO] [freemarker] Input:  pepinfo.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/pepinfoValidator.java
+[INFO] [freemarker] Input:  pepstats.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/pepstatsValidator.java
+[INFO] [freemarker] Input:  pepwindow.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/pepwindowValidator.java
+[INFO] [freemarker] Input:  pfscan.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/pfscanValidator.java
+[INFO] [freemarker] Input:  pfsearch.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/pfsearchValidator.java
+[INFO] [freemarker] Input:  phylobayes_xsede.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/phylobayes_xsedeValidator.java
+[INFO] [freemarker] Input:  phylobayes_xsede_restart.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/phylobayes_xsede_restartValidator.java
+[INFO] [freemarker] Input:  phyml.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/phymlValidator.java
+[INFO] [freemarker] Input:  poy.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/poyValidator.java
+[INFO] [freemarker] Input:  poy2.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/poy2Validator.java
+[INFO] [freemarker] Input:  ppsearch.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/ppsearchValidator.java
+[INFO] [freemarker] Input:  probalign.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/probalignValidator.java
+[INFO] [freemarker] Input:  probcons.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/probconsValidator.java
+[INFO] [freemarker] Input:  prosearch.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/prosearchValidator.java
+[INFO] [freemarker] Input:  protdist.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/protdistValidator.java
+[INFO] [freemarker] Input:  proteus.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/proteusValidator.java
+[INFO] [freemarker] Input:  protpars.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/protparsValidator.java
+[INFO] [freemarker] Input:  prss.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/prssValidator.java
+[INFO] [freemarker] Input:  psiblast.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/psiblastValidator.java
+[INFO] [freemarker] Input:  psipred.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/psipredValidator.java
+[INFO] [freemarker] Input:  raxml_light2.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/raxml_light2Validator.java
+[INFO] [freemarker] Input:  raxmlhpc.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/raxmlhpcValidator.java
+[INFO] [freemarker] Input:  raxmlhpc2_abe.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/raxmlhpc2_abeValidator.java
+[INFO] [freemarker] Input:  raxmlhpc2_tgb.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/raxmlhpc2_tgbValidator.java
+[INFO] [freemarker] Input:  raxmlhpc2_tgbi.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/raxmlhpc2_tgbiValidator.java
+[INFO] [freemarker] Input:  raxmlhpc2bb.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/raxmlhpc2bbValidator.java
+[INFO] [freemarker] Input:  raxmlhpc2bb_abe.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/raxmlhpc2bb_abeValidator.java
+[INFO] [freemarker] Input:  readseq.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/readseqValidator.java
+[INFO] [freemarker] Input:  restrict.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/restrictValidator.java
+[INFO] [freemarker] Input:  revseq.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/revseqValidator.java
+[INFO] [freemarker] Input:  rid3paup.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/rid3paupValidator.java
+[INFO] [freemarker] Input:  rid3raxml.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/rid3raxmlValidator.java
+[INFO] [freemarker] Input:  rpsblast.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/rpsblastValidator.java
+[INFO] [freemarker] Input:  saps.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/sapsValidator.java
+[INFO] [freemarker] Input:  seqboot.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/seqbootValidator.java
+[INFO] [freemarker] Input:  seqretsplit.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/seqretsplitValidator.java
+[INFO] [freemarker] Input:  sixpack.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/sixpackValidator.java
+[INFO] [freemarker] Input:  sleep.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/sleepValidator.java
+[INFO] [freemarker] Input:  spidey.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/spideyValidator.java
+[INFO] [freemarker] Input:  ssearch_n.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/ssearch_nValidator.java
+[INFO] [freemarker] Input:  ssearch_p.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/ssearch_pValidator.java
+[INFO] [freemarker] Input:  tacg.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/tacgValidator.java
+[INFO] [freemarker] Input:  tblastn.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/tblastnValidator.java
+[INFO] [freemarker] Input:  tblastx.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/tblastxValidator.java
+[INFO] [freemarker] Input:  tfasta.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/tfastaValidator.java
+[INFO] [freemarker] Input:  tfastx.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/tfastxValidator.java
+[INFO] [freemarker] Input:  tfasty.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/tfastyValidator.java
+[INFO] [freemarker] Input:  tmap.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/tmapValidator.java
+[INFO] [freemarker] Input:  unroot.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/sdk/src/main/java/org/ngbw/sdk/tool/validation/unrootValidator.java
+[INFO] 
+[INFO] BUILD SUCCESSFUL
+[INFO] Total time: 9 seconds
+[INFO] [resources:resources]
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 203 resources
+[INFO] [compiler:compile]
+[INFO] Compiling 573 source files to /home/samindaw/prj-co/cipres-trunk/sdk/target/classes
+[INFO] [resources:testResources]
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /home/samindaw/prj-co/cipres-trunk/sdk/src/test/resources
+[INFO] [compiler:testCompile]
+[INFO] Not compiling test sources
+Downloading: http://repo1.maven.org/maven2/org/apache/maven/surefire/surefire-booter/2.4.3/surefire-booter-2.4.3.pom
+1/1K1K downloaded
+Downloading: https://repository.apache.org/content/groups/staging//org/apache/maven/surefire/surefire-api/2.4.3/surefire-api-2.4.3.pom
+2/2K2K downloaded
+Downloading: http://repo1.maven.org/maven2/org/apache/maven/surefire/surefire-booter/2.4.3/surefire-booter-2.4.3.jar
+1/261K2/261K3/261K5/261K6/261K8/261K10/261K12/261K13/261K15/261K16/261K18/261K20/261K23/261K25/261K29/261K32/261K33/261K37/261K37/261K39/261K40/261K43/261K47/261K49/261K50/261K51/261K53/261K57/261K60/261K64/261K67/261K68/261K72/261K76/261K77/261K78/261K81/261K83/261K87/261K88/261K90/261K91/261K94/261K95/261K99/261K102/261K106/261K109/261K113/261K116/261K120/261K124/261K128/261K131/261K135/261K138/261K139/261K143/261K146/261K148/261K152/261K153/261K155/261K158/261K159/261K163/261K166/261K170/261K173/261K177/261K180/261K184/261K187/261K191/261K194/261K198/261K201/261K205/261K206/261K210/261K213/261K217/261K220/261K224/261K227/261K228/261K232/261K235/261K239/261K242/261K246/261K249/261K253/261K255/261K259/261K261/261K261K downloaded
+Downloading: https://repository.apache.org/content/groups/staging//org/apache/maven/surefire/surefire-api/2.4.3/surefire-api-2.4.3.jar
+4/503K7/503K11/503K13/503K17/503K21/503K25/503K29/503K33/503K37/503K41/503K45/503K49/503K52/503K56/503K60/503K64/503K68/503K72/503K76/503K80/503K84/503K88/503K91/503K95/503K99/503K103/503K107/503K111/503K115/503K119/503K123/503K127/503K130/503K134/503K138/503K142/503K146/503K150/503K154/503K158/503K162/503K166/503K170/503K174/503K177/503K181/503K185/503K189/503K193/503K197/503K201/503K205/503K209/503K213/503K216/503K220/503K224/503K228/503K232/503K236/503K240/503K244/503K248/503K252/503K255/503K259/503K263/503K267/503K271/503K275/503K279/503K283/503K287/503K291/503K295/503K299/503K302/503K306/503K310/503K314/503K318/503K322/503K326/503K330/503K334/503K338/503K341/503K345/503K349/503K353/503K357/503K361/503K365/503K369/503K373/503K377/503K380/503K384/503K388/503K392/503K396/503K400/503K404/503K408/503K412/503K416/503K420/503K424/503K427/503K431/503K435/503K439/503K443/503K447/503K451/503K455/503K459/503K463/503K466/503K470/503K474/503K478/503K482/503K486/503K490/503K494/503K498/503K502/503K503/503K503K downloaded
+[INFO] [surefire:test]
+[INFO] Tests are skipped.
+Downloading: https://repository.apache.org/content/groups/staging//org/apache/maven/maven-artifact/2.0.7/maven-artifact-2.0.7.pom
+1/1K1K downloaded
+[INFO] [jar:jar]
+[INFO] Building jar: /home/samindaw/prj-co/cipres-trunk/sdk/target/sdk-2.0.jar
+Downloading: http://repo1.maven.org/maven2/aspectj/aspectjrt/1.5.3/aspectjrt-1.5.3.pom
+657/657b657b downloaded
+Downloading: http://repo1.maven.org/maven2/org/codehaus/plexus/plexus-archiver/1.0-alpha-10/plexus-archiver-1.0-alpha-10.pom
+1/1K1K downloaded
+Downloading: https://repository.apache.org/content/groups/staging//org/codehaus/plexus/plexus-io/1.0-alpha-2/plexus-io-1.0-alpha-2.pom
+[INFO] Unable to find resource 'org.codehaus.plexus:plexus-io:pom:1.0-alpha-2' in repository apache.nexus (https://repository.apache.org/content/groups/staging/)
+Downloading: http://billiards.sdsc.edu:9999/maven2/org/codehaus/plexus/plexus-io/1.0-alpha-2/plexus-io-1.0-alpha-2.pom
+[INFO] Unable to find resource 'org.codehaus.plexus:plexus-io:pom:1.0-alpha-2' in repository internal (http://billiards.sdsc.edu:9999/maven2)
+Downloading: https://oss.sonatype.org/content/groups/staging/org/codehaus/plexus/plexus-io/1.0-alpha-2/plexus-io-1.0-alpha-2.pom
+[INFO] Unable to find resource 'org.codehaus.plexus:plexus-io:pom:1.0-alpha-2' in repository oss.sonatype.org (https://oss.sonatype.org/content/groups/staging)
+Downloading: http://repo1.maven.org/maven2/org/codehaus/plexus/plexus-io/1.0-alpha-2/plexus-io-1.0-alpha-2.pom
+1/1K1K downloaded
+Downloading: https://repository.apache.org/content/groups/staging//org/apache/maven/wagon/wagon-file/1.0-alpha-5/wagon-file-1.0-alpha-5.pom
+4/5K5/5K5K downloaded
+Downloading: https://repository.apache.org/content/groups/staging//org/apache/maven/wagon/wagon-http-lightweight/1.0-alpha-5/wagon-http-lightweight-1.0-alpha-5.pom
+4/5K5/5K5K downloaded
+Downloading: https://repository.apache.org/content/groups/staging//org/apache/maven/wagon/wagon-ssh/1.0-alpha-5/wagon-ssh-1.0-alpha-5.pom
+4/6K6/6K6K downloaded
+Downloading: https://repository.apache.org/content/groups/staging//com/jcraft/jsch/0.1.23/jsch-0.1.23.pom
+[INFO] Unable to find resource 'com.jcraft:jsch:pom:0.1.23' in repository apache.nexus (https://repository.apache.org/content/groups/staging/)
+Downloading: http://billiards.sdsc.edu:9999/maven2/com/jcraft/jsch/0.1.23/jsch-0.1.23.pom
+[INFO] Unable to find resource 'com.jcraft:jsch:pom:0.1.23' in repository internal (http://billiards.sdsc.edu:9999/maven2)
+Downloading: https://oss.sonatype.org/content/groups/staging/com/jcraft/jsch/0.1.23/jsch-0.1.23.pom
+485/485b485b downloaded
+Downloading: http://repo1.maven.org/maven2/aspectj/aspectjrt/1.5.3/aspectjrt-1.5.3.jar
+4/112K8/112K8/112K9/112K12/112K16/112K19/112K23/112K25/112K26/112K30/112K34/112K38/112K40/112K44/112K48/112K52/112K54/112K57/112K59/112K63/112K67/112K71/112K75/112K78/112K82/112K85/112K89/112K93/112K97/112K101/112K104/112K105/112K109/112K112/112K112K downloaded
+Downloading: http://repo1.maven.org/maven2/org/codehaus/plexus/plexus-archiver/1.0-alpha-10/plexus-archiver-1.0-alpha-10.jar
+4/168K8/168K8/168K9/168K13/168K17/168K20/168K22/168K26/168K29/168K33/168K36/168K37/168K39/168K42/168K43/168K47/168K50/168K54/168K57/168K61/168K63/168K64/168K67/168K71/168K71/168K75/168K79/168K80/168K84/168K88/168K92/168K96/168K100/168K101/168K102/168K105/168K107/168K111/168K114/168K115/168K119/168K119/168K123/168K127/168K128/168K129/168K133/168K137/168K141/168K143/168K147/168K151/168K155/168K156/168K158/168K160/168K164/168K165/168K168/168K168K downloaded
+Downloading: http://repo1.maven.org/maven2/org/codehaus/plexus/plexus-io/1.0-alpha-2/plexus-io-1.0-alpha-2.jar
+4/30K8/30K8/30K9/30K13/30K17/30K20/30K22/30K26/30K30/30K30/30K30K downloaded
+[INFO] [assembly:single {execution: jar-package}]
+[INFO] Processing DependencySet (output=)
+[WARNING] Attempting to build MavenProject instance for Artifact (org.cipres.utils:mailservice:1.0) of type: jar; constructing POM artifact instead.
+[INFO] Building jar: /home/samindaw/prj-co/cipres-trunk/sdk/target/sdk-2.0-jar-with-dependencies.jar
+[INFO] [antrun:run {execution: copy files}]
+[INFO] Executing tasks
+   [delete] Deleting: /home/samindaw/.globus/cog.properties
+     [copy] Copying 1 file to /home/samindaw/.globus
+     [copy] Copying /home/samindaw/prj-co/cipres-trunk/sdk/target/classes/cog.properties to /home/samindaw/.globus/cog.properties
+     [copy] Copying 16 files to /mnt/dev/testbed/cipres_data/sdk_versions
+     [copy] Copying /home/samindaw/prj-co/cipres-trunk/sdk/target/scripts/checkJobsD to /mnt/dev/testbed/cipres_data/sdk_versions/checkJobsD
+     [copy] Copying /home/samindaw/prj-co/cipres-trunk/sdk/target/scripts/daemonize to /mnt/dev/testbed/cipres_data/sdk_versions/daemonize
+     [copy] Copying /home/samindaw/prj-co/cipres-trunk/sdk/target/scripts/importTgusage to /mnt/dev/testbed/cipres_data/sdk_versions/importTgusage
+     [copy] Copying /home/samindaw/prj-co/cipres-trunk/sdk/target/scripts/loadResultsD to /mnt/dev/testbed/cipres_data/sdk_versions/loadResultsD
+     [copy] Copying /home/samindaw/prj-co/cipres-trunk/sdk/target/scripts/taskInspector to /mnt/dev/testbed/cipres_data/sdk_versions/taskInspector
+     [copy] Copying /home/samindaw/prj-co/cipres-trunk/sdk/target/scripts/submitJobD to /mnt/dev/testbed/cipres_data/sdk_versions/submitJobD
+     [copy] Copying /home/samindaw/prj-co/cipres-trunk/sdk/target/scripts/tgusage.sh to /mnt/dev/testbed/cipres_data/sdk_versions/tgusage.sh
+     [copy] Copying /home/samindaw/prj-co/cipres-trunk/sdk/target/scripts/userTgAllocation to /mnt/dev/testbed/cipres_data/sdk_versions/userTgAllocation
+     [copy] Copying /home/samindaw/prj-co/cipres-trunk/sdk/target/scripts/userDelete to /mnt/dev/testbed/cipres_data/sdk_versions/userDelete
+     [copy] Copying /home/samindaw/prj-co/cipres-trunk/sdk/target/scripts/sdkrun to /mnt/dev/testbed/cipres_data/sdk_versions/sdkrun
+     [copy] Copying /home/samindaw/prj-co/cipres-trunk/sdk/target/scripts/mailer.py to /mnt/dev/testbed/cipres_data/sdk_versions/mailer.py
+     [copy] Copying /home/samindaw/prj-co/cipres-trunk/sdk/target/scripts/updateLastLogin to /mnt/dev/testbed/cipres_data/sdk_versions/updateLastLogin
+     [copy] Copying /home/samindaw/prj-co/cipres-trunk/sdk/target/scripts/userCanSubmit to /mnt/dev/testbed/cipres_data/sdk_versions/userCanSubmit
+     [copy] Copying /home/samindaw/prj-co/cipres-trunk/sdk/target/scripts/convertEncoding.sh to /mnt/dev/testbed/cipres_data/sdk_versions/convertEncoding.sh
+     [copy] Copying /home/samindaw/prj-co/cipres-trunk/sdk/target/scripts/piseEval to /mnt/dev/testbed/cipres_data/sdk_versions/piseEval
+     [copy] Copying /home/samindaw/prj-co/cipres-trunk/sdk/target/scripts/recoverResultsD to /mnt/dev/testbed/cipres_data/sdk_versions/recoverResultsD
+    [chmod] Applied chmod to 16 files and 0 directories.
+     [copy] Copying 1 file to /mnt/dev/testbed/cipres_data/sdk_versions
+     [copy] Copying /home/samindaw/prj-co/cipres-trunk/sdk/target/sdk-2.0-jar-with-dependencies.jar to /mnt/dev/testbed/cipres_data/sdk_versions/sdk-2.0-jar-with-dependencies.jar
+[INFO] Executed tasks
+[INFO] Preparing source:jar
+[WARNING] Removing: jar from forked lifecycle, to prevent recursive invocation.
+[INFO] [resources:copy-resources {execution: copy-scripts}]
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 216 resources
+[INFO] [source:jar {execution: default}]
+[INFO] Building jar: /home/samindaw/prj-co/cipres-trunk/sdk/target/sdk-2.0-sources.jar
+[INFO] [install:install]
+[INFO] Installing /home/samindaw/prj-co/cipres-trunk/sdk/target/sdk-2.0.jar to /home/samindaw/.m2/repository/org/ngbw/sdk/2.0/sdk-2.0.jar
+[INFO] Installing /home/samindaw/prj-co/cipres-trunk/sdk/target/sdk-2.0-jar-with-dependencies.jar to /home/samindaw/.m2/repository/org/ngbw/sdk/2.0/sdk-2.0-jar-with-dependencies.jar
+[INFO] Installing /home/samindaw/prj-co/cipres-trunk/sdk/target/sdk-2.0-sources.jar to /home/samindaw/.m2/repository/org/ngbw/sdk/2.0/sdk-2.0-sources.jar
+[INFO] ------------------------------------------------------------------------
+[INFO] Building Cipres Portal Web Application
+[INFO]    task-segment: [clean, install]
+[INFO] ------------------------------------------------------------------------
+[INFO] [clean:clean]
+[INFO] Deleting directory /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/target
+[INFO] [resources:copy-resources {execution: copy-resources}]
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 4 resources
+[INFO] Copying 1 resource
+[INFO] [exec:exec {execution: code-generation}]
+[INFO] Buildfile: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/build.xml
+[INFO] 
+[INFO] generate:
+[INFO]    [delete] Deleting: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/resources/struts-tools.xml
+[INFO]    [delete] Deleting: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/resources/tools.properties
+[INFO] [freemarker] Transforming into: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool
+[INFO] [freemarker] Input:  align.xml
+[INFO] [freemarker] Jan 13, 2014 12:11:59 PM freemarker.log.JDK14LoggerFactory$JDK14Logger warn
+[INFO] [freemarker] WARNING: No XPath support is available.
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/align.java
+[INFO] [freemarker] Input:  beast_tg.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/beast_tg.java
+[INFO] [freemarker] Input:  beast_tg_test.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/beast_tg_test.java
+[INFO] [freemarker] Input:  bl2seq.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/bl2seq.java
+[INFO] [freemarker] Input:  blast2.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/blast2.java
+[INFO] [freemarker] Input:  blastn.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/blastn.java
+[INFO] [freemarker] Input:  blastp.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/blastp.java
+[INFO] [freemarker] Input:  blastx.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/blastx.java
+[INFO] [freemarker] Input:  blimps.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/blimps.java
+[INFO] [freemarker] Input:  boxshade.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/boxshade.java
+[INFO] [freemarker] Input:  bucky.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/bucky.java
+[INFO] [freemarker] Input:  clearcut.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/clearcut.java
+[INFO] [freemarker] Input:  clique.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/clique.java
+[INFO] [freemarker] Input:  clustalw.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/clustalw.java
+[INFO] [freemarker] Input:  clustalw_dist.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/clustalw_dist.java
+[INFO] [freemarker] Input:  clustalw_n.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/clustalw_n.java
+[INFO] [freemarker] Input:  clustalw_p.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/clustalw_p.java
+[INFO] [freemarker] Input:  clustalw_profile.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/clustalw_profile.java
+[INFO] [freemarker] Input:  clustalw_tree.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/clustalw_tree.java
+[INFO] [freemarker] Input:  compass.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/compass.java
+[INFO] [freemarker] Input:  consense.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/consense.java
+[INFO] [freemarker] Input:  contralign.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/contralign.java
+[INFO] [freemarker] Input:  degapseq.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/degapseq.java
+[INFO] [freemarker] Input:  dnadist.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/dnadist.java
+[INFO] [freemarker] Input:  dnapars.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/dnapars.java
+[INFO] [freemarker] Input:  dollop.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/dollop.java
+[INFO] [freemarker] Input:  dppdiv.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/dppdiv.java
+[INFO] [freemarker] Input:  drawgram.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/drawgram.java
+[INFO] [freemarker] Input:  drawtree.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/drawtree.java
+[INFO] [freemarker] Input:  dssp.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/dssp.java
+[INFO] [freemarker] Input:  epestfind.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/epestfind.java
+[INFO] [freemarker] Input:  eprimer3.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/eprimer3.java
+[INFO] [freemarker] Input:  extractalign.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/extractalign.java
+[INFO] [freemarker] Input:  extractseq.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/extractseq.java
+[INFO] [freemarker] Input:  fasta_n.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/fasta_n.java
+[INFO] [freemarker] Input:  fasta_p.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/fasta_p.java
+[INFO] [freemarker] Input:  fastx.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/fastx.java
+[INFO] [freemarker] Input:  fasty.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/fasty.java
+[INFO] [freemarker] Input:  fingerprintscan.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/fingerprintscan.java
+[INFO] [freemarker] Input:  fitch.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/fitch.java
+[INFO] [freemarker] Input:  formatvalidator.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/formatvalidator.java
+[INFO] [freemarker] Input:  fsa.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/fsa.java
+[INFO] [freemarker] Input:  garli.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/garli.java
+[INFO] [freemarker] Input:  garli2_tgb.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/garli2_tgb.java
+[INFO] [freemarker] Input:  garli_abe.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/garli_abe.java
+[INFO] [freemarker] Input:  garli_conf_creator.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/garli_conf_creator.java
+[INFO] [freemarker] Input:  garli_lonestar.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/garli_lonestar.java
+[INFO] [freemarker] Input:  garli_tg.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/garli_tg.java
+[INFO] [freemarker] Input:  helixturnhelix.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/helixturnhelix.java
+[INFO] [freemarker] Input:  hmmpfam.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/hmmpfam.java
+[INFO] [freemarker] Input:  kitsch.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/kitsch.java
+[INFO] [freemarker] Input:  lalign.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/lalign.java
+[INFO] [freemarker] Input:  mafft.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/mafft.java
+[INFO] [freemarker] Input:  mafft_861.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/mafft_861.java
+[INFO] [freemarker] Input:  mafft_tg.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/mafft_tg.java
+[INFO] [freemarker] Input:  mafftnew.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/mafftnew.java
+[INFO] [freemarker] Input:  mbsum.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/mbsum.java
+[INFO] [freemarker] Input:  merger.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/merger.java
+[INFO] [freemarker] Input:  mfold.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/mfold.java
+[INFO] [freemarker] Input:  mix.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/mix.java
+[INFO] [freemarker] Input:  mrbayes.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/mrbayes.java
+[INFO] [freemarker] Input:  mrbayes321_restartbeta.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/mrbayes321_restartbeta.java
+[INFO] [freemarker] Input:  mrbayes_321beta.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/mrbayes_321beta.java
+[INFO] [freemarker] Input:  mrbayes_321restartbeta.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/mrbayes_321restartbeta.java
+[INFO] [freemarker] Input:  mrbayes_abe.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/mrbayes_abe.java
+[INFO] [freemarker] Input:  mrbayes_lonestar.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/mrbayes_lonestar.java
+[INFO] [freemarker] Input:  mrbayes_xsede.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/mrbayes_xsede.java
+[INFO] [freemarker] Input:  mrbayeshybrid312_tg.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/mrbayeshybrid312_tg.java
+[INFO] [freemarker] Input:  mrbayeshybrid_abe.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/mrbayeshybrid_abe.java
+[INFO] [freemarker] Input:  mrbayeshybrid_gordon.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/mrbayeshybrid_gordon.java
+[INFO] [freemarker] Input:  mrbayeshybrid_tg.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/mrbayeshybrid_tg.java
+[INFO] [freemarker] Input:  msa.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/msa.java
+[INFO] [freemarker] Input:  muscle.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/muscle.java
+[INFO] [freemarker] Input:  mview_alig.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/mview_alig.java
+[INFO] [freemarker] Input:  mview_blast.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/mview_blast.java
+[INFO] [freemarker] Input:  nclconverter.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/nclconverter.java
+[INFO] [freemarker] Input:  neighbor.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/neighbor.java
+[INFO] [freemarker] Input:  new_tool.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/new_tool.java
+[INFO] [freemarker] Input:  oldmrbayeshybrid_tg.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/oldmrbayeshybrid_tg.java
+[INFO] [freemarker] Input:  pars.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/pars.java
+[INFO] [freemarker] Input:  paup.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/paup.java
+[INFO] [freemarker] Input:  pauprat.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/pauprat.java
+[INFO] [freemarker] Input:  pauprat_exp.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/pauprat_exp.java
+[INFO] [freemarker] Input:  pepinfo.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/pepinfo.java
+[INFO] [freemarker] Input:  pepstats.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/pepstats.java
+[INFO] [freemarker] Input:  pepwindow.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/pepwindow.java
+[INFO] [freemarker] Input:  pfscan.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/pfscan.java
+[INFO] [freemarker] Input:  pfsearch.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/pfsearch.java
+[INFO] [freemarker] Input:  phylobayes_xsede.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/phylobayes_xsede.java
+[INFO] [freemarker] Input:  phylobayes_xsede_restart.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/phylobayes_xsede_restart.java
+[INFO] [freemarker] Input:  phyml.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/phyml.java
+[INFO] [freemarker] Input:  poy.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/poy.java
+[INFO] [freemarker] Input:  poy2.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/poy2.java
+[INFO] [freemarker] Input:  ppsearch.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/ppsearch.java
+[INFO] [freemarker] Input:  probalign.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/probalign.java
+[INFO] [freemarker] Input:  probcons.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/probcons.java
+[INFO] [freemarker] Input:  prosearch.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/prosearch.java
+[INFO] [freemarker] Input:  protdist.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/protdist.java
+[INFO] [freemarker] Input:  proteus.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/proteus.java
+[INFO] [freemarker] Input:  protpars.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/protpars.java
+[INFO] [freemarker] Input:  prss.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/prss.java
+[INFO] [freemarker] Input:  psiblast.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/psiblast.java
+[INFO] [freemarker] Input:  psipred.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/psipred.java
+[INFO] [freemarker] Input:  raxml_light2.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/raxml_light2.java
+[INFO] [freemarker] Input:  raxmlhpc.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/raxmlhpc.java
+[INFO] [freemarker] Input:  raxmlhpc2_abe.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/raxmlhpc2_abe.java
+[INFO] [freemarker] Input:  raxmlhpc2_tgb.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/raxmlhpc2_tgb.java
+[INFO] [freemarker] Input:  raxmlhpc2_tgbi.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/raxmlhpc2_tgbi.java
+[INFO] [freemarker] Input:  raxmlhpc2bb.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/raxmlhpc2bb.java
+[INFO] [freemarker] Input:  raxmlhpc2bb_abe.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/raxmlhpc2bb_abe.java
+[INFO] [freemarker] Input:  readseq.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/readseq.java
+[INFO] [freemarker] Input:  restrict.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/restrict.java
+[INFO] [freemarker] Input:  revseq.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/revseq.java
+[INFO] [freemarker] Input:  rid3paup.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/rid3paup.java
+[INFO] [freemarker] Input:  rid3raxml.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/rid3raxml.java
+[INFO] [freemarker] Input:  rpsblast.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/rpsblast.java
+[INFO] [freemarker] Input:  saps.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/saps.java
+[INFO] [freemarker] Input:  seqboot.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/seqboot.java
+[INFO] [freemarker] Input:  seqretsplit.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/seqretsplit.java
+[INFO] [freemarker] Input:  sixpack.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/sixpack.java
+[INFO] [freemarker] Input:  sleep.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/sleep.java
+[INFO] [freemarker] Input:  spidey.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/spidey.java
+[INFO] [freemarker] Input:  ssearch_n.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/ssearch_n.java
+[INFO] [freemarker] Input:  ssearch_p.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/ssearch_p.java
+[INFO] [freemarker] Input:  tacg.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/tacg.java
+[INFO] [freemarker] Input:  tblastn.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/tblastn.java
+[INFO] [freemarker] Input:  tblastx.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/tblastx.java
+[INFO] [freemarker] Input:  tfasta.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/tfasta.java
+[INFO] [freemarker] Input:  tfastx.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/tfastx.java
+[INFO] [freemarker] Input:  tfasty.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/tfasty.java
+[INFO] [freemarker] Input:  tmap.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/tmap.java
+[INFO] [freemarker] Input:  unroot.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/actions/tool/unroot.java
+[INFO] [freemarker] Transforming into: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool
+[INFO] [freemarker] Input:  align.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/alignValidator.java
+[INFO] [freemarker] Input:  beast_tg.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/beast_tgValidator.java
+[INFO] [freemarker] Input:  beast_tg_test.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/beast_tg_testValidator.java
+[INFO] [freemarker] Input:  bl2seq.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/bl2seqValidator.java
+[INFO] [freemarker] Input:  blast2.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/blast2Validator.java
+[INFO] [freemarker] Input:  blastn.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/blastnValidator.java
+[INFO] [freemarker] Input:  blastp.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/blastpValidator.java
+[INFO] [freemarker] Input:  blastx.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/blastxValidator.java
+[INFO] [freemarker] Input:  blimps.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/blimpsValidator.java
+[INFO] [freemarker] Input:  boxshade.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/boxshadeValidator.java
+[INFO] [freemarker] Input:  bucky.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/buckyValidator.java
+[INFO] [freemarker] Input:  clearcut.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/clearcutValidator.java
+[INFO] [freemarker] Input:  clique.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/cliqueValidator.java
+[INFO] [freemarker] Input:  clustalw.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/clustalwValidator.java
+[INFO] [freemarker] Input:  clustalw_dist.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/clustalw_distValidator.java
+[INFO] [freemarker] Input:  clustalw_n.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/clustalw_nValidator.java
+[INFO] [freemarker] Input:  clustalw_p.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/clustalw_pValidator.java
+[INFO] [freemarker] Input:  clustalw_profile.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/clustalw_profileValidator.java
+[INFO] [freemarker] Input:  clustalw_tree.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/clustalw_treeValidator.java
+[INFO] [freemarker] Input:  compass.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/compassValidator.java
+[INFO] [freemarker] Input:  consense.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/consenseValidator.java
+[INFO] [freemarker] Input:  contralign.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/contralignValidator.java
+[INFO] [freemarker] Input:  degapseq.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/degapseqValidator.java
+[INFO] [freemarker] Input:  dnadist.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/dnadistValidator.java
+[INFO] [freemarker] Input:  dnapars.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/dnaparsValidator.java
+[INFO] [freemarker] Input:  dollop.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/dollopValidator.java
+[INFO] [freemarker] Input:  dppdiv.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/dppdivValidator.java
+[INFO] [freemarker] Input:  drawgram.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/drawgramValidator.java
+[INFO] [freemarker] Input:  drawtree.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/drawtreeValidator.java
+[INFO] [freemarker] Input:  dssp.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/dsspValidator.java
+[INFO] [freemarker] Input:  epestfind.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/epestfindValidator.java
+[INFO] [freemarker] Input:  eprimer3.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/eprimer3Validator.java
+[INFO] [freemarker] Input:  extractalign.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/extractalignValidator.java
+[INFO] [freemarker] Input:  extractseq.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/extractseqValidator.java
+[INFO] [freemarker] Input:  fasta_n.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/fasta_nValidator.java
+[INFO] [freemarker] Input:  fasta_p.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/fasta_pValidator.java
+[INFO] [freemarker] Input:  fastx.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/fastxValidator.java
+[INFO] [freemarker] Input:  fasty.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/fastyValidator.java
+[INFO] [freemarker] Input:  fingerprintscan.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/fingerprintscanValidator.java
+[INFO] [freemarker] Input:  fitch.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/fitchValidator.java
+[INFO] [freemarker] Input:  formatvalidator.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/formatvalidatorValidator.java
+[INFO] [freemarker] Input:  fsa.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/fsaValidator.java
+[INFO] [freemarker] Input:  garli.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/garliValidator.java
+[INFO] [freemarker] Input:  garli2_tgb.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/garli2_tgbValidator.java
+[INFO] [freemarker] Input:  garli_abe.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/garli_abeValidator.java
+[INFO] [freemarker] Input:  garli_conf_creator.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/garli_conf_creatorValidator.java
+[INFO] [freemarker] Input:  garli_lonestar.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/garli_lonestarValidator.java
+[INFO] [freemarker] Input:  garli_tg.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/garli_tgValidator.java
+[INFO] [freemarker] Input:  helixturnhelix.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/helixturnhelixValidator.java
+[INFO] [freemarker] Input:  hmmpfam.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/hmmpfamValidator.java
+[INFO] [freemarker] Input:  kitsch.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/kitschValidator.java
+[INFO] [freemarker] Input:  lalign.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/lalignValidator.java
+[INFO] [freemarker] Input:  mafft.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/mafftValidator.java
+[INFO] [freemarker] Input:  mafft_861.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/mafft_861Validator.java
+[INFO] [freemarker] Input:  mafft_tg.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/mafft_tgValidator.java
+[INFO] [freemarker] Input:  mafftnew.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/mafftnewValidator.java
+[INFO] [freemarker] Input:  mbsum.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/mbsumValidator.java
+[INFO] [freemarker] Input:  merger.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/mergerValidator.java
+[INFO] [freemarker] Input:  mfold.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/mfoldValidator.java
+[INFO] [freemarker] Input:  mix.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/mixValidator.java
+[INFO] [freemarker] Input:  mrbayes.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/mrbayesValidator.java
+[INFO] [freemarker] Input:  mrbayes321_restartbeta.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/mrbayes321_restartbetaValidator.java
+[INFO] [freemarker] Input:  mrbayes_321beta.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/mrbayes_321betaValidator.java
+[INFO] [freemarker] Input:  mrbayes_321restartbeta.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/mrbayes_321restartbetaValidator.java
+[INFO] [freemarker] Input:  mrbayes_abe.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/mrbayes_abeValidator.java
+[INFO] [freemarker] Input:  mrbayes_lonestar.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/mrbayes_lonestarValidator.java
+[INFO] [freemarker] Input:  mrbayes_xsede.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/mrbayes_xsedeValidator.java
+[INFO] [freemarker] Input:  mrbayeshybrid312_tg.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/mrbayeshybrid312_tgValidator.java
+[INFO] [freemarker] Input:  mrbayeshybrid_abe.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/mrbayeshybrid_abeValidator.java
+[INFO] [freemarker] Input:  mrbayeshybrid_gordon.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/mrbayeshybrid_gordonValidator.java
+[INFO] [freemarker] Input:  mrbayeshybrid_tg.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/mrbayeshybrid_tgValidator.java
+[INFO] [freemarker] Input:  msa.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/msaValidator.java
+[INFO] [freemarker] Input:  muscle.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/muscleValidator.java
+[INFO] [freemarker] Input:  mview_alig.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/mview_aligValidator.java
+[INFO] [freemarker] Input:  mview_blast.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/mview_blastValidator.java
+[INFO] [freemarker] Input:  nclconverter.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/nclconverterValidator.java
+[INFO] [freemarker] Input:  neighbor.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/neighborValidator.java
+[INFO] [freemarker] Input:  new_tool.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/new_toolValidator.java
+[INFO] [freemarker] Input:  oldmrbayeshybrid_tg.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/oldmrbayeshybrid_tgValidator.java
+[INFO] [freemarker] Input:  pars.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/parsValidator.java
+[INFO] [freemarker] Input:  paup.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/paupValidator.java
+[INFO] [freemarker] Input:  pauprat.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/paupratValidator.java
+[INFO] [freemarker] Input:  pauprat_exp.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/pauprat_expValidator.java
+[INFO] [freemarker] Input:  pepinfo.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/pepinfoValidator.java
+[INFO] [freemarker] Input:  pepstats.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/pepstatsValidator.java
+[INFO] [freemarker] Input:  pepwindow.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/pepwindowValidator.java
+[INFO] [freemarker] Input:  pfscan.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/pfscanValidator.java
+[INFO] [freemarker] Input:  pfsearch.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/pfsearchValidator.java
+[INFO] [freemarker] Input:  phylobayes_xsede.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/phylobayes_xsedeValidator.java
+[INFO] [freemarker] Input:  phylobayes_xsede_restart.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/phylobayes_xsede_restartValidator.java
+[INFO] [freemarker] Input:  phyml.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/phymlValidator.java
+[INFO] [freemarker] Input:  poy.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/poyValidator.java
+[INFO] [freemarker] Input:  poy2.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/poy2Validator.java
+[INFO] [freemarker] Input:  ppsearch.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/ppsearchValidator.java
+[INFO] [freemarker] Input:  probalign.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/probalignValidator.java
+[INFO] [freemarker] Input:  probcons.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/probconsValidator.java
+[INFO] [freemarker] Input:  prosearch.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/prosearchValidator.java
+[INFO] [freemarker] Input:  protdist.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/protdistValidator.java
+[INFO] [freemarker] Input:  proteus.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/proteusValidator.java
+[INFO] [freemarker] Input:  protpars.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/protparsValidator.java
+[INFO] [freemarker] Input:  prss.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/prssValidator.java
+[INFO] [freemarker] Input:  psiblast.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/psiblastValidator.java
+[INFO] [freemarker] Input:  psipred.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/psipredValidator.java
+[INFO] [freemarker] Input:  raxml_light2.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/raxml_light2Validator.java
+[INFO] [freemarker] Input:  raxmlhpc.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/raxmlhpcValidator.java
+[INFO] [freemarker] Input:  raxmlhpc2_abe.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/raxmlhpc2_abeValidator.java
+[INFO] [freemarker] Input:  raxmlhpc2_tgb.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/raxmlhpc2_tgbValidator.java
+[INFO] [freemarker] Input:  raxmlhpc2_tgbi.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/raxmlhpc2_tgbiValidator.java
+[INFO] [freemarker] Input:  raxmlhpc2bb.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/raxmlhpc2bbValidator.java
+[INFO] [freemarker] Input:  raxmlhpc2bb_abe.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/raxmlhpc2bb_abeValidator.java
+[INFO] [freemarker] Input:  readseq.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/readseqValidator.java
+[INFO] [freemarker] Input:  restrict.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/restrictValidator.java
+[INFO] [freemarker] Input:  revseq.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/revseqValidator.java
+[INFO] [freemarker] Input:  rid3paup.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/rid3paupValidator.java
+[INFO] [freemarker] Input:  rid3raxml.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/rid3raxmlValidator.java
+[INFO] [freemarker] Input:  rpsblast.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/rpsblastValidator.java
+[INFO] [freemarker] Input:  saps.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/sapsValidator.java
+[INFO] [freemarker] Input:  seqboot.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/seqbootValidator.java
+[INFO] [freemarker] Input:  seqretsplit.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/seqretsplitValidator.java
+[INFO] [freemarker] Input:  sixpack.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/sixpackValidator.java
+[INFO] [freemarker] Input:  sleep.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/sleepValidator.java
+[INFO] [freemarker] Input:  spidey.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/spideyValidator.java
+[INFO] [freemarker] Input:  ssearch_n.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/ssearch_nValidator.java
+[INFO] [freemarker] Input:  ssearch_p.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/ssearch_pValidator.java
+[INFO] [freemarker] Input:  tacg.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/tacgValidator.java
+[INFO] [freemarker] Input:  tblastn.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/tblastnValidator.java
+[INFO] [freemarker] Input:  tblastx.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/tblastxValidator.java
+[INFO] [freemarker] Input:  tfasta.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/tfastaValidator.java
+[INFO] [freemarker] Input:  tfastx.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/tfastxValidator.java
+[INFO] [freemarker] Input:  tfasty.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/tfastyValidator.java
+[INFO] [freemarker] Input:  tmap.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/tmapValidator.java
+[INFO] [freemarker] Input:  unroot.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/java/org/ngbw/web/model/impl/tool/unrootValidator.java
+[INFO] [freemarker] Transforming into: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool
+[INFO] [freemarker] Input:  align.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/align.jsp
+[INFO] [freemarker] Input:  beast_tg.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/beast_tg.jsp
+[INFO] [freemarker] Input:  beast_tg_test.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/beast_tg_test.jsp
+[INFO] [freemarker] Input:  bl2seq.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/bl2seq.jsp
+[INFO] [freemarker] Input:  blast2.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/blast2.jsp
+[INFO] [freemarker] Input:  blastn.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/blastn.jsp
+[INFO] [freemarker] Input:  blastp.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/blastp.jsp
+[INFO] [freemarker] Input:  blastx.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/blastx.jsp
+[INFO] [freemarker] Input:  blimps.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/blimps.jsp
+[INFO] [freemarker] Input:  boxshade.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/boxshade.jsp
+[INFO] [freemarker] Input:  bucky.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/bucky.jsp
+[INFO] [freemarker] Input:  clearcut.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/clearcut.jsp
+[INFO] [freemarker] Input:  clique.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/clique.jsp
+[INFO] [freemarker] Input:  clustalw.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/clustalw.jsp
+[INFO] [freemarker] Input:  clustalw_dist.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/clustalw_dist.jsp
+[INFO] [freemarker] Input:  clustalw_n.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/clustalw_n.jsp
+[INFO] [freemarker] Input:  clustalw_p.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/clustalw_p.jsp
+[INFO] [freemarker] Input:  clustalw_profile.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/clustalw_profile.jsp
+[INFO] [freemarker] Input:  clustalw_tree.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/clustalw_tree.jsp
+[INFO] [freemarker] Input:  compass.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/compass.jsp
+[INFO] [freemarker] Input:  consense.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/consense.jsp
+[INFO] [freemarker] Input:  contralign.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/contralign.jsp
+[INFO] [freemarker] Input:  degapseq.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/degapseq.jsp
+[INFO] [freemarker] Input:  dnadist.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/dnadist.jsp
+[INFO] [freemarker] Input:  dnapars.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/dnapars.jsp
+[INFO] [freemarker] Input:  dollop.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/dollop.jsp
+[INFO] [freemarker] Input:  dppdiv.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/dppdiv.jsp
+[INFO] [freemarker] Input:  drawgram.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/drawgram.jsp
+[INFO] [freemarker] Input:  drawtree.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/drawtree.jsp
+[INFO] [freemarker] Input:  dssp.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/dssp.jsp
+[INFO] [freemarker] Input:  epestfind.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/epestfind.jsp
+[INFO] [freemarker] Input:  eprimer3.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/eprimer3.jsp
+[INFO] [freemarker] Input:  extractalign.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/extractalign.jsp
+[INFO] [freemarker] Input:  extractseq.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/extractseq.jsp
+[INFO] [freemarker] Input:  fasta_n.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/fasta_n.jsp
+[INFO] [freemarker] Input:  fasta_p.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/fasta_p.jsp
+[INFO] [freemarker] Input:  fastx.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/fastx.jsp
+[INFO] [freemarker] Input:  fasty.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/fasty.jsp
+[INFO] [freemarker] Input:  fingerprintscan.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/fingerprintscan.jsp
+[INFO] [freemarker] Input:  fitch.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/fitch.jsp
+[INFO] [freemarker] Input:  formatvalidator.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/formatvalidator.jsp
+[INFO] [freemarker] Input:  fsa.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/fsa.jsp
+[INFO] [freemarker] Input:  garli.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/garli.jsp
+[INFO] [freemarker] Input:  garli2_tgb.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/garli2_tgb.jsp
+[INFO] [freemarker] Input:  garli_abe.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/garli_abe.jsp
+[INFO] [freemarker] Input:  garli_conf_creator.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/garli_conf_creator.jsp
+[INFO] [freemarker] Input:  garli_lonestar.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/garli_lonestar.jsp
+[INFO] [freemarker] Input:  garli_tg.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/garli_tg.jsp
+[INFO] [freemarker] Input:  helixturnhelix.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/helixturnhelix.jsp
+[INFO] [freemarker] Input:  hmmpfam.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/hmmpfam.jsp
+[INFO] [freemarker] Input:  kitsch.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/kitsch.jsp
+[INFO] [freemarker] Input:  lalign.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/lalign.jsp
+[INFO] [freemarker] Input:  mafft.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/mafft.jsp
+[INFO] [freemarker] Input:  mafft_861.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/mafft_861.jsp
+[INFO] [freemarker] Input:  mafft_tg.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/mafft_tg.jsp
+[INFO] [freemarker] Input:  mafftnew.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/mafftnew.jsp
+[INFO] [freemarker] Input:  mbsum.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/mbsum.jsp
+[INFO] [freemarker] Input:  merger.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/merger.jsp
+[INFO] [freemarker] Input:  mfold.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/mfold.jsp
+[INFO] [freemarker] Input:  mix.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/mix.jsp
+[INFO] [freemarker] Input:  mrbayes.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/mrbayes.jsp
+[INFO] [freemarker] Input:  mrbayes321_restartbeta.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/mrbayes321_restartbeta.jsp
+[INFO] [freemarker] Input:  mrbayes_321beta.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/mrbayes_321beta.jsp
+[INFO] [freemarker] Input:  mrbayes_321restartbeta.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/mrbayes_321restartbeta.jsp
+[INFO] [freemarker] Input:  mrbayes_abe.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/mrbayes_abe.jsp
+[INFO] [freemarker] Input:  mrbayes_lonestar.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/mrbayes_lonestar.jsp
+[INFO] [freemarker] Input:  mrbayes_xsede.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/mrbayes_xsede.jsp
+[INFO] [freemarker] Input:  mrbayeshybrid312_tg.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/mrbayeshybrid312_tg.jsp
+[INFO] [freemarker] Input:  mrbayeshybrid_abe.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/mrbayeshybrid_abe.jsp
+[INFO] [freemarker] Input:  mrbayeshybrid_gordon.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/mrbayeshybrid_gordon.jsp
+[INFO] [freemarker] Input:  mrbayeshybrid_tg.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/mrbayeshybrid_tg.jsp
+[INFO] [freemarker] Input:  msa.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/msa.jsp
+[INFO] [freemarker] Input:  muscle.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/muscle.jsp
+[INFO] [freemarker] Input:  mview_alig.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/mview_alig.jsp
+[INFO] [freemarker] Input:  mview_blast.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/mview_blast.jsp
+[INFO] [freemarker] Input:  nclconverter.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/nclconverter.jsp
+[INFO] [freemarker] Input:  neighbor.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/neighbor.jsp
+[INFO] [freemarker] Input:  new_tool.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/new_tool.jsp
+[INFO] [freemarker] Input:  oldmrbayeshybrid_tg.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/oldmrbayeshybrid_tg.jsp
+[INFO] [freemarker] Input:  pars.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/pars.jsp
+[INFO] [freemarker] Input:  paup.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/paup.jsp
+[INFO] [freemarker] Input:  pauprat.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/pauprat.jsp
+[INFO] [freemarker] Input:  pauprat_exp.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/pauprat_exp.jsp
+[INFO] [freemarker] Input:  pepinfo.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/pepinfo.jsp
+[INFO] [freemarker] Input:  pepstats.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/pepstats.jsp
+[INFO] [freemarker] Input:  pepwindow.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/pepwindow.jsp
+[INFO] [freemarker] Input:  pfscan.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/pfscan.jsp
+[INFO] [freemarker] Input:  pfsearch.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/pfsearch.jsp
+[INFO] [freemarker] Input:  phylobayes_xsede.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/phylobayes_xsede.jsp
+[INFO] [freemarker] Input:  phylobayes_xsede_restart.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/phylobayes_xsede_restart.jsp
+[INFO] [freemarker] Input:  phyml.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/phyml.jsp
+[INFO] [freemarker] Input:  poy.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/poy.jsp
+[INFO] [freemarker] Input:  poy2.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/poy2.jsp
+[INFO] [freemarker] Input:  ppsearch.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/ppsearch.jsp
+[INFO] [freemarker] Input:  probalign.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/probalign.jsp
+[INFO] [freemarker] Input:  probcons.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/probcons.jsp
+[INFO] [freemarker] Input:  prosearch.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/prosearch.jsp
+[INFO] [freemarker] Input:  protdist.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/protdist.jsp
+[INFO] [freemarker] Input:  proteus.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/proteus.jsp
+[INFO] [freemarker] Input:  protpars.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/protpars.jsp
+[INFO] [freemarker] Input:  prss.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/prss.jsp
+[INFO] [freemarker] Input:  psiblast.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/psiblast.jsp
+[INFO] [freemarker] Input:  psipred.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/psipred.jsp
+[INFO] [freemarker] Input:  raxml_light2.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/raxml_light2.jsp
+[INFO] [freemarker] Input:  raxmlhpc.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/raxmlhpc.jsp
+[INFO] [freemarker] Input:  raxmlhpc2_abe.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/raxmlhpc2_abe.jsp
+[INFO] [freemarker] Input:  raxmlhpc2_tgb.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/raxmlhpc2_tgb.jsp
+[INFO] [freemarker] Input:  raxmlhpc2_tgbi.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/raxmlhpc2_tgbi.jsp
+[INFO] [freemarker] Input:  raxmlhpc2bb.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/raxmlhpc2bb.jsp
+[INFO] [freemarker] Input:  raxmlhpc2bb_abe.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/raxmlhpc2bb_abe.jsp
+[INFO] [freemarker] Input:  readseq.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/readseq.jsp
+[INFO] [freemarker] Input:  restrict.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/restrict.jsp
+[INFO] [freemarker] Input:  revseq.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/revseq.jsp
+[INFO] [freemarker] Input:  rid3paup.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/rid3paup.jsp
+[INFO] [freemarker] Input:  rid3raxml.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/rid3raxml.jsp
+[INFO] [freemarker] Input:  rpsblast.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/rpsblast.jsp
+[INFO] [freemarker] Input:  saps.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/saps.jsp
+[INFO] [freemarker] Input:  seqboot.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/seqboot.jsp
+[INFO] [freemarker] Input:  seqretsplit.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/seqretsplit.jsp
+[INFO] [freemarker] Input:  sixpack.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/sixpack.jsp
+[INFO] [freemarker] Input:  sleep.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/sleep.jsp
+[INFO] [freemarker] Input:  spidey.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/spidey.jsp
+[INFO] [freemarker] Input:  ssearch_n.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/ssearch_n.jsp
+[INFO] [freemarker] Input:  ssearch_p.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/ssearch_p.jsp
+[INFO] [freemarker] Input:  tacg.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/tacg.jsp
+[INFO] [freemarker] Input:  tblastn.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/tblastn.jsp
+[INFO] [freemarker] Input:  tblastx.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/tblastx.jsp
+[INFO] [freemarker] Input:  tfasta.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/tfasta.jsp
+[INFO] [freemarker] Input:  tfastx.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/tfastx.jsp
+[INFO] [freemarker] Input:  tfasty.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/tfasty.jsp
+[INFO] [freemarker] Input:  tmap.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/tmap.jsp
+[INFO] [freemarker] Input:  unroot.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp/pages/tool/unroot.jsp
+[INFO] [freemarker] Transforming into: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts
+[INFO] [freemarker] Input:  align.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/align-struts.xml
+[INFO] [freemarker] Input:  beast_tg.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/beast_tg-struts.xml
+[INFO] [freemarker] Input:  beast_tg_test.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/beast_tg_test-struts.xml
+[INFO] [freemarker] Input:  bl2seq.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/bl2seq-struts.xml
+[INFO] [freemarker] Input:  blast2.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/blast2-struts.xml
+[INFO] [freemarker] Input:  blastn.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/blastn-struts.xml
+[INFO] [freemarker] Input:  blastp.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/blastp-struts.xml
+[INFO] [freemarker] Input:  blastx.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/blastx-struts.xml
+[INFO] [freemarker] Input:  blimps.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/blimps-struts.xml
+[INFO] [freemarker] Input:  boxshade.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/boxshade-struts.xml
+[INFO] [freemarker] Input:  bucky.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/bucky-struts.xml
+[INFO] [freemarker] Input:  clearcut.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/clearcut-struts.xml
+[INFO] [freemarker] Input:  clique.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/clique-struts.xml
+[INFO] [freemarker] Input:  clustalw.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/clustalw-struts.xml
+[INFO] [freemarker] Input:  clustalw_dist.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/clustalw_dist-struts.xml
+[INFO] [freemarker] Input:  clustalw_n.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/clustalw_n-struts.xml
+[INFO] [freemarker] Input:  clustalw_p.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/clustalw_p-struts.xml
+[INFO] [freemarker] Input:  clustalw_profile.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/clustalw_profile-struts.xml
+[INFO] [freemarker] Input:  clustalw_tree.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/clustalw_tree-struts.xml
+[INFO] [freemarker] Input:  compass.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/compass-struts.xml
+[INFO] [freemarker] Input:  consense.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/consense-struts.xml
+[INFO] [freemarker] Input:  contralign.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/contralign-struts.xml
+[INFO] [freemarker] Input:  degapseq.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/degapseq-struts.xml
+[INFO] [freemarker] Input:  dnadist.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/dnadist-struts.xml
+[INFO] [freemarker] Input:  dnapars.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/dnapars-struts.xml
+[INFO] [freemarker] Input:  dollop.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/dollop-struts.xml
+[INFO] [freemarker] Input:  dppdiv.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/dppdiv-struts.xml
+[INFO] [freemarker] Input:  drawgram.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/drawgram-struts.xml
+[INFO] [freemarker] Input:  drawtree.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/drawtree-struts.xml
+[INFO] [freemarker] Input:  dssp.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/dssp-struts.xml
+[INFO] [freemarker] Input:  epestfind.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/epestfind-struts.xml
+[INFO] [freemarker] Input:  eprimer3.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/eprimer3-struts.xml
+[INFO] [freemarker] Input:  extractalign.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/extractalign-struts.xml
+[INFO] [freemarker] Input:  extractseq.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/extractseq-struts.xml
+[INFO] [freemarker] Input:  fasta_n.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/fasta_n-struts.xml
+[INFO] [freemarker] Input:  fasta_p.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/fasta_p-struts.xml
+[INFO] [freemarker] Input:  fastx.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/fastx-struts.xml
+[INFO] [freemarker] Input:  fasty.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/fasty-struts.xml
+[INFO] [freemarker] Input:  fingerprintscan.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/fingerprintscan-struts.xml
+[INFO] [freemarker] Input:  fitch.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/fitch-struts.xml
+[INFO] [freemarker] Input:  formatvalidator.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/formatvalidator-struts.xml
+[INFO] [freemarker] Input:  fsa.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/fsa-struts.xml
+[INFO] [freemarker] Input:  garli.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/garli-struts.xml
+[INFO] [freemarker] Input:  garli2_tgb.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/garli2_tgb-struts.xml
+[INFO] [freemarker] Input:  garli_abe.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/garli_abe-struts.xml
+[INFO] [freemarker] Input:  garli_conf_creator.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/garli_conf_creator-struts.xml
+[INFO] [freemarker] Input:  garli_lonestar.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/garli_lonestar-struts.xml
+[INFO] [freemarker] Input:  garli_tg.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/garli_tg-struts.xml
+[INFO] [freemarker] Input:  helixturnhelix.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/helixturnhelix-struts.xml
+[INFO] [freemarker] Input:  hmmpfam.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/hmmpfam-struts.xml
+[INFO] [freemarker] Input:  kitsch.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/kitsch-struts.xml
+[INFO] [freemarker] Input:  lalign.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/lalign-struts.xml
+[INFO] [freemarker] Input:  mafft.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/mafft-struts.xml
+[INFO] [freemarker] Input:  mafft_861.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/mafft_861-struts.xml
+[INFO] [freemarker] Input:  mafft_tg.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/mafft_tg-struts.xml
+[INFO] [freemarker] Input:  mafftnew.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/mafftnew-struts.xml
+[INFO] [freemarker] Input:  mbsum.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/mbsum-struts.xml
+[INFO] [freemarker] Input:  merger.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/merger-struts.xml
+[INFO] [freemarker] Input:  mfold.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/mfold-struts.xml
+[INFO] [freemarker] Input:  mix.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/mix-struts.xml
+[INFO] [freemarker] Input:  mrbayes.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/mrbayes-struts.xml
+[INFO] [freemarker] Input:  mrbayes321_restartbeta.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/mrbayes321_restartbeta-struts.xml
+[INFO] [freemarker] Input:  mrbayes_321beta.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/mrbayes_321beta-struts.xml
+[INFO] [freemarker] Input:  mrbayes_321restartbeta.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/mrbayes_321restartbeta-struts.xml
+[INFO] [freemarker] Input:  mrbayes_abe.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/mrbayes_abe-struts.xml
+[INFO] [freemarker] Input:  mrbayes_lonestar.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/mrbayes_lonestar-struts.xml
+[INFO] [freemarker] Input:  mrbayes_xsede.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/mrbayes_xsede-struts.xml
+[INFO] [freemarker] Input:  mrbayeshybrid312_tg.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/mrbayeshybrid312_tg-struts.xml
+[INFO] [freemarker] Input:  mrbayeshybrid_abe.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/mrbayeshybrid_abe-struts.xml
+[INFO] [freemarker] Input:  mrbayeshybrid_gordon.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/mrbayeshybrid_gordon-struts.xml
+[INFO] [freemarker] Input:  mrbayeshybrid_tg.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/mrbayeshybrid_tg-struts.xml
+[INFO] [freemarker] Input:  msa.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/msa-struts.xml
+[INFO] [freemarker] Input:  muscle.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/muscle-struts.xml
+[INFO] [freemarker] Input:  mview_alig.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/mview_alig-struts.xml
+[INFO] [freemarker] Input:  mview_blast.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/mview_blast-struts.xml
+[INFO] [freemarker] Input:  nclconverter.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/nclconverter-struts.xml
+[INFO] [freemarker] Input:  neighbor.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/neighbor-struts.xml
+[INFO] [freemarker] Input:  new_tool.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/new_tool-struts.xml
+[INFO] [freemarker] Input:  oldmrbayeshybrid_tg.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/oldmrbayeshybrid_tg-struts.xml
+[INFO] [freemarker] Input:  pars.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/pars-struts.xml
+[INFO] [freemarker] Input:  paup.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/paup-struts.xml
+[INFO] [freemarker] Input:  pauprat.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/pauprat-struts.xml
+[INFO] [freemarker] Input:  pauprat_exp.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/pauprat_exp-struts.xml
+[INFO] [freemarker] Input:  pepinfo.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/pepinfo-struts.xml
+[INFO] [freemarker] Input:  pepstats.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/pepstats-struts.xml
+[INFO] [freemarker] Input:  pepwindow.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/pepwindow-struts.xml
+[INFO] [freemarker] Input:  pfscan.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/pfscan-struts.xml
+[INFO] [freemarker] Input:  pfsearch.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/pfsearch-struts.xml
+[INFO] [freemarker] Input:  phylobayes_xsede.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/phylobayes_xsede-struts.xml
+[INFO] [freemarker] Input:  phylobayes_xsede_restart.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/phylobayes_xsede_restart-struts.xml
+[INFO] [freemarker] Input:  phyml.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/phyml-struts.xml
+[INFO] [freemarker] Input:  poy.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/poy-struts.xml
+[INFO] [freemarker] Input:  poy2.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/poy2-struts.xml
+[INFO] [freemarker] Input:  ppsearch.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/ppsearch-struts.xml
+[INFO] [freemarker] Input:  probalign.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/probalign-struts.xml
+[INFO] [freemarker] Input:  probcons.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/probcons-struts.xml
+[INFO] [freemarker] Input:  prosearch.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/prosearch-struts.xml
+[INFO] [freemarker] Input:  protdist.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/protdist-struts.xml
+[INFO] [freemarker] Input:  proteus.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/proteus-struts.xml
+[INFO] [freemarker] Input:  protpars.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/protpars-struts.xml
+[INFO] [freemarker] Input:  prss.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/prss-struts.xml
+[INFO] [freemarker] Input:  psiblast.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/psiblast-struts.xml
+[INFO] [freemarker] Input:  psipred.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/psipred-struts.xml
+[INFO] [freemarker] Input:  raxml_light2.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/raxml_light2-struts.xml
+[INFO] [freemarker] Input:  raxmlhpc.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/raxmlhpc-struts.xml
+[INFO] [freemarker] Input:  raxmlhpc2_abe.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/raxmlhpc2_abe-struts.xml
+[INFO] [freemarker] Input:  raxmlhpc2_tgb.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/raxmlhpc2_tgb-struts.xml
+[INFO] [freemarker] Input:  raxmlhpc2_tgbi.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/raxmlhpc2_tgbi-struts.xml
+[INFO] [freemarker] Input:  raxmlhpc2bb.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/raxmlhpc2bb-struts.xml
+[INFO] [freemarker] Input:  raxmlhpc2bb_abe.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/raxmlhpc2bb_abe-struts.xml
+[INFO] [freemarker] Input:  readseq.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/readseq-struts.xml
+[INFO] [freemarker] Input:  restrict.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/restrict-struts.xml
+[INFO] [freemarker] Input:  revseq.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/revseq-struts.xml
+[INFO] [freemarker] Input:  rid3paup.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/rid3paup-struts.xml
+[INFO] [freemarker] Input:  rid3raxml.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/rid3raxml-struts.xml
+[INFO] [freemarker] Input:  rpsblast.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/rpsblast-struts.xml
+[INFO] [freemarker] Input:  saps.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/saps-struts.xml
+[INFO] [freemarker] Input:  seqboot.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/seqboot-struts.xml
+[INFO] [freemarker] Input:  seqretsplit.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/seqretsplit-struts.xml
+[INFO] [freemarker] Input:  sixpack.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/sixpack-struts.xml
+[INFO] [freemarker] Input:  sleep.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/sleep-struts.xml
+[INFO] [freemarker] Input:  spidey.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/spidey-struts.xml
+[INFO] [freemarker] Input:  ssearch_n.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/ssearch_n-struts.xml
+[INFO] [freemarker] Input:  ssearch_p.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/ssearch_p-struts.xml
+[INFO] [freemarker] Input:  tacg.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/tacg-struts.xml
+[INFO] [freemarker] Input:  tblastn.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/tblastn-struts.xml
+[INFO] [freemarker] Input:  tblastx.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/tblastx-struts.xml
+[INFO] [freemarker] Input:  tfasta.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/tfasta-struts.xml
+[INFO] [freemarker] Input:  tfastx.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/tfastx-struts.xml
+[INFO] [freemarker] Input:  tfasty.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/tfasty-struts.xml
+[INFO] [freemarker] Input:  tmap.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/tmap-struts.xml
+[INFO] [freemarker] Input:  unroot.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts/unroot-struts.xml
+[INFO]    [delete] Deleting directory /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/tempStruts
+[INFO] [freemarker] Transforming into: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir
+[INFO] [freemarker] Input:  align.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/align.ppts
+[INFO] [freemarker] Input:  beast_tg.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/beast_tg.ppts
+[INFO] [freemarker] Input:  beast_tg_test.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/beast_tg_test.ppts
+[INFO] [freemarker] Input:  bl2seq.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/bl2seq.ppts
+[INFO] [freemarker] Input:  blast2.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/blast2.ppts
+[INFO] [freemarker] Input:  blastn.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/blastn.ppts
+[INFO] [freemarker] Input:  blastp.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/blastp.ppts
+[INFO] [freemarker] Input:  blastx.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/blastx.ppts
+[INFO] [freemarker] Input:  blimps.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/blimps.ppts
+[INFO] [freemarker] Input:  boxshade.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/boxshade.ppts
+[INFO] [freemarker] Input:  bucky.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/bucky.ppts
+[INFO] [freemarker] Input:  clearcut.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/clearcut.ppts
+[INFO] [freemarker] Input:  clique.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/clique.ppts
+[INFO] [freemarker] Input:  clustalw.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/clustalw.ppts
+[INFO] [freemarker] Input:  clustalw_dist.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/clustalw_dist.ppts
+[INFO] [freemarker] Input:  clustalw_n.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/clustalw_n.ppts
+[INFO] [freemarker] Input:  clustalw_p.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/clustalw_p.ppts
+[INFO] [freemarker] Input:  clustalw_profile.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/clustalw_profile.ppts
+[INFO] [freemarker] Input:  clustalw_tree.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/clustalw_tree.ppts
+[INFO] [freemarker] Input:  compass.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/compass.ppts
+[INFO] [freemarker] Input:  consense.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/consense.ppts
+[INFO] [freemarker] Input:  contralign.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/contralign.ppts
+[INFO] [freemarker] Input:  degapseq.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/degapseq.ppts
+[INFO] [freemarker] Input:  dnadist.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/dnadist.ppts
+[INFO] [freemarker] Input:  dnapars.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/dnapars.ppts
+[INFO] [freemarker] Input:  dollop.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/dollop.ppts
+[INFO] [freemarker] Input:  dppdiv.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/dppdiv.ppts
+[INFO] [freemarker] Input:  drawgram.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/drawgram.ppts
+[INFO] [freemarker] Input:  drawtree.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/drawtree.ppts
+[INFO] [freemarker] Input:  dssp.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/dssp.ppts
+[INFO] [freemarker] Input:  epestfind.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/epestfind.ppts
+[INFO] [freemarker] Input:  eprimer3.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/eprimer3.ppts
+[INFO] [freemarker] Input:  extractalign.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/extractalign.ppts
+[INFO] [freemarker] Input:  extractseq.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/extractseq.ppts
+[INFO] [freemarker] Input:  fasta_n.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/fasta_n.ppts
+[INFO] [freemarker] Input:  fasta_p.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/fasta_p.ppts
+[INFO] [freemarker] Input:  fastx.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/fastx.ppts
+[INFO] [freemarker] Input:  fasty.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/fasty.ppts
+[INFO] [freemarker] Input:  fingerprintscan.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/fingerprintscan.ppts
+[INFO] [freemarker] Input:  fitch.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/fitch.ppts
+[INFO] [freemarker] Input:  formatvalidator.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/formatvalidator.ppts
+[INFO] [freemarker] Input:  fsa.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/fsa.ppts
+[INFO] [freemarker] Input:  garli.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/garli.ppts
+[INFO] [freemarker] Input:  garli2_tgb.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/garli2_tgb.ppts
+[INFO] [freemarker] Input:  garli_abe.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/garli_abe.ppts
+[INFO] [freemarker] Input:  garli_conf_creator.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/garli_conf_creator.ppts
+[INFO] [freemarker] Input:  garli_lonestar.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/garli_lonestar.ppts
+[INFO] [freemarker] Input:  garli_tg.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/garli_tg.ppts
+[INFO] [freemarker] Input:  helixturnhelix.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/helixturnhelix.ppts
+[INFO] [freemarker] Input:  hmmpfam.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/hmmpfam.ppts
+[INFO] [freemarker] Input:  kitsch.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/kitsch.ppts
+[INFO] [freemarker] Input:  lalign.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/lalign.ppts
+[INFO] [freemarker] Input:  mafft.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/mafft.ppts
+[INFO] [freemarker] Input:  mafft_861.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/mafft_861.ppts
+[INFO] [freemarker] Input:  mafft_tg.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/mafft_tg.ppts
+[INFO] [freemarker] Input:  mafftnew.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/mafftnew.ppts
+[INFO] [freemarker] Input:  mbsum.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/mbsum.ppts
+[INFO] [freemarker] Input:  merger.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/merger.ppts
+[INFO] [freemarker] Input:  mfold.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/mfold.ppts
+[INFO] [freemarker] Input:  mix.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/mix.ppts
+[INFO] [freemarker] Input:  mrbayes.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/mrbayes.ppts
+[INFO] [freemarker] Input:  mrbayes321_restartbeta.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/mrbayes321_restartbeta.ppts
+[INFO] [freemarker] Input:  mrbayes_321beta.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/mrbayes_321beta.ppts
+[INFO] [freemarker] Input:  mrbayes_321restartbeta.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/mrbayes_321restartbeta.ppts
+[INFO] [freemarker] Input:  mrbayes_abe.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/mrbayes_abe.ppts
+[INFO] [freemarker] Input:  mrbayes_lonestar.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/mrbayes_lonestar.ppts
+[INFO] [freemarker] Input:  mrbayes_xsede.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/mrbayes_xsede.ppts
+[INFO] [freemarker] Input:  mrbayeshybrid312_tg.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/mrbayeshybrid312_tg.ppts
+[INFO] [freemarker] Input:  mrbayeshybrid_abe.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/mrbayeshybrid_abe.ppts
+[INFO] [freemarker] Input:  mrbayeshybrid_gordon.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/mrbayeshybrid_gordon.ppts
+[INFO] [freemarker] Input:  mrbayeshybrid_tg.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/mrbayeshybrid_tg.ppts
+[INFO] [freemarker] Input:  msa.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/msa.ppts
+[INFO] [freemarker] Input:  muscle.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/muscle.ppts
+[INFO] [freemarker] Input:  mview_alig.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/mview_alig.ppts
+[INFO] [freemarker] Input:  mview_blast.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/mview_blast.ppts
+[INFO] [freemarker] Input:  nclconverter.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/nclconverter.ppts
+[INFO] [freemarker] Input:  neighbor.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/neighbor.ppts
+[INFO] [freemarker] Input:  new_tool.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/new_tool.ppts
+[INFO] [freemarker] Input:  oldmrbayeshybrid_tg.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/oldmrbayeshybrid_tg.ppts
+[INFO] [freemarker] Input:  pars.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/pars.ppts
+[INFO] [freemarker] Input:  paup.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/paup.ppts
+[INFO] [freemarker] Input:  pauprat.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/pauprat.ppts
+[INFO] [freemarker] Input:  pauprat_exp.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/pauprat_exp.ppts
+[INFO] [freemarker] Input:  pepinfo.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/pepinfo.ppts
+[INFO] [freemarker] Input:  pepstats.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/pepstats.ppts
+[INFO] [freemarker] Input:  pepwindow.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/pepwindow.ppts
+[INFO] [freemarker] Input:  pfscan.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/pfscan.ppts
+[INFO] [freemarker] Input:  pfsearch.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/pfsearch.ppts
+[INFO] [freemarker] Input:  phylobayes_xsede.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/phylobayes_xsede.ppts
+[INFO] [freemarker] Input:  phylobayes_xsede_restart.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/phylobayes_xsede_restart.ppts
+[INFO] [freemarker] Input:  phyml.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/phyml.ppts
+[INFO] [freemarker] Input:  poy.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/poy.ppts
+[INFO] [freemarker] Input:  poy2.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/poy2.ppts
+[INFO] [freemarker] Input:  ppsearch.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/ppsearch.ppts
+[INFO] [freemarker] Input:  probalign.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/probalign.ppts
+[INFO] [freemarker] Input:  probcons.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/probcons.ppts
+[INFO] [freemarker] Input:  prosearch.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/prosearch.ppts
+[INFO] [freemarker] Input:  protdist.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/protdist.ppts
+[INFO] [freemarker] Input:  proteus.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/proteus.ppts
+[INFO] [freemarker] Input:  protpars.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/protpars.ppts
+[INFO] [freemarker] Input:  prss.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/prss.ppts
+[INFO] [freemarker] Input:  psiblast.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/psiblast.ppts
+[INFO] [freemarker] Input:  psipred.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/psipred.ppts
+[INFO] [freemarker] Input:  raxml_light2.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/raxml_light2.ppts
+[INFO] [freemarker] Input:  raxmlhpc.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/raxmlhpc.ppts
+[INFO] [freemarker] Input:  raxmlhpc2_abe.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/raxmlhpc2_abe.ppts
+[INFO] [freemarker] Input:  raxmlhpc2_tgb.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/raxmlhpc2_tgb.ppts
+[INFO] [freemarker] Input:  raxmlhpc2_tgbi.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/raxmlhpc2_tgbi.ppts
+[INFO] [freemarker] Input:  raxmlhpc2bb.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/raxmlhpc2bb.ppts
+[INFO] [freemarker] Input:  raxmlhpc2bb_abe.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/raxmlhpc2bb_abe.ppts
+[INFO] [freemarker] Input:  readseq.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/readseq.ppts
+[INFO] [freemarker] Input:  restrict.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/restrict.ppts
+[INFO] [freemarker] Input:  revseq.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/revseq.ppts
+[INFO] [freemarker] Input:  rid3paup.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/rid3paup.ppts
+[INFO] [freemarker] Input:  rid3raxml.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/rid3raxml.ppts
+[INFO] [freemarker] Input:  rpsblast.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/rpsblast.ppts
+[INFO] [freemarker] Input:  saps.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/saps.ppts
+[INFO] [freemarker] Input:  seqboot.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/seqboot.ppts
+[INFO] [freemarker] Input:  seqretsplit.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/seqretsplit.ppts
+[INFO] [freemarker] Input:  sixpack.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/sixpack.ppts
+[INFO] [freemarker] Input:  sleep.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/sleep.ppts
+[INFO] [freemarker] Input:  spidey.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/spidey.ppts
+[INFO] [freemarker] Input:  ssearch_n.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/ssearch_n.ppts
+[INFO] [freemarker] Input:  ssearch_p.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/ssearch_p.ppts
+[INFO] [freemarker] Input:  tacg.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/tacg.ppts
+[INFO] [freemarker] Input:  tblastn.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/tblastn.ppts
+[INFO] [freemarker] Input:  tblastx.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/tblastx.ppts
+[INFO] [freemarker] Input:  tfasta.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/tfasta.ppts
+[INFO] [freemarker] Input:  tfastx.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/tfastx.ppts
+[INFO] [freemarker] Input:  tfasty.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/tfasty.ppts
+[INFO] [freemarker] Input:  tmap.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/tmap.ppts
+[INFO] [freemarker] Input:  unroot.xml
+[INFO] [freemarker] Output: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir/unroot.ppts
+[INFO]    [delete] Deleting directory /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED/PropertyDir
+[INFO]    [delete] Deleting directory /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/codeGeneration/AUTO-GENERATED
+[INFO] 
+[INFO] BUILD SUCCESSFUL
+[INFO] Total time: 29 seconds
+[INFO] [resources:resources]
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 9 resources
+[INFO] [compiler:compile]
+[INFO] Compiling 308 source files to /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/target/classes
+[INFO] [resources:testResources]
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/test/resources
+[INFO] [compiler:testCompile]
+[INFO] Compiling 5 source files to /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/target/test-classes
+[INFO] [surefire:test]
+[INFO] Tests are skipped.
+[INFO] [war:war]
+[INFO] Packaging webapp
+[INFO] Assembling webapp[cipresweb] in [/home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/target/portal2]
+[INFO] Processing war project
+[INFO] Copying webapp webResources[/home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp] to[/home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/target/portal2]
+[INFO] Copying webapp resources[/home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/src/main/webapp]
+[INFO] Webapp assembled in[1074 msecs]
+[INFO] Building war: /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/target/portal2.war
+[INFO] [install:install]
+[INFO] Installing /home/samindaw/prj-co/cipres-trunk/cipres-portal/portal2/target/portal2.war to /home/samindaw/.m2/repository/org/ngbw/cipresweb/2.0/cipresweb-2.0.war
+[INFO] 
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary:
+[INFO] ------------------------------------------------------------------------
+[INFO] Cipres ................................................ SUCCESS [14.937s]
+[INFO] Cipres SDK ............................................ SUCCESS [1:15.910s]
+[INFO] Cipres Portal Web Application ......................... SUCCESS [1:02.126s]
+[INFO] ------------------------------------------------------------------------
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESSFUL
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 2 minutes 33 seconds
+[INFO] Finished at: Mon Jan 13 12:12:53 PST 2014
+[INFO] Final Memory: 109M/2349M
+[INFO] ------------------------------------------------------------------------
+Path should be configured such that 'loadResultsD' executes /mnt/dev/testbed/cipres_data/sdk_versions/loadResultsD
+but 'which loadResultsD' returns .
+==========================================
+error deploying standalone sdk
+==========================================

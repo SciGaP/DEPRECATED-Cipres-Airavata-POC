@@ -1,0 +1,140 @@
+<web-app id="WebApp_9" xmlns="http://java.sun.com/xml/ns/j2ee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee
+	http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd" version="2.4">
+
+	<display-name>Cipres Science Gateway 3.0</display-name>
+
+	<context-param>
+		<param-name>treedraw.python.exe</param-name>
+		<param-value>${treedraw.python.exe}</param-value>
+		<description>Location of python executable</description>
+	</context-param>
+	<context-param>
+		<param-name>treedraw.phy.fi</param-name>
+		<param-value>${treedraw.phy.fi}</param-value>
+		<description>Location of newick_parser_2.py.</description>
+	</context-param>
+	<context-param>
+		<param-name>treedraw.tmpdir</param-name>
+		<param-value>${treedraw.tmpdir}</param-value>
+		<description>Directory in which temporary tree image files will be created.</description>
+	</context-param>
+	<context-param>
+		<param-name>iplant.enabled</param-name>
+		<param-value>${iplant.enabled}</param-value>
+		<description>Is sso login via iplant enabled.</description>
+	</context-param>
+	<context-param>
+		<param-name>portal.url</param-name>
+		<param-value>${portal.url}</param-value>
+		<description>Just for testing</description>
+	</context-param>
+
+	<filter>
+		<filter-name>struts2</filter-name>
+		<filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>
+	</filter>
+	<filter>
+		<filter-name>sitemesh</filter-name>
+		<filter-class>com.opensymphony.module.sitemesh.filter.PageFilter</filter-class>
+	</filter>
+	<filter>
+		<filter-name>ResponseOverrideFilter</filter-name>
+		<filter-class>org.displaytag.filter.ResponseOverrideFilter</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>struts2</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>ResponseOverrideFilter</filter-name>
+		<url-pattern>*.action</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>ResponseOverrideFilter</filter-name>
+		<url-pattern>*.jsp</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>sitemesh</filter-name>
+		<url-pattern>/*</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+		<dispatcher>INCLUDE</dispatcher>
+		<dispatcher>ERROR</dispatcher>
+	</filter-mapping>
+
+	<!-- NGBW web session management listener -->
+	<listener>
+		<listener-class>
+			org.ngbw.web.interceptors.SessionListener</listener-class>
+	</listener>
+
+	<!-- Terri: I'm setting this to 1 min, from the default of 30, just to test session timeout with shibboleth -->
+	<!--
+	<session-config>
+	    <session-timeout>15</session-timeout>
+	</session-config>
+	-->
+
+	<!-- Terri: 90 min for large file uploads on slow connections --> 
+	<session-config>
+	    <session-timeout>90</session-timeout>
+	</session-config>
+
+	
+	<servlet>
+		<servlet-name>tiles</servlet-name>
+		<servlet-class>org.apache.tiles.web.startup.TilesServlet</servlet-class>
+		<init-param>
+			<param-name>
+				org.apache.tiles.impl.BasicTilesContainer.DEFINITIONS_CONFIG</param-name>
+			<param-value>/WEB-INF/tiles.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+
+	<!--
+	The following is added to prevent "ELException" in dataList.jps when calling "s:select"
+	when running jetty but not in Tomcat.
+	You can add <%@ page isELIgnored='false'%> is you need this for your jsp page
+	-->
+	<jsp-config>
+		<jsp-property-group>
+			<url-pattern>*.jsp</url-pattern>
+			<el-ignored>true</el-ignored>  
+		</jsp-property-group>
+	</jsp-config> 
+
+	<!-- Terri: I added this section to enable basic auth for the statistics page.  You
+	also need to add the cipres-admin role to tomcat-users.xml.  Some browsers seem to 
+	cache this info a little strangely so if you get a 401 or 403 error instead of a 
+	login prompt, try restarting the browser or getting the latest update of the browser.
+	Firefox thru a proxy gave me 401 instead of login dialogn.
+	-->
+	<security-constraint>
+		<web-resource-collection> 
+			<web-resource-name>portal2</web-resource-name>
+			<url-pattern>/statistics.action</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>cipres-admin</role-name>
+		</auth-constraint>
+	</security-constraint>
+	<login-config>
+		<auth-method>BASIC</auth-method>
+		<realm-name>UserDatabase</realm-name>
+	</login-config>
+	<security-role>
+		<description>Administrative Pages</description>
+		<role-name>cipres-admin</role-name>
+	</security-role>
+	<!-- Terri: END basic auth addition --> 
+
+	
+</web-app>

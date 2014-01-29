@@ -1,0 +1,5 @@
+URL=${rest_url}
+APPID=${pycipres_appkey}
+APPNAME=${pycipres_appname}
+USER=${pycipres_appname}.test1
+TESTDATA=${testdata}

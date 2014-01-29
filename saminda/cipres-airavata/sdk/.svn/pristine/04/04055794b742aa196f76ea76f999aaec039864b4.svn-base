@@ -1,0 +1,668 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE pise SYSTEM "http://www.phylo.org/dev/rami/PARSER/pise.dtd">
+
+<pise>
+
+  <head>
+    <title>Kitsch</title>
+    <version>Phylip 3.66</version>
+    <description>Fitch-Margoliash/Lst Sqrs Methods with Molecular Clock</description>
+        <authors>Felsenstein</authors>
+    <reference>Felsenstein, J.  1993.  PHYLIP -- Phylogeny Inference Package (Version 3.5c). Distributed by the author.  Department of Genetics, University of Washington, Seattle.</reference>
+    <reference>Felsenstein, J.  1989.  PHYLIP -- Phylogeny Inference Package (Version 3.2). Cladistics  5: 164-166.</reference>
+	<category>Phylogeny / Alignment</category>
+    <doclink>http://bioweb.pasteur.fr/docs/gensoft-evol.html#PHYLIP</doclink>
+  </head>
+
+  <command>kitsch</command>
+
+  <parameters>
+
+    <parameter iscommand="1" ishidden="1" type="String">
+      <name>kitsch</name>
+      <attributes>
+	<format>
+	  <language>perl</language>
+	  <code> "kitsch &lt; params" </code>
+	</format>
+	<group>0</group>
+      </attributes>
+    </parameter>
+
+	<!--     <parameter ismandatory="1" issimple="1"  type="InFile"> -->
+    <parameter ismandatory="1" issimple="1" isinput="1" type="InFile">
+      <name>infile</name>
+      <attributes>
+	<prompt>Distances Matrix File</prompt>
+	<format>
+	  <language>perl</language>
+    <!-- <code>"ln -sf $infile infile; "</code> -->
+		<code>""</code>
+	</format>
+	<!-- Added for Swami -->
+	<filenames>infile</filenames>
+	<!-- -->
+	<group>-5</group>
+	<pipe>
+	  <pipetype>phylip_dist</pipetype>
+	  <language>perl</language>
+	  <code>1</code>
+	</pipe>
+      </attributes>
+    </parameter>
+
+    <parameter type="Paragraph">
+      <paragraph>
+	<name>fitch_options</name>
+	<prompt>Fitch options</prompt>
+	<parameters>
+
+	  <parameter type="Excl">
+	    <name>method</name>
+	    <attributes>
+	      <prompt>Program method</prompt>
+	      <vlist>
+		<value>F</value>
+		<label>Fitch-Margoliash</label>
+		<value>M</value>
+		<label>Minimum Evolution</label>
+	      </vlist>
+	      <vdef>
+		<value>F</value>
+	      </vdef>
+	      <flist>
+		<value>F</value>
+		<code>""</code>
+		<value>M</value>
+		<code>"D\\n"</code>
+	      </flist>
+	      <group>1</group>
+	      <paramfile>params</paramfile>
+	    </attributes>
+	  </parameter>
+
+	  <parameter type="Switch">
+	    <name>negative_branch</name>
+	    <attributes>
+	      <prompt>Negative branch lengths allowed (-)</prompt>
+	      <format>
+		<language>perl</language>
+		<code>($value)? "-\\n" : ""</code>
+	      </format>
+	      <vdef><value>0</value></vdef>
+	      <group>1</group>
+	      <paramfile>params</paramfile>
+	    </attributes>
+	  </parameter>
+
+	  <parameter type="Integer">
+	    <name>power</name>
+	    <attributes>
+	      <prompt>Power (P)</prompt>
+	      <format>
+		<language>perl</language>
+		<code>(defined $value &amp;&amp; $value != $vdef)? "P\\n$value\\n" : "" </code>
+	      </format>
+		  <!--<vdef><value>2.0</value></vdef>-->
+	      <vdef><value>2</value></vdef>
+	      <group>1</group>
+	      <comment>
+		<value>For the Fitch-Margoliash method (default); P = 2.0. For the Cavalli-Sforza and Edwards least squares
+		 method it should be set to 0 (so that the denominator is always 1). An intermediate method is also available
+		 in which P is 1.0, and any other value of P, such as 4.0 or -2.3, can also be used. This generates a whole
+		 family of methods.</value>
+		<value>Please read the documentation (man distance).</value>
+	      </comment>
+	      <paramfile>params</paramfile>
+	    </attributes>
+	  </parameter>
+	</parameters>
+      </paragraph>
+
+    </parameter>
+
+    <parameter type="Paragraph">
+      <paragraph>
+	<name>jumble_opt</name>
+	<prompt>Randomize options</prompt>
+	<parameters>
+	  
+	  <parameter type="Switch">
+	    <name>jumble</name>
+	    <attributes>
+	      <prompt>Randomize (jumble) input order (J)</prompt>
+	      <format>
+		<language>perl</language>
+		<code>($value)? "J\\n$jumble_seed\\n$times\\n" : "" </code>
+	      </format>
+	      <vdef><value>0</value></vdef>
+	      <group>20</group>
+	      <paramfile>params</paramfile>
+	      <!-- error in pise xml
+	      <precond>
+		<language>perl</language>
+		<code>$user_tree</code>
+	      </precond> 
+	      -->
+<comment>
+	      <value>The J (Jumble) option. In most tree construction programs, the search of different trees depends on
+	       the order of input of species. The J option tells the program to use a random number generator to choose the
+	       input order of species. If you select Jumble, you must provide a "seed" for the random number generator. The
+	       seed should be an integer between 1 and be of form 4n+1. Each different seed leads to a different sequence
+	       of addition of species. By simply changing the random number seed and re-running the programs one can look
+	       for other, and better trees.</value>
+
+<value>Using the Jumble option, you must specify how many times you want to restart the process. The value 10 causes
+ ten different orders of species to be used in constructing the trees, and the results printed out will reflect this
+ entire search process (that is, the best trees found among all 10 runs will be printed out, not the best trees from
+ each individual run).
+</value>
+</comment>
+	    </attributes>
+	  </parameter>
+
+	  <parameter ismandatory="1" type="Integer">
+	    <name>jumble_seed</name>
+	    <attributes>
+	      <prompt>Random number seed (must be odd)</prompt>
+	      <format>
+		<language>perl</language>
+		<code>""</code>
+	      </format>
+	      <group>19</group>
+	      <ctrls>
+		<ctrl>
+		  <message>Random number seed must be odd</message>
+		  <language>perl</language>
+		  <code>$value &lt;= 0 || (($value % 2) == 0)</code>
+		</ctrl>
+	      </ctrls>
+	      <precond>
+		<language>perl</language>
+		<code>$jumble</code>
+	      </precond>
+	    </attributes>
+	  </parameter>
+
+	  <parameter type="Integer">
+	    <name>times</name>
+	    <attributes>
+	      <prompt>Number of times to jumble</prompt>
+	      <format>
+		<language>perl</language>
+		<code>""</code>
+	      </format>
+	      <vdef><value>1</value></vdef>
+	      <group>19</group>
+	      <precond>
+		<language>perl</language>
+		<code>$jumble &amp;&amp; ( ! $neighbor) </code>
+	      </precond>
+	    </attributes>
+	  </parameter>
+
+	</parameters>
+      </paragraph>
+
+    </parameter>
+
+    <parameter type="Paragraph">
+      <paragraph>
+	<name>bootstrap</name>
+		  		<!-- change for swami
+	  			<prompt>Multiple Datasets</prompt>	
+	-->
+	<prompt>Multiple Datasets: Save your output and use Consense to get a Consensus tree</prompt>
+	<parameters>
+	  <parameter type="Switch">
+	    <name>multiple_dataset</name>
+	    <attributes>
+	      <prompt>Analyze multiple data sets (M)</prompt>
+	      <format>
+		<language>perl</language>
+		<code>($value) ? "M\\n$datasets_nb\\n$multiple_seed\\n" : ""</code>
+	      </format>
+	      <vdef><value>0</value></vdef>
+	      <group>10</group>
+	      <paramfile>params</paramfile>
+	      	      	      <comment>
+	      <value>The M (Multiple data sets) option allows bootstrapping.
+	       Using the program Seqboot, one can take any DNA, protein, restriction sites, gene frequency or binary
+	       character data set and make multiple data sets by bootstrapping. Trees can be produced for all of these
+	       using the M option. They will be written on the tree output file if that option is left in force. The
+	       program Consense can take the multi-tree output file and create a majority rule consensus tree that can
+	       be used to make confidence intervals. The present version of the package allows bootstrapping with the use
+	       of Seqboot and Consense and the M option. Currently, in SWAMI, Consense must be run separately, rather than invoking it from this interface.</value>
+
+<value>Here is a (very small) sample input file with two five-species data sets: </value>
+<value></value>
+ <value>     5    6</value>
+<value>Alpha     CCACCA</value>
+<value>Beta      CCAAAA</value>
+<value>Gamma     CAACCA</value>
+<value>Delta     AACAAC</value>
+<value>Epsilon   AACCCA</value>
+<value>5    6</value>
+<value>Alpha     CACACA</value>
+<value>Beta      CCAACC</value>
+<value>Gamma     CAACAC</value>
+<value>Delta     GCCTGG</value>
+<value>Epsilon   TGCAAT</value>
+</comment>
+	    </attributes>
+	  </parameter>
+	  <parameter ismandatory="1" type="Integer">
+	    <name>datasets_nb</name>
+	    <attributes>
+	      <prompt>How many data sets?</prompt>
+	      <format>
+		<language>perl</language>
+		<code>""</code>
+	      </format>
+	      <group>9</group>
+	      <ctrls>
+		<ctrl>
+		  <message>there must be no more than 1000 datasets for this server</message>
+		  <language>perl</language>
+		  <code>$value &gt; 1000</code>
+		</ctrl>
+	      </ctrls>
+	      <precond>
+		<language>perl</language>
+		<code>$multiple_dataset</code>
+	      </precond>
+	    </attributes>
+	  </parameter>
+	  <parameter ismandatory="1" type="Integer">
+	    <name>multiple_seed</name>
+	    <attributes>
+	    	      
+	      <prompt>Random number seed for multiple dataset (must be odd)</prompt>
+	      <format>
+		<language>perl</language>
+		<code>""</code>
+	      </format>
+	      <ctrls>
+		<ctrl>
+		  <message>Random number seed must be odd</message>
+		  <language>perl</language>
+		  <code>$value &lt;= 0 || (($value % 2) == 0)</code>
+		</ctrl>
+	      </ctrls>
+	      <precond>
+		<language>perl</language>
+		<code>$multiple_dataset</code>
+	      </precond>
+	      <paramfile>params</paramfile>	      
+	    </attributes>
+	  </parameter>
+	  
+	  
+		  		<!-- not valid for swami	
+		  <parameter type="Switch">
+	    <name>consense</name>
+	    <attributes>
+	      <prompt>Compute a consensus tree</prompt>
+	      <format>
+		<language>perl</language>
+		<code>($value) ? "; cp -f infile infile.kitsch; cp -f outtree outtree.kitsch; mv -f outfile outfile.kitsch; mv -f outtree intree; consense &lt; consense.params; cp -f outtree outtree.consense; cp -f outfile outfile.consense; mv -f outtree.kitsch outtree; mv -f infile.kitsch infile; mv -f outfile.kitsch outfile" : ""</code>
+	      </format>
+	      <vdef><value>0</value></vdef>
+	      <group>10</group>
+	      <precond>
+		<language>perl</language>
+		<code>$multiple_dataset &amp;&amp; $print_treefile</code>
+	      </precond>
+	    </attributes>
+	  </parameter>
+	-->
+</parameters>
+      </paragraph>
+    </parameter>
+   <!-- 
+    
+    <parameter ishidden="1" type="String">
+      <name>consense_confirm</name>
+      <attributes>
+	<format>
+	  <language>perl</language>
+	  <code>"Y\\n"</code>
+	</format> <group>1000</group>
+	<group>99</group>
+	<precond>
+	  <language>perl</language>
+	  <code>$consense</code>
+	</precond>
+	<paramfile>consense.params</paramfile>
+      </attributes>
+    </parameter>
+      
+    <parameter ishidden="1" type="String">
+      <name>consense_terminal_type</name>
+      <attributes>
+	<format>
+	  <language>perl</language>
+	  <code>"T\\n"</code>
+	</format>
+	<group>-2</group>
+	<group>0</group>
+	<precond>
+	  <language>perl</language>
+	  <code>$consense</code>
+	</precond>
+	<paramfile>consense.params</paramfile>
+      </attributes>
+    </parameter>
+    <parameter type="Results">
+      <name>consense_outfile</name>
+      <attributes>
+	<precond>
+	  <language>perl</language>
+	  <code>$consense</code>
+	</precond>
+	<filenames>outfile.consense</filenames>
+      </attributes>
+    </parameter>
+    
+    <parameter type="Results">
+      <name>consense_treefile</name>
+      <attributes>
+	<precond>
+	  <language>perl</language>
+	  <code>$consense</code>
+	</precond>
+	<filenames>outtree.consense</filenames>
+      </attributes>
+    </parameter>
+	--> 
+    <parameter type="Paragraph">
+      <paragraph>
+	<name>user_tree_opt</name>
+	<prompt>User tree options</prompt>
+	<parameters>
+
+	  <parameter type="Switch">
+	    <name>user_tree</name>
+	    <attributes>
+	      <prompt>Use User tree (default: no, search for best tree) (U)</prompt>
+	      <format>
+		<language>perl</language>
+		<code>($value) ? "U\\n" : "" </code>
+	      </format>
+	      <vdef><value>0</value></vdef>
+	      <group>1</group>
+	      <comment>
+		<value>A tree can be added by up-loading a Newick tree in a separate file.</value>
+	      </comment>
+	      <ctrls>
+		<ctrl>
+		  <message>you cannot bootstrap your dataset and give a user tree at the same time</message>
+		  <language>perl</language>
+		  <code>$user_tree &amp;&amp; $seqboot</code>
+		</ctrl>
+		<ctrl>
+		  <message>you cannot randomize (jumble) your dataset and give a user tree at the same time</message>
+		  <language>perl</language>
+		  <code>$user_tree &amp;&amp; $jumble</code>
+		</ctrl>
+	      </ctrls>
+	      <paramfile>params</paramfile>
+	    </attributes>
+	  </parameter>
+	  
+	  <parameter type="InFile">
+	    <name>tree_file</name>
+	    <attributes>
+	      <prompt>User Tree file</prompt>
+	      <format>
+		<language>perl</language>
+		<!-- Added for Swami -->
+		<!--	<code>($value) ? "cat $tree_file &gt;&gt; intree; " : ""</code> -->
+		<code>""</code> 
+	     <!-- -->	 
+		  </format>
+		<!-- Added for Swami -->
+		<filenames>intree</filenames>
+		<!-- -->
+		 
+	      <group>-1</group>
+	      <precond>
+		<language>perl</language>
+		<code>$user_tree</code>
+	      </precond>
+	    </attributes>
+	  </parameter>
+
+<!--	  
+	  <parameter ismandatory="1" type="Integer">
+	    <name>tree_nb</name>
+	    <attributes>
+	      <prompt>How many tree(s) in the User Tree file</prompt>
+	      <format>
+		<language>perl</language>
+		<code>"echo $value &gt; infile; "</code>
+	      </format>
+	      <vdef><value>1</value></vdef>
+	      <group>-2</group>
+	      <precond>
+		<language>perl</language>
+		<code>$tree_file</code>
+	      </precond>
+	    </attributes>
+	  </parameter>
+-->
+	  <!-- ** Not in kitsch **
+	  <parameter type="Switch">
+	    <name>use_lengths</name>
+	    <attributes>
+	      <prompt>Use lengths from user trees (N)</prompt>
+	      <format>
+		<language>perl</language>
+		<code>($value) ? "N\\n" : "" </code>
+	      </format>
+	      <vdef><value>0</value></vdef>
+	      <group>2</group>
+	      <precond>
+		<language>perl</language>
+		<code>$user_tree</code>
+	      </precond>
+	      <paramfile>params</paramfile>
+	    </attributes>
+	  </parameter>
+	  ** Not in kitsch ** -->
+
+	</parameters>
+      </paragraph>
+
+    </parameter>
+    
+    <parameter type="Paragraph">
+      <paragraph>
+	<name>output</name>
+	<prompt>Output options</prompt>
+	<parameters>
+
+	  <parameter type="Switch">
+	    <name>print_tree</name>
+	    <attributes>
+	      <prompt>Print out tree (3)</prompt>
+	      <format>
+		<language>perl</language>
+		<code>($value)? "" : "3\\n"</code>
+	      </format>
+	      <vdef><value>1</value></vdef>
+	      <group>1</group>
+	      <comment>
+		<value>Tells the program to print a semi-graphical picture of the tree in the outfile.</value>
+	      </comment>
+	      <paramfile>params</paramfile>
+	    </attributes>
+	  </parameter>
+
+	  <parameter type="Switch">
+	    <name>print_treefile</name>
+	    <attributes>
+	      <prompt>Write out trees onto tree file (4)</prompt>
+	      <format>
+		<language>perl</language>
+		<code>($value) ? "" : "4\\n"</code>
+	      </format>
+	      <vdef><value>1</value></vdef>
+	      <group>1</group>
+	      <comment>
+		<value>Tells the program to save the tree as a Newick string in a treefile.</value>
+	      </comment>
+	      <comment> <value>&#169;Copyright 1980-2007. University of Washington.</value></comment>
+	      <paramfile>params</paramfile>
+	    </attributes>
+	  </parameter>
+	  
+	  <parameter type="Switch">
+	    <name>printdata</name>
+	    <attributes>
+	      <prompt>Print out the data at start of run (1)</prompt>
+	      <format>
+		<language>perl</language>
+		<code>($value)? "1\\n" : ""</code>
+	      </format>
+	      <vdef><value>0</value></vdef>
+	      <group>1</group>
+	      <paramfile>params</paramfile>
+	    </attributes>
+	  </parameter>
+	  
+	</parameters>
+      </paragraph>
+
+    </parameter>
+
+    <parameter type="Switch">
+      <name>indent_tree</name>
+      <attributes>
+	<prompt>Indent treefile</prompt>
+	<format>
+	  <language>perl</language>
+	  <code> " &amp;&amp; indenttree -o outtree.indent outtree" </code>
+	</format>
+	<vdef><value>1</value></vdef>
+	<!-- <group>1000</group> -->
+	<group>99</group>
+      </attributes>
+    </parameter>
+
+    <parameter type="Paragraph">
+      <paragraph>
+	<name>other_options</name>
+	<prompt>Other options</prompt>
+	<parameters>
+
+	  <parameter type="Excl">
+	    <name>triangular</name>
+	    <attributes>
+	      <prompt>Matrix format</prompt>
+	      <vdef><value>square</value></vdef>
+	      <group>1</group>
+	      <vlist>
+		<value>square</value>
+		<label>Square</label>
+		<value>lower</value>
+		<label>Lower-triangular</label>
+		<value>upper</value>
+		<label>Upper-triangular</label>
+	      </vlist>
+	      <flist>
+		<value></value>
+		<code>""</code>
+		<value>square</value>
+		<code>""</code>
+		<value>lower</value>
+		<code>"L\\n"</code>
+		<value>upper</value>
+		<code>"R\\n"</code>
+	      </flist>
+	      <paramfile>params</paramfile>
+	    </attributes>
+	  </parameter>
+
+	</parameters>
+      </paragraph>
+
+    </parameter>
+
+    <parameter type="Results">
+      <name>outfile</name>
+      <attributes>
+	<filenames>outfile</filenames>
+      </attributes>
+    </parameter>
+
+    <parameter type="Results">
+      <name>treefile</name>
+      <attributes>
+	<precond>
+	  <language>perl</language>
+	  <code>$print_treefile</code>
+	</precond>
+	<filenames>outtree</filenames>
+	<pipe>
+	  <pipetype>phylip_tree</pipetype>
+	  <language>perl</language>
+	  <code>1</code>
+	</pipe>
+      </attributes>
+    </parameter>
+
+    <parameter type="Results">
+      <name>indented_treefile</name>
+      <attributes>
+	<precond>
+	  <language>perl</language>
+	  <code>$print_treefile &amp;&amp; $indent_tree</code>
+	</precond>
+	<filenames>outtree.indent</filenames>
+      </attributes>
+    </parameter>
+
+    <parameter type="Results">
+      <name>params</name>
+      <attributes>
+	<filenames>params</filenames>
+      </attributes>
+    </parameter>
+
+    <parameter ishidden="1" type="String">
+      <name>confirm</name>
+      <attributes>
+	<format>
+	  <language>perl</language>
+	  <code>"Y\\n"</code>
+	</format>
+	<!-- <group>1000</group> -->
+	<group>99</group>
+	<paramfile>params</paramfile>
+      </attributes>
+    </parameter>
+    
+    <parameter ishidden="1" type="String">
+      <name>terminal_type</name>
+      <attributes>
+	<format>
+	  <language>perl</language>
+	  <code>"0\\n"</code>
+	</format>
+	<!-- <group>-1</group>-->
+	<group>0</group>
+	<paramfile>params</paramfile>
+      </attributes>
+    </parameter>
+
+    <parameter type="Results">
+      <name>tmp_params</name>
+      <attributes>
+	<filenames>*.params</filenames>
+      </attributes>
+    </parameter>
+
+  </parameters>
+
+</pise>

@@ -1,0 +1,427 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE pise SYSTEM "http://www.phylo.org/dev/rami/PARSER/pise.dtd" [
+<!ENTITY fastaDBpath SYSTEM "http://www.phylo.org/dev/rami/XMLDIR/fastaDBpath.xml">
+<!ENTITY nucDBfasta SYSTEM "http://www.phylo.org/dev/rami/XMLDIR/nucDBfasta.xml">
+<!ENTITY protDBfasta SYSTEM "http://www.phylo.org/dev/rami/XMLDIR/protDBfasta.xml">
+<!ENTITY prositeDBpath SYSTEM "http://www.phylo.org/dev/rami/XMLDIR/prositeDBpath.xml">
+]>
+
+<pise>
+
+  <head>
+    <title>PFSEARCH</title>
+    <version>2.2</version>
+    <description>Compares Protein Profile against PROSITE DB</description>
+    <authors>P. Bucher</authors>
+    <reference>Bucher P, Karplus K, Moeri N and Hofmann, K. (1996).  A flexible motif search technique based on generalized profiles. Comput. Chem. 20:3-24.</reference>
+	<category>Protein Sequence</category>
+  </head>
+
+
+<command>pfsearch</command>
+
+<parameters>
+
+<parameter ismandatory="1" iscommand="1" type="Excl">
+<name>pftools</name>
+<attributes>
+
+	<prompt>PFTOOLS program</prompt>
+	<format>
+		<language>perl</language>
+		<!-- <code>"| $value "</code>-->
+		<code>" $value "</code>
+	</format>
+	<vdef><value>pfsearch</value></vdef>
+	<group>2</group>
+	<vlist>
+		<value>pfsearch</value>
+		<label>pfsearch: search a sequence db for segments matching a profile</label>
+	</vlist>
+	<comment>
+		<value>pfsearch compares a query profile against a DNA or protein sequence library.</value>
+		<value>The result is an unsorted list of profile-sequence matches written to the standard output.</value>
+	</comment>
+
+</attributes>
+</parameter>
+
+
+<!-- 	<parameter ismandatory="1" type="InFile">-->
+	<parameter ismandatory="1" isinput="1" type="InFile">
+	<name>profile</name>
+	<attributes>
+
+	<prompt>Profile File  (PROSITE/NUCSITE format, or see next option) </prompt>
+
+	
+	<format>
+	  <language>perl</language>
+		 <!-- <code>($gcg2psa)? "gtop $value" : "cat $value" </code> -->
+	  <code>($gcg2psa)? "gtop profile.prosite" : "" </code>
+	</format>
+	
+	<!-- Added for Swami -->
+	<filenames>profile.prosite</filenames>
+    <!--   --> 
+		
+	<group>4</group>
+	<precond>
+		<language>perl</language>
+		<code> ($pftools eq "pfsearch") </code>
+	</precond>
+		<pipe>
+			<pipetype>gcg_profile</pipetype>
+				<language>perl</language>
+				<code>1</code>
+		</pipe>
+
+	</attributes>
+	</parameter>
+	
+<!-- 	
+<parameter ishidden="1" type="String">
+<name>clean_output</name>
+<attributes>
+
+	<format>
+		<language>perl</language>
+		<code>" | clean_pfscan_output  "</code>
+	</format>
+	
+	
+	<group>99</group>
+	
+<precond>
+	<language>perl</language>
+	<code>$pftools eq "pfscan"</code>
+</precond>
+
+</attributes>
+</parameter>
+-->
+
+<parameter ishidden="1" type="Switch">
+<name>fastaformat</name>
+<attributes>
+
+	<format>
+		<language>perl</language>
+		<!--<code>" -f"</code> -->
+		<code>" -f profile.prosite "</code>
+	</format>
+	<group>3</group>
+
+</attributes>
+</parameter>
+
+
+<parameter type="Paragraph">
+<paragraph>
+<name>pfsearch</name>
+<prompt>PFSEARCH parameters</prompt>
+<precond>
+	<language>perl</language>
+	<code> ($pftools eq "pfsearch") </code>
+</precond>
+<parameters>
+
+
+	<parameter type="Switch">
+	<name>gcg2psa</name>
+	<attributes>
+
+		<prompt>Convert the profile from GCG format to PROSITE format ?</prompt>
+		<format>
+			<language>perl</language>
+			<code>""</code>
+		</format>
+		<vdef><value>0</value></vdef>
+	<precond>
+		<language>perl</language>
+		<code> ($pftools eq "pfsearch") </code>
+	</precond>
+
+	</attributes>
+	</parameter>
+
+	<parameter ismandatory="1" type="Excl">
+	<name>aa_or_nuc_db</name>
+	<attributes>
+
+		<prompt>protein or nucleotide db</prompt>
+		<format>
+			<language>perl</language>
+			<code>""</code>
+		</format>
+		<vdef><value>protein</value></vdef>
+		<vlist>
+			<value>protein</value>
+			<label>protein</label>
+			<value>dna</value>
+			<label>DNA</label>
+		</vlist>
+	<precond>
+		<language>perl</language>
+		<code> ($pftools eq "pfsearch") </code>
+	</precond>
+
+	</attributes>
+	</parameter>
+
+	<parameter type="Excl">
+	<name>aadb</name>
+	<attributes>
+
+		<prompt>Protein Database</prompt>
+		<format>
+			<language>perl</language>
+			&fastaDBpath;
+		</format>
+		<vdef><value>UNIPROT.fasta</value></vdef>
+		<group>6</group>
+	      &protDBfasta;
+		  	<comment>
+	  <value>Choose a protein db for blastp or blastx.</value>
+	  <value>Please note that Swissprot usage by and for commercial entities requires a license agreement.</value>
+	</comment>
+	
+		<ctrls>
+			<ctrl>
+			<message>You must either choose a protein or a nucleotid db</message>
+				<language>perl</language>
+				<code>! (defined $aadb || defined $nucdb)</code>
+			</ctrl>
+		</ctrls>
+	<precond>
+		<language>perl</language>
+		<code> ($pftools eq "pfsearch")  &amp;&amp;  ($aa_or_nuc_db eq "protein") </code>
+	</precond>
+
+	</attributes>
+	</parameter>
+
+	<parameter type="Excl">
+	<name>nucdb</name>
+	<attributes>
+
+		<prompt>Nucleotid Database</prompt>
+		<format>
+			<language>perl</language>
+			&fastaDBpath;
+		</format>
+		<vdef><value>GBALL.fasta</value></vdef>
+		<group>6</group>
+	     &nucDBfasta;
+	<comment>
+          <value>Choose a nucleotide db for blastn, tblastn or tblastx</value>
+	</comment>
+	      <precond>
+			<language>perl</language>
+			<code> ($pftools eq "pfsearch")  &amp;&amp;  ($aa_or_nuc_db eq "dna") </code>
+	      </precond>
+
+	</attributes>
+	</parameter>
+
+	<parameter type="Integer">
+	<name>pfsearch_cutoff</name>
+	<attributes>
+
+		<prompt>Cut-off value</prompt>
+		<format>
+			<language>perl</language>
+			<code>(defined $value)? " C=$value":""</code>
+		</format>
+		<group>7</group>
+		<comment>
+			<value>Over-writes the level zero cut-off value specified in the profile. An integer argument is interpreted
+			 as a raw score value, a decimal argument as a normalized score value.</value>
+		</comment>
+	<precond>
+		<language>perl</language>
+		<code> ($pftools eq "pfsearch") </code>
+	</precond>
+
+	</attributes>
+	</parameter>
+
+<!--
+	<parameter type="Switch">
+	<name>psa2msa</name>
+	<attributes>
+
+		<prompt>reformat PSA result file to Fasta multiple sequence alignment file?</prompt>
+		<format>
+			<language>perl</language>
+			<code>($value)? " | psa2msa - " : "" </code>
+		</format>
+		<vdef><value>1</value></vdef>
+		<group>8</group>
+	<precond>
+		<language>perl</language>
+		<code> ($pftools eq "pfsearch") </code>
+	</precond>
+
+	</attributes>
+	</parameter>
+-->
+
+
+</parameters>
+</paragraph>
+
+</parameter>
+
+<parameter ishidden="1" type="Switch">
+<name>stdinput</name>
+<attributes>
+
+	<format>
+		<language>perl</language>
+		<!-- <code>" - " </code>-->
+		<code>"" </code>
+	</format>
+	<group>5</group>
+
+</attributes>
+</parameter>
+
+<parameter type="Paragraph">
+<paragraph>
+<name>control</name>
+<prompt>Control options</prompt>
+<parameters>
+
+	<parameter type="Switch">
+	<name>compl</name>
+	<attributes>
+
+		<prompt> Search the complementary strands of DNA sequences as well (-b) </prompt>
+		<format>
+			<language>perl</language>
+			<code>($value)? " -b":""</code>
+		</format>
+		<group>4</group>
+
+	</attributes>
+	</parameter>
+
+	<parameter type="Switch">
+	<name>raw_score</name>
+	<attributes>
+
+		<prompt>Use raw scores rather than normalized scores for match selection. Normalized scores will not be listed in the output. (-r) </prompt>
+		<format>
+			<language>perl</language>
+			<code>($value)? " -r":""</code>
+		</format>
+		<group>4</group>
+
+	</attributes>
+	</parameter>
+
+	<parameter type="Switch">
+	<name>unique</name>
+	<attributes>
+
+		<prompt>Forces DISJOINT=UNIQUE (-u) </prompt>
+		<format>
+			<language>perl</language>
+			<code>($value)? " -u":""</code>
+		</format>
+		<group>4</group>
+
+	</attributes>
+	</parameter>
+
+</parameters>
+</paragraph>
+
+</parameter>
+
+<parameter type="Paragraph">
+<paragraph>
+<name>output</name>
+<prompt>Output options</prompt>
+<parameters>
+
+	<parameter type="Switch">
+	<name>optimal</name>
+	<attributes>
+
+		<prompt>Report optimal alignment scores for all sequences regardless of the cut-off value (-a)? </prompt>
+		<format>
+			<language>perl</language>
+			<code>($value)? " -a":""</code>
+		</format>
+		<group>4</group>
+		<comment>
+			<value>This option simultaneously forces DISJOINT=UNIQUE.</value>
+		</comment>
+
+	</attributes>
+	</parameter>
+
+	<parameter type="Switch">
+	<name>listseq</name>
+	<attributes>
+
+		<prompt>List the sequences of the matched regions as well. The output will be a Pearson/Fasta-formatted sequence library. (-s) </prompt>
+		<format>
+			<language>perl</language>
+			<code>($value)? " -s":""</code>
+		</format>
+		<group>4</group>
+
+	</attributes>
+	</parameter>
+
+	<parameter type="Switch">
+	<name>psa_format</name>
+	<attributes>
+
+		<prompt>List profile-sequence alignments in pftools PSA format. (-x) </prompt>
+		<format>
+			<language>perl</language>
+			<code>($value)? " -x":""</code>
+		</format>
+		<group>4</group>
+
+	</attributes>
+	</parameter>
+
+	<parameter type="Switch">
+	<name>between</name>
+	<attributes>
+
+		<prompt> Display alignments between the profile and the matched sequence regions in a human-friendly format. (-y) </prompt>
+		<format>
+			<language>perl</language>
+			<code>($value)? " -y":""</code>
+		</format>
+		<group>4</group>
+
+	</attributes>
+	</parameter>
+
+</parameters>
+</paragraph>
+
+</parameter>
+
+ <!-- Added Swami --> 
+  <parameter  type="OutFile">
+	  <name>outfile</name>
+	  <attributes>
+		<format>
+			<language>perl</language>
+			<code>" &gt; outfile"</code>
+		</format>
+		<group>50</group>	
+		<filenames>outfile</filenames>
+	  </attributes>
+	</parameter>
+	
+</parameters>
+</pise>

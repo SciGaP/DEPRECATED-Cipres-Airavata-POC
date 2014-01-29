@@ -1,0 +1,16 @@
+tool.process_worker_command=${process_worker_command}
+application.instance=${portal.url}
+use.rest.callback=${use.rest.callback}
+portal.callback.url=${portal.callback.url}
+rest.callback.url=${rest.callback.url}
+disabled.resources.file=${disabled.resources.file}
+checkJobs.poll.seconds= ${checkJobs.poll.seconds}
+loadResults.poll.seconds= ${loadResults.poll.seconds}
+loadResults.pool.size= ${loadResults.pool.size}
+submitJob.poll.seconds= ${submitJob.poll.seconds}
+submitJob.pool.size= ${submitJob.pool.size}
+submitJob.retries = ${submitJob.retries}
+accounting.period.start = ${accounting.period.start}
+iplant.charge.number = ${iplant.charge.number}
+checkjobs.maxDays = ${checkjobs.maxDays}
+loadResults.retries = ${loadResults.retries}

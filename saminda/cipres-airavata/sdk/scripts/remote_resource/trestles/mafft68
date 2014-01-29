@@ -1,0 +1,29 @@
+#!/bin/sh
+
+# Can't run module command (I think it's a bash fn) without sourcing bashrc
+source $HOME/.bashrc
+
+module load mafft
+
+MAFFTBINARY=mafft
+
+case $1 in
+                -qinsi)
+                        shift; MAFFTBINARY=mafft-qinsi;;
+                        #check that seed is a positive int
+                -xinsi)
+                        shift; MAFFTBINARY=mafft-xinsi;;
+                        #check that num_chains is a positive int.
+                *)
+                        ;;
+esac
+
+
+
+
+echo "CIPRES_THREADSPP=$CIPRES_THREADSPP" 1>&2
+echo "CIPRES_NP=$CIPRES_NP" 1>&2
+echo "running:" 1>&2
+echo "${MAFFTBINARY} $*" 1>&2
+
+${MAFFTBINARY} $*

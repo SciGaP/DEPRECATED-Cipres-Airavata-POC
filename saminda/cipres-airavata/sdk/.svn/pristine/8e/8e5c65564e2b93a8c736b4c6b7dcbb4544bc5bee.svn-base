@@ -1,0 +1,6 @@
+[general]
+job_status_email=terri@sdsc.edu,mmiller@sdsc.edu
+[templates]
+#templatedir=/tmp
+[hosts]
+#resourcexmldir=./hosts

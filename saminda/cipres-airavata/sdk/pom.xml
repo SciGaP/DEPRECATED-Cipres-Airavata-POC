@@ -1,0 +1,456 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.ngbw</groupId>
+	<artifactId>sdk${my.name}</artifactId>
+	<name>Cipres SDK</name>
+	<version>2.0</version>
+	<parent>
+		<groupId>org.ngbw</groupId>
+		<artifactId>cipres</artifactId>
+		<version>2.0</version>
+		<relativePath>../cipres-portal/cipres-build</relativePath>
+	</parent>
+
+	<properties>
+	 	<filter.file.path>${basedir}/../cipres-portal/cipres-build/${filter.file}</filter.file.path>
+		<my.name></my.name>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<database.username>${db.ngbw.test.username}</database.username>
+		<database.password>${db.ngbw.test.password}</database.password>
+		<grid.globus.dir>${env.HOME}/.globus</grid.globus.dir>
+		<maven.test.skip>true</maven.test.skip>
+		<axis2.version>1.5.1</axis2.version>
+        <derby.version>10.9.1.0</derby.version>
+        <org.slf4j.version>1.7.2</org.slf4j.version>
+        <log4j.version>1.2.16</log4j.version>
+        <axiom.version>1.2.8</axiom.version>
+        <surefire.version>2.12</surefire.version>
+        <junit.version>4.7</junit.version>
+        <jcr.version>2.0</jcr.version>
+        <xmlbeans.version>2.5.0</xmlbeans.version>
+        <xpp3.version>1.1.6</xpp3.version>
+        <xpp5.version>1.2.8</xpp5.version>
+        <xsul.version>2.10.7</xsul.version>
+        <xsul5.version>1.2.7</xsul5.version>
+        <gpel.version>1.0.9</gpel.version>
+        <atomixmiser.version>0.9.4</atomixmiser.version>
+        <yfilter.version>1.0</yfilter.version>
+        <jython.version>2.5.3</jython.version>
+        <jersey.version>1.13</jersey.version>
+        <tomcat.version>7.0.41</tomcat.version>
+        <cargo.version>1.3.1</cargo.version>
+        <oa4mp.version>1.0.6</oa4mp.version>
+        <antrun.version>1.6</antrun.version>
+        <bouncy.castle.version>1.45</bouncy.castle.version>
+        <jglobus.version>2.0.6</jglobus.version>
+        <ebay.cors.filter>1.0.0</ebay.cors.filter>
+	</properties>
+
+	<prerequisites>
+		<maven>2.0.9</maven>
+	</prerequisites>
+
+
+	<build>
+		<plugins>
+			<!-- This builds a sdk jar (sdk-jar-with-dependencies.jar )that includes all dependencies-->
+			<!-- This execution must appear before "copy files" execution so that jar is created before copied --> 
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>jar-package</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<descriptorRefs>
+								<descriptorRef>jar-with-dependencies</descriptorRef>
+							</descriptorRefs>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+
+			<!-- Copy certain resources to ~/.globus (i.e. grid.globus.dir).  The code that
+			uses these files loads the files from a path on disk, so we need to put them in
+			a location the code can find via a property. BUILD MUST BE RUN BY USER WHO WILL
+			BE RUNNING THE APLLICATION -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy files</id>
+						<phase>package</phase>
+						<configuration>
+							<tasks>
+								<mkdir dir="${grid.globus.dir}"/>
+
+								<delete file="${grid.globus.dir}/cog.properties"/>
+								<copy file="target/classes/cog.properties" 
+									tofile="${grid.globus.dir}/cog.properties" verbose="true" />
+
+								<!-- copy certain files from target directory to $SDK_VERSIONS -->
+								<copy todir="${env.SDK_VERSIONS}" flatten="true" overwrite="true" verbose="true">
+									<fileset dir="target/scripts">
+										<patternset id="scriptfiles">
+											<include name="daemonize" />
+											<include name="loadResultsD" />
+											<include name="recoverResultsD" />
+											<include name="checkJobsD" />
+											<include name="piseEval" />
+											<include name="userTgAllocation" />
+											<include name="userCanSubmit" />
+											<include name="taskInspector" />
+											<include name="importTgusage" />
+											<include name="tgusage.sh" />
+											<include name="convertEncoding.sh" />
+											<include name="userDelete" />
+											<include name="sdkrun" />
+											<include name="submitJobD" />
+											<include name="updateLastLogin" />
+											<include name="mailer.py" />
+										</patternset>
+									</fileset>
+								</copy>
+
+								<chmod  perm="u+x" verbose="true">
+									<fileset dir="${env.SDK_VERSIONS}"> <patternset refid="scriptfiles"/> </fileset>
+								</chmod>
+
+								<copy	file="target/sdk-2.0-jar-with-dependencies.jar"
+										todir="${env.SDK_VERSIONS}" 
+										flatten="true" overwrite="true" verbose="true"/>
+
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<inherited>true</inherited>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+
+			<!-- Some Files in script directory need resource filtering. -->
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.4</version>
+				<executions>
+					<execution>
+						<id>copy-scripts</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/target/scripts</outputDirectory>
+							<resources>          
+								<resource>
+									<directory>scripts</directory>
+									<filtering>true</filtering>
+								</resource>
+							</resources>              
+						</configuration>            
+					</execution>
+				</executions>
+			</plugin>
+
+
+			<!-- 
+				Generate code from pisexml.  Note that clean does not remove the generated code  
+				but rebuilding does via the build.xml file.
+			-->
+			<plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.0.1</version>
+                <executions>
+                    <execution>
+                        <id>code-generation</id>
+                        <goals><goal>exec</goal></goals>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <executable>ant</executable>
+                            <arguments>
+                                <argument>-f</argument>
+                                <argument>${basedir}/src/main/codeGeneration/build.xml</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+		</plugins>
+
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+		<filters>
+			<filter>${filter.file.path}</filter>
+		</filters>
+
+
+	</build>
+
+	<dependencies>
+		<!-- To support sending email using Lucie's emailbean -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cipres.utils</groupId>
+			<artifactId>mailservice</artifactId>
+			<version>1.0</version>
+		</dependency>
+
+
+		<!-- Test dependencies -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.2</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- End Test dependencies -->
+		<!-- SSH and SCP functionality -->
+		<dependency>
+			<groupId>com.trilead</groupId>
+			<artifactId>trilead-ssh2</artifactId>
+			<version>213</version>
+		</dependency>
+		<!-- JAXB dpendencies -->
+		<dependency>
+			<groupId>javax.activation</groupId>
+			<artifactId>activation</artifactId>
+			<version>1.0.2</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.xml.stream</groupId>
+			<artifactId>jsr173</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-xjc</artifactId>
+			<version>2.1.2</version>
+		</dependency>
+		<!-- api can be removed once the jdk is v1.6 -->
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-impl</artifactId>
+			<version>2.1</version>
+		</dependency>
+		<!-- end JAXB dpendencies -->
+		<!-- Lucene search via Indexer DataResource -->
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-core</artifactId>
+			<version>2.3.2</version>
+		</dependency>
+		<!-- Commons and logging -->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.14</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>1.7.0</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-net</groupId>
+			<artifactId>commons-net</artifactId>
+			<version>1.4.1</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-collections</groupId>
+			<artifactId>commons-collections</artifactId>
+			<version>2.1.1</version>
+		</dependency>
+		<!-- End Commons and logging -->
+		<!-- database dependencies -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.24</version>
+		</dependency>
+		<dependency>
+			<groupId>c3p0</groupId>
+			<artifactId>c3p0</artifactId>
+			<version>0.9.1.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>tomcat-juli</artifactId>
+			<version>7.0.16</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>tomcat-jdbc</artifactId>
+			<version>7.0.42</version>
+		</dependency>
+
+		<!-- START this is for log4jdbc -->
+		<dependency>
+			<groupId>org.lazyluke</groupId>
+			<artifactId>log4jdbc-remix</artifactId>
+			<version>0.2.7</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.5</version>
+		</dependency>
+		<dependency>
+		<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.5</version>
+		</dependency>
+		<!-- END this is for log4jdbc -->
+
+		<dependency>
+			<groupId>org.jglobus</groupId>
+			<artifactId>gridftp</artifactId>
+			<version>2.0.6</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jglobus</groupId>
+			<artifactId>myproxy</artifactId>
+			<version>2.0.6</version>
+		</dependency>
+<!-- AIRAVATA modules -->
+        <dependency>
+            <groupId>org.apache.airavata</groupId>
+            <artifactId>airavata-client-api</artifactId>
+            <version>0.11</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.airavata</groupId>
+            <artifactId>airavata-workflow-model-core</artifactId>
+            <version>0.11</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.airavata</groupId>
+            <artifactId>airavata-workflow-model-component</artifactId>
+            <version>0.11</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.airavata</groupId>
+            <artifactId>airavata-common-utils</artifactId>
+            <version>0.11</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.airavata</groupId>
+            <artifactId>airavata-registry-api</artifactId>
+            <version>0.11</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.airavata</groupId>
+            <artifactId>airavata-rest-client</artifactId>
+            <version>0.11</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.airavata</groupId>
+            <artifactId>airavata-workflow-tracking</artifactId>
+            <version>0.11</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.airavata</groupId>
+            <artifactId>airavata-gfac-schema-utils</artifactId>
+            <version>0.11</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.airavata</groupId>
+            <artifactId>airavata-gfac-core</artifactId>
+            <version>0.11</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${org.slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>${org.slf4j.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${org.slf4j.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.airavata</groupId>
+            <artifactId>airavata-workflow-execution-context</artifactId>
+            <version>0.11</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+            <version>4.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.airavata</groupId>
+            <artifactId>airavata-message-monitor</artifactId>
+            <version>0.11</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.airavata</groupId>
+            <artifactId>airavata-message-broker</artifactId>
+            <version>0.11</version>
+        </dependency>
+</dependencies>
+</project>

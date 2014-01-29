@@ -1,0 +1,60 @@
+#!/bin/bash
+export HOST=tscc-login1.sdsc.edu
+# export TOP=/home/cipres_test/tscc_test
+export TOP=/projects/ps-ngbt/backend/tscc_test
+
+remove_it()
+{
+	# echo running rm -irf $TOP/data
+	ssh cipres_test@$HOST rm -irf $TOP/data
+}
+
+it_exists()
+{
+	# echo running cd $TOP/data 
+	ssh cipres_test@$HOST cd $TOP/data > /dev/null 2>&1
+}
+
+create_it()
+{
+	# echo recreating $TOP/data
+	scp -r data cipres_test@$HOST:$TOP
+}
+
+wait_until_it_exists()
+{
+	counter=0
+	it_exists
+	while  [ $? -ne 0 ]; do
+		echo "`date`: $TOP/data doesn't exist yet."
+		sleep 2
+		let counter=counter+1
+		it_exists
+	done
+	echo "`date`: it took $counter tries to find $TOP/data."
+}
+
+wait_until_its_gone()
+{
+	counter=0
+	while    it_exists ; do
+		echo "`date`: $TOP/data still exists."
+		sleep 2
+		let counter=counter+1
+	done
+	echo "`date`: it took $counter tries to find $TOP/data deleted."
+}
+
+
+main_counter=0
+echo "running 5 tests on $HOST in $TOP"
+while [ $main_counter -lt 5 ]; do
+	echo "Iteration $main_counter"
+	remove_it
+	wait_until_its_gone
+	create_it
+	wait_until_it_exists
+
+	let main_counter=main_counter+1
+done
+

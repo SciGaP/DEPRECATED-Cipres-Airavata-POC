@@ -1,0 +1,9 @@
+<div class="democontent">
+	<div class="info">
+		<p>
+			The <a href="http://www.iplantcollaborative.org/">iPlant Collaborative</a> is a large NSF-funded project that provides users with access to a wide variety of software tools and capabilities, as well as access to a large number of biological databases. Users can access these resources through the <a href="http://www.iplantcollaborative.org/discover/discovery-environment">iPlant Discovery Environment</a> (DE), a flexible and innovative web client. The login tab presented here allows users who are registered with the iPlant Collaborative to work both in the iPlant DE, and in the CIPRES Science Gateway, through a single-login mechanism. We encourage our users to visit the iPlant DE page, and to register and test drive the application. If you have further questions, 
+			<a href="javascript:popupWithSizes('https://www.ngbw.org/ngbugz/default.php?pg=pgPublicEdit',800,600,'1')">please let us know.</p>
+		
+	</div>
+
+</div>

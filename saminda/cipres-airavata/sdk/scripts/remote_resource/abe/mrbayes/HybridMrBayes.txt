@@ -1,0 +1,59 @@
+Hi Terri,
+
+Here is an my recommendation regarding the number of MPI processes,
+OpenMP threads, and nodes when running the hybrid version of MrBayes
+3.1.2 on Lonestar, Abe, or Queen Bee.
+
+Obtain the number of runs (nruns), chains (nchains), and characters
+(nchar) from the input data, or ask the user to input those
+separately.
+
+Determine whether the data set is partitioned, either from the input
+data or via separate query.
+
+Check that nruns * nchains is a multiple of
+
+   2 on Lonestar or
+   4 on Abe and Queen Bee.
+
+If not, ask the user to change parameters to ensure that.  If this
+test makes the interface overly complicated, just check that nruns *
+nchains is a multiple of 4 regardless of computer.
+
+In all cases, the number of MPI processes is
+
+   nruns * nchains.
+
+The number of OpenMP threads is
+
+   2 if the data set is partitioned,
+   4 if the data set is not partitioned and nchar < 2,000,
+   4 if the data set is not partitioned, nchar >= 2,000, & running on Lonestar,
+   8 if the data set is not partitioned, nchar >= 2,000, & running on Abe or QB.
+
+The number of nodes is then
+
+   MPI processes * OpenMP threads / cores-per-node, where
+
+cores-per-node is 4 for Lonestar and 8 for Abe or Queen Bee.
+
+All runs will use the hybrid MPI/OpenMP executable.
+
+The hybrid code is on Abe at
+
+   /u/ncsa/pfeiffer/MrBayes-3.1.2h .
+
+The makefile is
+
+   Makefile.icc.hybrid .
+
+Sample input and output files are at
+
+   /u/ncsa/pfeiffer/MrBayes-3.1.2h_abe/150 .
+
+These were all run with MVAPICH2.  To run with Open MPI, the run
+scripts need to be changed similarly to those for RAxML.
+
+* Let me know if you have any questions.
+
+Thanks,  Wayne

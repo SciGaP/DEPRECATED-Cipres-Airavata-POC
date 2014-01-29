@@ -1,0 +1,122 @@
+tool.registry.home=cipres
+
+tool.resource.cluster=TSCC
+tscc.login=tscc
+tscc.fileHost=tscc
+tscc.submit=submit_v2.py
+tscc.check=checkjobs_v2.py
+tscc.cancel=delete_v2.py
+tscc.rc=/home/cipres_test/ngbw/contrib/scripts/workbench.rc
+tscc.project=cipres_test
+tscc.workspace=/projects/ps-ngbt/backend/tscc_test_workspace
+
+tool.resource.host=billiards
+host=billiards
+# directory must be owned by "bwatch" 
+workspace=/archive/science/ngbt/portal2test/workspace/bwbatch_jobs/
+
+# ####################################################################################
+# GLOBUS  Teragrid Properties 
+#  Add teragrid.username and teragrid.password to ~/.m2/settings.xml.  Username and
+#  password are for the teragrid user portal account.
+#
+# grid.globus.dir is set in pom.xml because it is used there.
+# ####################################################################################
+
+# teragrid.trestles.workspace=/phase1/cipres/workspace
+teragrid.trestles.workspace=/projects/ps-ngbt/backend/trestles_test_workspace
+teragrid.trestles.project=sds121
+teragrid.trestles.host=trestles-dm1.sdsc.edu
+teragrid.trestles.user=
+teragrid.trestles.login=cipres@trestles.sdsc.edu
+teragrid.trestles.rc=/projects/ps-ngbt/home/cipres/.bash_profile
+teragrid.trestles.submit=submit_v2.py
+teragrid.trestles.check=checkjobs_v2.py
+teragrid.trestles.cancel=delete_v2.py
+trestles.filehandler=org.ngbw.sdk.tool.LocalFileHandler
+
+teragrid.gordon.workspace=/projects/ps-ngbt/backend/gordon_test_workspace
+teragrid.gordon.project=ddp156
+teragrid.gordon.host=gordon.sdsc.edu
+teragrid.gordon.user=
+teragrid.gordon.login=cipres@gordon.sdsc.edu
+teragrid.gordon.rc=/projects/ps-ngbt/home/cipres/.bash_profile
+teragrid.gordon.submit=gordon_submit_v2.py
+teragrid.gordon.check=checkjobs_v2.py
+teragrid.gordon.cancel=delete_v2.py
+gordon.filehandler=org.ngbw.sdk.tool.LocalFileHandler
+
+# Set to "true" to disable teragrid tools, "false" to enable teragrid tools.  
+teragrid.tools.disable=false
+
+
+# ####################################################################################
+# GLOBUS  Teragrid Properties 
+# ####################################################################################
+
+# Units for the following are in minutes (1 hr=60, 1 day = 1440, 3 days = 4320, 7 days = 10080, etc)
+# The longest proxy we can get from myproxy with our current credential is 7 days so
+# there's no point trying to run jobs longer than that.  Lonestar only allows 2 days anyway.
+grid.job.lifetime.max = 10080 
+
+# Globus process worker polls very frequently the first minute, then at quick.poll.interval for 
+# several minutes and finally at poll.interval.
+grid.job.poll.interval = 60 
+grid.job.medium.poll.interval = 5 
+grid.job.quick.poll.interval = 1 
+
+# Lifetime of credential in hours.  min.lifetime  must be less than lifetime.
+# With the credential we're using (a default teragrid credential) 7 days = 168 hrs is the max
+# we can get. 
+grid.myproxy.lifetime = 168 
+grid.myproxy.min.lifetime = 144 
+grid.myproxyfile=/tmp/x509_cipres_test
+
+# ####################################################################################
+# END GLOBUS  Teragrid Properties 
+# ####################################################################################
+
+
+# Used for sending job completion email and identifying which to process, "i.e. the 'submitter'".
+portal.name=Cipres Portal Test
+job.email.from=Cipres Web Portal <customerservice@phylo.org>
+job.email.enable=true
+
+# maxPoolSize needs to be at least ( 2 * max(loadResults.pool.size, submitJob.pool.size) ) + 1
+# to avoid deadlock.  Also make sure that in ssl.properties, maxconn for the hosts we're using
+# is at least  2 * max(loadResults.pool.size, submitJob.pool.size) 
+database.maxPoolSize=50
+database.minPoolSize=25
+
+ssl.maxconn=25
+
+
+checkJobs.poll.seconds=1800
+checkjobs.maxDays = 30
+
+loadResults.poll.seconds=60
+loadResults.pool.size=10
+loadResults.retries=10
+
+submitJob.poll.seconds=10
+submitJob.pool.size=10
+submitJob.retries=10
+
+disabled.resources.file=/archive/science/ngbt/portal2test/disabled_resources
+accounting.period.start=2013-07-01
+iplant.charge.number=TG-MCB110022
+
+logs=/archive/science/ngbt/portal2test
+portal.url=http://billiards3.sdsc.edu/portal2
+rest.callback.url=-K ~/.jobcurl.rc -k https://billiards3.sdsc.edu/cipresrest/v1/job/admin/updateJob
+portal.callback.url=http://billiards3.sdsc.edu/portal2/taskupdate.action
+server_url=https://billiards3.sdsc.edu/cipresrest/v1/job
+rest_url=https://billiards3.sdsc.edu/cipresrest/v1
+database.url=jdbc:log4jdbc:mysql://mysql.sdsc.edu:3316/cipres_copy
+database.fileRoot=/archive/science/ngbt/db_documents/ngbw_test
+appkey=1
+appname=guitest
+umbrella_username=guitest_admin
+umbrella_password=test
+pycipres_appkey=1
+pycipres_appname=scripts

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" output="target/classes" path="src/main/java">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" output="target/test-classes" path="src/test/java">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
+	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.eclipse.jst.server.tomcat.runtimeTarget/Apache Tomcat v6.0">
+		<attributes>
+			<attribute name="owner.project.facets" value="jst.utility"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/airavata-client-api-0.11.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/airavata-common-utils-0.11.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/airavata-gfac-schema-utils-0.11.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/airavata-interpreter-service-client-0.11.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/airavata-jpa-registry-0.11.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/airavata-message-monitor-0.11.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/airavata-messenger-client-0.11.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/airavata-messenger-commons-0.11.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/airavata-registry-api-0.11.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/airavata-rest-client-0.11.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/airavata-rest-mappings-0.11.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/airavata-workflow-execution-context-0.11.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/airavata-workflow-model-core-0.11.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/atomixmiser-0.9.4.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/axiom-api-1.2.8.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/axiom-impl-1.2.8.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/axis2-adb-1.5.1.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/axis2-kernel-1.5.1.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/axis2-transport-http-1.5.1.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/axis2-transport-local-1.5.1.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/commons-codec-1.6.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/commons-collections-3.2.1.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/commons-configuration-1.7.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/commons-httpclient-3.1.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/commons-lang-2.6.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/derby.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/derbyclient.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/derbynet.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/derbytools.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/gpel-client-1.0.9.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/httpcore-4.0.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/jackson-core-asl-1.9.2.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/jackson-jaxrs-1.9.2.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/jackson-mapper-asl-1.9.2.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/jackson-xc-1.9.2.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/jcr-2.0.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/jersey-client-1.13.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/jersey-core-1.13.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/jersey-json-1.13.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/jersey-multipart-1.13.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/jets3t-0.8.0.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/json-0.11.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/jython-2.5.3.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/libthrift-0.9.1.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/log4j-1.2.16.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/mail-1.4.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/neethi-2.0.4.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/openjpa-all-2.2.0.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/slf4j-api-1.7.2.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/slf4j-log4j12-1.7.2.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/staxon-1.2.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/staxon-jackson-1.2.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/woden-api-1.0M8.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/wsdl4j-1.6.2.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/xercesImpl-2.9.1.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/xmlbeans-2.5.0.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/XmlSchema-1.4.2.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/xpp3-1.1.6.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/xpp5-1.2.8.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/xsul5-1.2.7.jar"/>
+	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/xsul-2.10.7.jar"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>

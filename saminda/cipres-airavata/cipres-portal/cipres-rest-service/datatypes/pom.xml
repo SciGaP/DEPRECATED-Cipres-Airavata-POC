@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.ngbw</groupId>
+	<parent>
+		<groupId>org.ngbw</groupId>
+		<artifactId>cipresrestservice</artifactId>
+		<version>2.0</version>
+	</parent>
+	<artifactId>restdatatypes</artifactId>
+	<name>Cipres REST Datatypes</name>
+	<version>${cipres.version}</version>
+	
+	<properties>
+		<cipres.version>2.0</cipres.version>
+	 	<filter.file.path>${basedir}/../../cipres-build/${filter.file}</filter.file.path>
+	</properties>
+	<repositories>
+		<repository>
+			<id>central</id>
+			<name>Default Maven2 Repository</name>
+			<url>http://repo1.maven.org/maven2</url>
+		</repository>
+		<repository>
+			<id>apache.nexus</id>
+			<name>ASF Nexus Staging</name>
+			<url>https://repository.apache.org/content/groups/staging/</url>
+			</repository>
+		<repository>
+			<id>internal</id>
+			<name>Maven 2 Internal Repository</name>
+			<url>http://billiards.sdsc.edu:9999/maven2</url>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>Maven Snapshots</id>
+			<url>http://snapshots.maven.codehaus.org/maven2/</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<build>
+		<filters>
+			<filter>${filter.file.path}</filter>
+		</filters>
+		<finalName>restdatatypes</finalName>
+		<plugins>
+			<plugin>
+				<inherited>true</inherited>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+		</plugins>
+		<resources>
+			<!-- to enable maven profile -->
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+			<!-- include jaxb.index in the jar -->
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/jaxb.index</include>
+				</includes>
+			</resource>
+		</resources>
+	</build>
+	<dependencies>
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.3</version>
+		</dependency>
+	</dependencies>
+
+</project>

@@ -1,0 +1,506 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pise SYSTEM "http://www.phylo.org/dev/rami/PARSER/pise.dtd">
+<pise>
+	<head>
+		<title>Spidey</title>
+		<version>1.4</version>
+		<description>Aligns mRNA sequences to a single genomic sequence</description>
+		<authors>Sarah J. Wheelan</authors>
+		<reference>Sarah J. Wheelan, Deanna M. Church, and James M. Ostell (2001) Spidey: A Tool for mRNA-to-Genomic Alignments  Genome Research 11(11) 1952-1957.
+		</reference>
+		<category>Nucleic Acid Sequence</category>
+<!--
+*****************************************************************************************************************************************
+Created by Mark Miller for CIPRES2, 9_25_2008 or thereabouts.
+*****************************************************************************************************************************************
+Basic setup: invoke with "spidey" command, then deliver the commands in a line
+
+*****************************************************************************************************************************************
+-->
+	</head>
+	<command>spidey</command>
+	
+	<parameters>
+<!-- delivers the command line-->
+		<parameter ismandatory="1" iscommand="1" ishidden="1" type="String">
+			<name>init</name>
+			<attributes>
+				<format>
+					<language>perl</language>
+					<code>"spidey"</code>
+				</format>
+<!--Swami: group 0 is required as the main command -->
+				<group>0</group>
+			</attributes>
+		</parameter>
+	
+<!--Input file mRNA sequence(s) (Required) type: File flag: -m The input to this option should be 1) the name of a file containing one or more FASTA, ASN.1, or GenBank flatfile sequences, 2) the name of a file containing one or more accessions or gi numbers, if your computer can access GenBank (you need to set 'Input file is a GI list' to T/t if your file has accessions/gi numbers), or 3) a single mRNA accession or gi, if your computer can access GenBank. -->
+
+		<parameter ismandatory="1" issimple="1" isinput="1" type="Sequence">
+			<name>first_sequence</name>
+			<attributes>
+				<prompt>mRNA Sequence (FASTA, ASN.1, or GenBank)</prompt>
+				<format>
+					<language>perl</language>
+					<code>" -m mrna.sequence"</code>
+				</format>
+				<filenames>mrna.sequence</filenames>
+				<group>2</group>
+				<comment>
+<value>The input to this option should be 1) the name of a file containing one or more FASTA, ASN.1, or GenBank flatfile sequences, we do not yet support we do not yet support
+use of a genomic accession or gi.</value>
+				</comment>
+			</attributes>
+		</parameter>
+		
+<!-- Input file2 genomic sequence(s) (Required) type: File flag: -i
+This one is a little misleading, as Spidey currently only accepts a single genomic sequence at a time. The input to this option should be 
+1)	the name of a file containing a FASTA, ASN.1, or GenBank flatfile genomic record, 
+2)	a genomic accession or gi, if your computer is running on a network that can access GenBank. 
+-->
+		<parameter ismandatory="1" issimple="1" type="Sequence">
+			<name>query2</name>
+			<attributes>
+				<prompt>Genomic Sequence File (FASTA, ASN.1, or GenBank)</prompt>
+				<format>
+					<language>perl</language>
+					<code>"-i genomic.sequence"</code>
+				</format>
+				<filenames>genomic.sequence</filenames>
+				<group>2</group>
+				<comment>
+<value>Spidey currently only accepts a single genomic sequence at a time. The input to this option should be 
+the name of a file containing a FASTA, ASN.1, or GenBank flatfile genomic record; we do not yet support
+use of a genomic accession or gi. </value>
+				</comment>
+			</attributes>
+		</parameter>
+		
+<!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+Implement this flag if we can directly contact NCBI for gi identifiers.
+
+Input file is a GI list (Optional) type: T/F flag: -G
+If the mRNA file is an accession/GI list instead of a sequence file, you need to set this option to T/t so that Spidey knows to fetch these records.
+ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+ 
+<!-- Number of gene models (Optional) type: integer flag: -n -->
+		<parameter issimple="1" type="Integer">
+			<name>setgmodels</name>
+			<attributes>
+				<prompt>Number of gene models (Optional)</prompt>
+				<vdef>
+					<value>1</value>
+				</vdef>
+				<format>
+					<language>perl</language>
+					<code>"-n $value"</code>
+				</format>
+				<group>3</group>
+				<comment>
+<value>Spidey can return multiple models for each input mRNA. You can set the maximum number of models to return per mRNA; if not enough models fall above the cutoffs, some of the models may be 'no alignment found'. If this option is not set, the default is to return the single best model for each mRNA.</value>
+				</comment>
+			</attributes>
+		</parameter>
+		
+<!--set the organism-->
+		<parameter issimple="1" ismandatory="1" type="Excl">
+			<name>setgorg</name>
+			<attributes>
+				<prompt>Organism (genomic sequence)</prompt>
+				<format>
+					<language>perl</language>
+					<code>" -r $value"</code>
+				</format>
+				<vdef>
+					<value>v</value>
+				</vdef>
+				<vlist>
+					<value>v</value>
+					<label>Vertebrate</label>
+					<value>d</value>
+					<label>Drosophila</label>
+					<value>p</value>
+					<label>Plants</label>
+					<value>c</value>
+					<label>C. elegans</label>
+				</vlist>
+				<group>4</group>
+				<comment>
+<value>Spidey needs to know what organism the genomic sequence comes from, so that it knows which splice matrices to use. The options are v for vertebrate, d for drosophila, p for plants, and c for C. elegans. The default is vertebrate.</value>
+				</comment>
+			</attributes>
+		</parameter>
+
+<!-- advanced params -->
+
+<parameter type="Paragraph">
+<paragraph>
+	<name>outputoptions</name>
+	<prompt>Advanced Run Options</prompt>
+		<parameters>
+<!--  First-pass e-value (Optional) type: real flag: -e  -->
+		<parameter ismandatory="1" type="Float">
+			<name>setfirstpass</name>
+			<attributes>
+				<prompt>First pass e-value</prompt>
+				<vdef>
+					<value>0.0000001</value>
+				</vdef>
+				<format>
+					<language>perl</language>
+					<code>"-e $value"</code>
+				</format>
+				<group>5</group>
+				<comment>
+<value>This is the expectation value for the first BLAST run that Spidey does. The higher the value, the faster the run, but the greater the chance of missing something important. Default is 0.0000001.
+</value>
+				</comment>
+			</attributes>
+		</parameter>
+		
+<!--Second-pass e-value (Optional) type: real flag: -f --> 
+		<parameter ismandatory="1" type="Float">
+			<name>setsecondpass</name>
+			<attributes>
+				<prompt>Second pass e-value</prompt>
+				<vdef>
+					<value>0.001</value>
+				</vdef>
+				<format>
+					<language>perl</language>
+					<code>"-f $value"</code>
+				</format>
+				<group>6</group>
+				<comment>
+<value>This is the expectation value for the second, more careful BLAST run that Spidey performs on regions that look promising from the first BLAST. Again, this is a balance between speed and sensitivity. Default is 0.001.
+</value>
+				</comment>
+			</attributes>
+		</parameter>
+
+<!--Third-pass e-value (Optional) type: real flag: -g --> 
+		<parameter ismandatory="1" type="Float">
+			<name>setthirdpass</name>
+			<attributes>
+				<prompt>Third pass e-value</prompt>
+				<vdef>
+					<value>10</value>
+				</vdef>
+				<format>
+					<language>perl</language>
+					<code>"-g $value"</code>
+				</format>
+				<group>7</group>
+				<comment>
+<value>This is the expectation value cutoff for the third and final BLAST that Spidey does to fill in any remaining spaces between adjacent exons. Since this search is so constrained, speed is not really an issue, so this value has been set rather high - the default is 10.
+</value>
+				</comment>
+			</attributes>
+		</parameter>
+
+<!-- % identity cutoff (Optional) type: integer flag: -c -->
+		<parameter type="Float">
+			<name>setcutoff</name>
+			<attributes>
+				<prompt>Percent Identity Cutoff </prompt>
+				<vdef>
+					<value>0</value>
+				</vdef>
+				<format>
+					<language>perl</language>
+					<code>"-c $value"</code>
+				</format>
+				<group>8</group>
+				<comment>
+<value>For quality control, you may want to return only those models which fall above a certain percent identity overall. In that case, set this value to something nonzero (the default value is 0) and Spidey will report 'no alignment' if it could not find any models above the cutoff.
+</value>
+				</comment>
+			</attributes>
+		</parameter>
+
+<!-- % length coverage cutoff (Optional) type: integer flag: -l  -->
+		<parameter ismandatory="1" type="Float">
+			<name>lengthcutoff</name>
+			<attributes>
+				<prompt>Length Identity Cutoff</prompt>
+				<vdef>
+					<value>0</value>
+				</vdef>
+				<format>
+					<language>perl</language>
+					<code>"-l $value"</code>
+				</format>
+				<group>9</group>
+				<comment>
+<value>If this option is set above zero (default is 0), Spidey will only return models in which the percentage of the length of the mRNA that is contained in the alignment is above the cutoff.
+interspecies alignment (Optional) type: T/F flag: -sf.
+</value>
+				</comment>
+			</attributes>
+		</parameter>
+
+<!-- interspecies alignment (Optional) type: T/F flag: -s -->
+		<parameter ismandatory="1" type="Switch">
+			<name>interspeciesalign</name>
+			<attributes>
+				<prompt>Interspecies alignment</prompt>
+				<vdef>
+					<value>0</value>
+				</vdef>
+				<format>
+					<language>perl</language>
+					<code>($value) ? "-s T":""</code>
+				</format>
+				<group>10</group>
+				<comment>
+<value>If this option is set to true (T/t), Spidey will adjust its gap opening and gap extension parameters to encourage longer, gappier alignments like those that you see between species. The default is false.
+</value>
+				</comment>
+			</attributes>
+		</parameter>
+
+<!-- Is the input mRNA masked (lowercase)? (Optional) type: T/F flag: -w -->
+		<parameter ismandatory="1" type="Switch">
+			<name>mrnamasked</name>
+			<attributes>
+				<prompt>Is the input mRNA masked (lowercase)? </prompt>
+				<vdef>
+					<value>0</value>
+				</vdef>
+				<format>
+					<language>perl</language>
+					<code>($value) ? "-w T" : ""</code>
+				</format>
+				<group>11</group>
+				<comment>
+<value>If the mRNA input is masked FASTA sequence, you may want to retain that masking by setting this option to T/t. If this option is F/f (default), any lowercase characters in the mRNA input are treated as regular sequence characters.
+</value>
+				</comment>
+			</attributes>
+		</parameter>
+
+<!-- IMPLEMENT THESE LATER
+Fetch the CDS and compute its results also? (Optional) type: T/F flag: -d 
+		<parameter issimple="1" ismandatory="1" type="Switch">
+			<name>setcutoff</name>
+			<attributes>
+				<prompt>Is the input mRNA masked (lowercase)? </prompt>
+				<vdef>
+					<value>0</value>
+				</vdef>
+				<format>
+					<language>perl</language>
+					<code>($value) ? "-w T" : ""</code>
+				</format>
+				<group>11</group>
+				<comment>
+<value>If your computer is network-aware or can otherwise access GenBank, Spidey can extract a CDS alignment from an mRNA alignment. If the mRNA record can be fetched (or if it has been given in ASN.1 instead of accession/gi), and there is a CDS annotated, this option may be useful. The default is false.
+</value>
+				</comment>
+			</attributes>
+		</parameter>
+
+ File with feature table (Optional) type: file flag: -t 
+		<parameter issimple="1" ismandatory="1" type="Switch">
+			<name>setcutoff</name>
+			<attributes>
+				<prompt>Is the input mRNA masked (lowercase)? </prompt>
+				<vdef>
+					<value>0</value>
+				</vdef>
+				<format>
+					<language>perl</language>
+					<code>($value) ? "-w T" : ""</code>
+				</format>
+				<group>11</group>
+				<comment>
+<value>If you have masked the mRNA sequences and have generated a table instead of lowercase masked output, you can feed this information to Spidey. The table format is:
+sequence id	name of feature	start	stop
+NM_004377.1	repetitive_region	12	40
+Currently Spidey only recognizes repetitive_region features.
+</value>
+				</comment>
+			</attributes>
+		</parameter> -->
+
+<!-- Start of genomic interval desired (from) (Optional) type: integer flag: -F-->
+		<parameter ismandatory="1" type="Integer">
+			<name>startinterval</name>
+			<attributes>
+				<prompt>Start of genomic interval desired (from) </prompt>
+				<vdef>
+					<value>0</value>
+				</vdef>
+				<format>
+					<language>perl</language>
+					<code>"-F $value"</code>
+				</format>
+				<group>12</group>
+				<comment>
+<value>If you know that the mRNA is contained in a certain interval of the genomic sequence, you may restrict Spidey's search to that interval to increase speed and sensitivity. If nothing is entered here, Spidey will search the genomic sequence starting at 0.
+</value>
+				</comment>
+			</attributes>
+		</parameter>
+
+<!-- Stop of genomic interval desired (to) (Optional) type: integer flag: -T-->
+		<parameter type="Integer">
+			<name>stopinterval</name>
+			<attributes>
+				<prompt>Stop of genomic interval desired (to)</prompt>
+				<format>
+					<language>perl</language>
+					<code>("defined $stopinterval") ? "-T $value":""</code>
+				</format>
+				<group>13</group>
+				<comment>
+<value>If you know that the mRNA is contained in a certain interval of the genomic sequence, you may restrict Spidey's search to that interval to increase speed and sensitivity. If nothing is entered here, Spidey will search to the end of the genomic sequence.
+</value>
+				</comment>
+			</attributes>
+		</parameter>
+		
+<!--Make a multiple alignment of all input mRNAs (Optional) type: boolean flag: -u -->
+		<parameter ismandatory="1" type="Switch">
+			<name>multialign</name>
+			<attributes>
+				<prompt>Make a multiple alignment of all input mRNAs</prompt>
+				<format>
+					<language>perl</language>
+					<code>($value) ? "-u":""</code>
+				</format>
+				<group>14</group>
+				<comment>
+<value>If you have multiple mRNAs and they overlap on the genomic sequence, Spidey can print a multiple alignment of all mRNAs, exon by exon as they overlap. If the mRNAs do not overlap you will get an error message.
+</value>
+				</comment>
+			</attributes>
+		</parameter>
+
+<!--Use extra-large intron sizes (Optional) type: boolean flag: -X -->
+		<parameter ismandatory="1" type="Switch">
+			<name>largeintron</name>
+			<attributes>
+				<prompt>Use extra-large intron sizes</prompt>
+				<format>
+					<language>perl</language>
+					<code>($value) ? "-X":""</code>
+				</format>
+				<group>15</group>
+				<comment>
+<value>The maximum intron size is set at 35kb, with the maximum first and last intron sizes at 100kb. If you have an mRNA with introns larger than these limits, iset -X T  to get a maximum internal intron size of 120kb and a maximum first and last intron size of 240kb. Using this option will often result in significantly longer compute times.
+</value>
+				</comment>
+			</attributes>
+		</parameter>
+	</parameters>
+	</paragraph>
+</parameter>
+		
+<!-- OUTPUT OPTIONS -->
+
+<!--Print alignment? 0=summary+alignments, 1=summary, 2=alignments, 3=summary&alignments in different files (Optional) type: Integer flag: -p -->
+<parameter type="Paragraph">
+<paragraph>
+	<name>outputoptions</name>
+	<prompt>Output Options</prompt>
+		<parameters>
+
+		<parameter type="Excl">
+			<name>printalign</name>
+			<attributes>
+				<prompt>Print the following documents:</prompt>
+				<format>
+					<language>perl</language>
+					<code></code>
+				</format>
+				<vdef>
+					<value>0</value>
+				</vdef>
+				<vlist>
+					<value>0</value>
+					<label>summary and alignments in one file</label>
+					<value>1</value>
+					<label>summary only</label>
+					<value>2</value>
+					<label>alignments only</label>
+					<value>3</value>
+					<label>summary and alignments in different files</label>
+				</vlist>
+				<flist>
+				<value>0</value>
+				<code>"-p 0 -o summary_alignments.txt"</code>
+				<value>1</value>
+				<code>"-p 1 -o summary.txt"</code>
+				<value>2</value>
+				<code>"-p 2 -a alignment.txt"</code>
+				<value>3</value>
+				<code>"-p 3 -o summary.txt -a alignment.txt"</code>
+				</flist>
+				<group>17</group>
+				<comment>
+<value>You can choose to print a text summary of the alignment, the alignment itself, both, or neither. The output for choices 0-2 will go to the output file specified by the -o option, or to stdout if nothing is chosen. For choice #3, the summary will appear in the output file (-o) and the alignment will appear in the alignment file (-a).</value>
+				</comment>
+			</attributes>
+		</parameter>
+
+<!--Output file 1 (summary or summary+alignments) (Optional) type: string flag: -o-->
+<!--  If nothing is set here, Spidey will print to stdout (on a computer with no stdout, Spidey creates
+ a file named stdout and prints there) -->
+<!--  If nothing is set here, Spidey will print to stdout (on a computer with no stdout, Spidey creates
+ a file named stdout and prints there) -->
+<!--Output file 2 (alignments) (Optional) type: string flag: -a -->
+<!--  If nothing is set here, Spidey will print to stdout (on a computer with no stdout, Spidey creates a file
+named stdout and prints there). If the 'print alignment' choice is #3, this option can direct the printed exon
+alignments to the file of your choice. If the 'print alignment' choice is #3 
+and this option is not set, the exon alignments will be printed to a file named spidey.aln -->
+
+<!--Print ASN.1 alignment? (Optional) type: T/F flag: -j-->
+		<parameter ismandatory="1" type="Switch">
+			<name>printoutasn</name>
+			<attributes>
+				<prompt>Print out ASN.1 alignments</prompt>
+				<vdef>
+					<value>0</value>
+				</vdef>
+				<format>
+					<language>perl</language>
+					<code>($value) ? "-j T":""</code>
+				</format>
+				<group>21</group>
+				<comment>
+<value>If this option is set to true (T/t), Spidey will print the ASN.1 Seq-align(s) corresponding to the mRNA alignment(s). See the next option for information about how to control where the output goes. Default is false.</value>
+				</comment>
+			</attributes>
+		</parameter>
+
+<!--can  be implemented if needed. File for asn.1 (Optional) type: string flag: -k 
+			<parameter issimple="1" ismandatory="1" type="Switch">
+				<name>printout asn.1?</name>
+				<attributes>
+					<prompt>Asn Output file name</prompt>
+					<format>
+						<language>perl</language>
+						<code>($value) ? ""</code>
+					</format>
+					<group>21</group>
+					<comment>
+<value>If the 'print ASN.1 alignment' option is true, this option can be used to set a file where the ASN.1 gets printed. If the 'print ASN.1 alignment' option is true and this option is not set, the ASN.1 output goes to a file named spidey.asn.</value>
+					</comment>
+				</attributes>
+			</parameter>-->
+
+<!--return all output files -->
+ 			<parameter type="Results">
+				<name>outfiles</name>
+				<attributes>
+					<filenames>*</filenames>
+				</attributes>
+			</parameter>
+			
+			
+		</parameters>
+		</paragraph>
+	</parameter>
+</parameters>
+</pise>

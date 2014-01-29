@@ -1,0 +1,2863 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE pise SYSTEM "http://www.phylo.org/dev/rami/PARSER/pise2.dtd">
+<!--
+	This file was originally created to permit a complete configuration of RAXML using all command line parameters. 
+	Where doing an ML analysis after the bootstrap was optional and default settings will run the program under its "black box" settings.
+
+	Note: values must be passed in for invariable, empirical, dna, and matrix, even if the precond prevents them from being set, even when the default value is the empty
+	string.  For example, if we're passed invariable = empty string, then the format code for the model parameter is OK, but if we are passed a parameter map that doesn't include 
+	invariable, when PiseCommandRenderer. restituteFormat tries to replace variables for model's code and it finds a reference to a parameter that doesn't exist it clobbers
+	the whole code string.
+-->
+<!-- The file has since been updated, most recently 1/1/2010 by mamiller to include new raxml options.
+
+This is the output of -h command for raxml 7.2.3
+
+	raxmlHPC[-SSE3|-PTHREADS|-PTHREADS-SSE3]
+
+##############################################################################################################################
+Option Changes for 7.2.3 compared to 7.2.0
+	
+New options in 7.2.3:
+
+	[-C]      (will not support) Conduct model parameter optimization on gappy, partitioned multi-gene alignments with per-partition
+              branch length estimates (-M enabled) using the fast method with pointer meshes described in:
+              Stamatakis and Ott: "Efficient computation of the phylogenetic likelihood function on multi-gene alignments and multi-core processors"
+              WARNING: We can not conduct any tree searches using this method yet! Does not work with Pthreads version.
+	
+	[-f A]    (will not support) (usage not recommended) classify a bunch of environmental sequences into a reference tree with dynamic alignment under MP
+              you will need to start RAxML with a non-comprehensive reference tree and an alignment containing all sequences (reference + query)
+
+	[-f u]    (not yet supported) execute morphological weight calibration algorithm, this will return a weight vector. you need to provide a morphological alignment and a reference tree via "-t" 
+
+	[-G placementThreshold]  (not yet suported) enable the ML-based evolutionary placement algorithm heuristics
+              by specifiyng a threshold value (fraction of insertion branches to be evaluated
+              using slow insertions under ML).
+	
+	[-H placementThreshold]  (not yet supported) enable the MP-based evolutionary placement algorithm heuristics
+              by specifiyng a threshold value (fraction of insertion branches to be evaluated
+              using slow insertions under ML).
+
+	[-I autoFC|autoMR|autoMRE|autoMRE_IGN] a posteriori bootstopping analysis. Use:
+             "-I autoFC" for the frequency-based criterion
+             "-I autoMR" for the majority-rule consensus tree criterion
+             "-I autoMRE" for the extended majority-rule consensus tree criterion
+             "-I autoMRE_IGN" for metrics similar to MRE, but include bipartitions under the threshold whether they are compatible
+                              or not. This emulates MRE but is faster to compute.
+              You also need to pass a tree file containing several bootstrap replicates via "-z" 
+
+	[-J MR|MRE] Compute majority rule consensus tree with "-J MR" or extended majority rule consensus tree with "-J MRE"
+                You will need to provide a tree file containing several trees via "-z"
+
+	[-K] syntax?(not yet supported)Specify one of the multi-state substitution models (max 32 states) implemented in RAxML.
+                Available models are: ORDERED, MK, GTR
+                DEFAULT: GTR model 
+	
+	[-#|-NnumberOfRuns|autoFC|autoMR|autoMRE|autoMRE_IGN] Specify the number of alternative runs on distinct starting trees
+              In combination with the "-b" option, this will invoke a multiple bootstrap analysis
+              Note that "-N" has been added as an alternative since "-#" sometimes caused problems
+              with certain MPI job submission systems, since "-#" is often used to start comments.
+              If you want to use the bootstopping criteria specify "-# autoMR" or "-# autoMRE" or "-# autoMRE_IGN"
+              for the majority-rule tree based criteria (see -I option) or "-# autoFC" for the frequency-based criterion.
+              Bootstopping will only work in combination with "-x" or "-b"
+              DEFAULT: 1 single analysis
+
+Removed options in 7.2.3:
+
+    [-f k]: a posteriori bootstopping analysis using the FC criterion for a tree file containg several bootstrap replicates passed via "-z" 
+              
+	[-f l]: a posteriori bootstopping analysis using the WC criterion for a tree file containg several bootstrap replicates passed via "-z" 
+	
+    [-l sequenceSimilarityThreshold]		Specify a threshold for sequence similarity clustering. RAxML will then print out an alignment to a file called sequenceFileName.reducedBy.threshold that only contains sequences <= the specified threshold that must be between  0.0 and 1.0. RAxML uses the QT-clustering algorithm  to perform this task.In addition, a file called RAxML_reducedList.outputFileName will be written that contains clustering information.DEFAULT: OFF
+	
+	[-L]      Same functionality as "-l" above, but uses a less exhasutive and thus faster clustering algorithm
+              This is intended for very large datasets with more than 20,000-30,000 sequences. DEFAULT: OFF
+
+	
+	[-N autoWC]  Specify the number of alternative runs on distinct starting trees, or let Raxml stop it automatically.
+                 In combination with the "-b" option, this will invoke a multiple bootstrap analysis
+                 Note that "-N" has been added as an alternative since "-#" sometimes caused problems
+                 with certain MPI job submission systems, since "-#" is often used to start comments
+                 If you want to use the bootstopping criteria specify "-# autoWC" for the weighted criterion
+                 or "-# autoFC" for the frequency-based criterion. This will only work in combination with "-x"
+                 or "-b"
+
+	[-B wcCriterionThreshold] Specify a floating point number between 0.0 and 1.0 that will be used as cutoff threshold for the WC 
+				bootstopping criterion.The recommended setting is 0.03. 7.2.0 DEFAULT: 0.03 (recommended empirically determined setting) 
+	
+
+###############################################################################################################################
+
+All options, 7.2.3
+	
+	[-s]      		(required)							Specify the name of the alignment data file in PHYLIP format (we manage this)
+	[-n]		    (required)						    Specify the outputFileName (we manage this) 
+	[-m]            (required)                          substitutionModel
+	
+       [-a weightFileName] [-A secondaryStructureSubstModel]
+       [-b bootstrapRandomNumberSeed]
+       [-c numberOfCategories] [-C] [-d] [-D]
+       [-e likelihoodEpsilon] [-E excludeFileName]
+       [-f a|A|b|c|d|e|g|h|j|m|n|o|p|q|r|s|t|u|v|w|x|y|X] [-F]
+       [-g groupingFileName] [-G placementThreshold] [-h] [-H placementThreshold]
+       [-i initialRearrangementSetting] [-I autoFC|autoMR|autoMRE|autoMRE_IGN]
+       [-j] [-J MR|MRE] [-k] [-K] [-M]
+       [-o outGroupName1[,outGroupName2[,...]]]
+       [-p parsimonyRandomSeed] [-P proteinModel]
+       [-q multipleModelFileName] [-r binaryConstraintTree]
+       [-S secondaryStructureFile] [-t userStartingTree]
+       [-T numberOfThreads] [-v] [-w workingDirectory]
+       [-x rapidBootstrapRandomNumberSeed] [-y] [-Y]
+       [-z multipleTreesFile] [-#|-N numberOfRuns|autoFC|autoMR|autoMRE|autoMRE_IGN]
+	
+Here is a list of options we will support; below it a list options we will not support:
+	
+    [-A secondaryStructureSubstModel] 	Specify one of the RNA secondary structure substitution models implemented in RAxML.
+		7.2.0							The same nomenclature as in the PHASE manual is used, available models: 
+										S6A, S6B, S6C, S6D, S6E, S7A, S7B, S7C, S7D, S7E, S7F, S16, S16A, S16B
+										DEFAULT: 16-state GTR model (S16)
+										6 state model nomenclature: http://www.cs.manchester.ac.uk/ai/Software/phase/manual/node101.html 
+										7 state model nomenclature http://www.cs.manchester.ac.uk/ai/Software/phase/manual/node107.html
+										16 state model nomenclature http://www.cs.manchester.ac.uk/ai/Software/phase/manual/node114.html
+
+    [-b bootstrapRandomNumberSeed]		Specify an integer number (random seed) and turn on bootstrapping 
+		7.0.4							DEFAULT: OFF
+	
+	[-B wcCriterionThreshold]		    Specify a floating point number between 0.0 and 1.0 that will be used as cutoff threshold for the WC bootstopping criterion. The recommended setting is 0.03.
+		7.2.0							DEFAULT: 0.03 (recommended empirically determined setting)
+
+    [-c numberOfCategories]				Specify number of distinct rate categories for RAxML when modelOfEvolution is set to GTRCAT
+		7.0.4						    Individual per-site rates are categorized into numberOfCategories rate categories to accelerate computations. 						
+										DEFAULT: 25
+
+	[-D]							    ML search convergence criterion. This will break off ML searches if the relative Robinson-Foulds distance
+										large trees between the trees obtained from two consecutive lazy SPR cycles is smaller or equal to 1%. Usage recommended
+										in progress	for very large datasets in terms of taxa. On trees with more than 500 taxa this will yield execution time improvements
+										of approximately 50% while yielding only slightly worse trees.
+										DEFAULT: OFF
+
+	[-E excludeFileName]				specify an exclude file name, that contains a specification of alignment positions you wish to exclude.
+		7.0.4							Format is similar to Nexus, the file shall contain entries like "100-200 300-400", to exclude a
+										single column write, e.g., "100-100", if you use a mixed model, an appropriately adapted model file will be written.
+
+    [-f a|b|d|e|g|h|j|m|n|r|u|v|w|x|y]
+
+		7.0.4			"-f a":	rapid Bootstrap analysis and search for best-scoring ML tree in one program run
+		7.0.4			"-f b":	draw bipartition information on a tree provided with "-t" based on multiple trees (e.g., from a bootstrap) in a file specified by "-z"
+		7.0.4			"-f d":	new rapid hill-climbing  (DEFAULT: ON) 
+		7.0.4			"-f h":    compute log likelihood test (SH-test) between best tree passed via "-t"
+                                    and a bunch of other trees passed via "-z"
+		7.0.4			"-f s":	option can be used to split a multi-gene alignment into individual genes, provided a model file with -q. This might be useful to select best fitting models for individual partitions of an AA multi-gene alignment or to infer per-partition trees in order to analyze tree compatibility. Example: raxmlHPC -f s -q part -s alg -m GTRCAT -n TEST.
+		not yet		   "-f m":	compare bipartitions between two bunches of trees passed via "-t" and "-z"  respectively. This will return the Pearson correlation 
+					            between all partitions found in the two tree files. A file called RAxML_bipartitionFrequencies.outpuFileName will be printed that 
+					            contains the pair-wise bipartition frequencies of the two sets
+		not yet		   "-f n":	compute the log likelihood score of all trees contained in a tree file provided by "-z" under GAMMA or GAMMA+P-Invar
+		not yet		   "-f r":	compute pairwise Robinson-Foulds (RF) distances between all pairs of trees in a tree file passed via "-z"  if the trees have node 
+					            labels represented as integer support values the program will also compute two flavors of the weighted Robinson-Foulds (WRF) distance
+		not yet		   "-f v":	classify a bunch of environmental sequences into a reference tree using the slow heuristics without dynamic alignment you will need
+					            to start RAxML with a non-comprehensive reference tree and an alignment containing all sequences (reference + query)
+		not yet		   "-f w":	compute ELW test on a bunch of trees passed via "-z" 
+				   "-f x":	compute pair-wise ML distances, ML model parameters will be estimated on an MP starting tree or a user-defined tree passed via "-t",
+					            only allowed for GAMMA-based models of rate heterogeneity
+		not yet		   "-f y":	classify a bunch of environmental sequences into a reference tree using the fast heuristics without dynamic alignment you will need 
+					            to start RAxML with a non-comprehensive reference tree and an alignment containing all sequences (reference + query)
+	    not yet        "-f e":  optimize model+branch lengths for given input tree under GAMMA/GAMMAI only
+	    not yet        "-f g":  compute per site log Likelihoods for one ore more trees passed via "-z" and write them to a file that can be read by CONSEL
+                                WARNING: does not print likelihoods in the original column order
+	    not yet        "-f j":  generate a bunch of bootstrapped alignment files from an original alignment file.
+                                You need to specify a seed with "-b" and the number of replicates with "-#"
+	    not yet        "-f u":  execute morphological weight calibration algorithm, this will return a weight vector.
+                                you need to provide a morphological alignment and a reference tree via "-t"
+
+	[-F]			   enable ML tree searches under CAT model for very large trees without switching to GAMMA in the end (saves memory) and print out some additional files
+					   large trees)with intermediate trees from the search. This option can also be used with the GAMMA models in
+					   order to avoid the thorough optimization  of the best-scoring in progress ML tree in the end.
+					   DEFAULT: OFF
+
+	[-g groupingFileName] specify the file name of a multifurcating constraint tree this tree does not need to be comprehensive, i.e. must not contain all taxa
+			7.0.4
+
+    [-G]                enable the ML-based evolutionary placement algorithm heuristics by specifiyng a threshold value 
+                       (fraction of insertion branches to be evaluated using slow insertions under ML).
+
+    [-H]                enable the MP-based evolutionary placement algorithm heuristics by specifiyng a threshold value 
+                       (fraction of insertion branches to be evaluated using slow insertions under ML).
+
+	[-i initialRearrangementSetting]			Initial rearrangement setting for the subsequent application of topological changes phase.
+			7.0.4								DEFAULT: determined by program; integer input; if selected, default value of 10 is provided.
+
+	[-I]      a posteriori bootstopping analysis. Use:
+              "-I autoFC" for the frequency-based criterion
+              "-I autoMR" for the majority-rule consensus tree criterion
+              "-I autoMRE" for the extended majority-rule consensus tree criterion
+              "-I autoMRE_IGN" for metrics similar to MRE, but include bipartitions under the threshold whether they are compatible
+              or not. This emulates MRE but is faster to compute. You also need to pass a tree file containing several bootstrap replicates via "-z"
+
+	[-J]      Compute majority rule consensus tree with "-J MR" or extended majority rule consensus tree with "-J MRE"
+              You will need to provide a tree file containing several trees via "-z"
+	
+	[-K] Specify one of the multi-state substitution models (max 32 states) implemented in RAxML.
+              Available models are: ORDERED, MK, GTR
+              DEFAULT: GTR model 
+
+    [ -m      Model of Binary (Morphological), Nucleotide or Amino Acid Substitution]: 
+
+            BINARY: (NEW for 7.2.0)
+			(now implemented)
+                "-m BINCAT"         : Optimization of site-specific evolutionary rates which are categorized into numberOfCategories distinct rate categories for greater computational efficiency. Final tree
+											 might be evaluated automatically under BINGAMMA, depending on the tree search option
+                "-m BINCATI"        : Optimization of site-specific evolutionary rates which are categorized into numberOfCategories distinct 
+                                      rate categories for greater computational efficiency. Final tree might be evaluated
+                                      automatically under BINGAMMAI, depending on the tree search option 
+                "-m BINGAMMA"       : GAMMA model of rate heterogeneity (alpha parameter will be estimated)
+                "-m BINGAMMAI"      : Same as BINGAMMA, but with estimate of proportion of invariable sites
+	
+	
+
+              NUCLEOTIDES:
+
+                "-m GTRCAT"         : GTR + Optimization of substitution rates + Optimization of site-specific
+                                      evolutionary rates which are categorized into numberOfCategories distinct 
+                                      rate categories for greater computational efficiency.  Final tree might be evaluated
+                                      under GTRGAMMA, depending on the tree search option
+                "-m GTRCAT_FLOAT"   : Same as above but uses single-precision floating point arithmetics instead of double-precision
+                                      Usage only recommend for testing, the code will run slower, but can save almost 50% of memory.
+                                      If you have problems with phylogenomic datasets and large memory requirements you may give it a shot.
+                                      Keep in mind that numerical stability seems to be okay but needs further testing.
+                "-m GTRCATI"        : GTR + Optimization of substitution rates + Optimization of site-specific
+                                      evolutionary rates which are categorized into numberOfCategories distinct 
+                                      rate categories for greater computational efficiency.  Final tree might be evaluated
+                                      under GTRGAMMAI, depending on the tree search option
+                "-m GTRGAMMA"       : GTR + Optimization of substitution rates + GAMMA model of rate 
+                                      heterogeneity (alpha parameter will be estimated)
+                "-m GTRGAMMA_FLOAT" : Same as GTRGAMMA, but also with single-precision arithmetics, same cautionary notes as for  
+                                      GTRCAT_FLOAT apply.
+                "-m GTRGAMMAI"      : Same as GTRGAMMA, but with estimate of proportion of invariable sites 
+
+	
+            MULTI-STATE:
+
+                 "-m MULTICAT"         : Optimization of site-specific evolutionary rates which are categorized into numberOfCategories distinct
+                                       rate categories for greater computational efficiency. Final tree might be evaluated automatically under MULTIGAMMA,
+	                                   depending on the tree search option
+                 "-m MULTICATI"        : Optimization of site-specific evolutionary rates which are categorized into numberOfCategories distinct
+                                       rate categories for greater computational efficiency. Final tree might be evaluated automatically under MULTIGAMMAI, depending on the 
+	                                   tree search option
+                 "-m MULTIGAMMA"       : GAMMA model of rate heterogeneity (alpha parameter will be estimated)
+                 "-m MULTIGAMMAI"      : Same as MULTIGAMMA, but with estimate of proportion of invariable sites
+	                                     You can use up to 32 distinct characters to encode multi-state regions, they must be used in the following 
+	                                     order:0, 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V
+                                         i.e., if you have 6 distinct characters you would use 0, 1, 2, 3, 4, 5 to encode these.
+                                         The substitution model for the multi-state regions can be selected via the "-K" option
+
+           AMINO ACIDS:
+	            "-m PROTCATmatrixName[F]" : specified AA matrix + Optimization of substitution rates + Optimization of site-specific
+	                                        evolutionary rates which are categorized into numberOfCategories distinct rate categories for greater computational 
+	                                        efficiency.   Final tree might be evaluated automatically under PROTGAMMAmatrixName[f], 
+                                            depending on the tree search option
+                "-m PROTCATmatrixName[F]_FLOAT" : PROTCAT with single precision arithmetics, same cautionary notes as for GTRCAT_FLOAT apply
+                "-m PROTCATImatrixName[F]"      : specified AA matrix + Optimization of substitution rates + Optimization of site-specific
+                                                  evolutionary rates which are categorized into numberOfCategories distinct rate categories for greater computational 
+	                                              efficiency.   Final tree might be evaluated automatically under PROTGAMMAImatrixName[f], 
+                                                  depending on the tree search option
+                 "-m PROTGAMMAmatrixName[F]"    : specified AA matrix + Optimization of substitution rates + GAMMA model of rate heterogeneity (alpha parameter will be estimated)
+                 "-m PROTGAMMAmatrixName[F]_FLOAT" : PROTGAMMA with single precision arithmetics, same cautionary notes as for GTRCAT_FLOAT apply
+                 "-m PROTGAMMAImatrixName[F]" : Same as PROTGAMMAmatrixName[F], but with estimate of proportion of invariable sites
+           Available AA substitution models: DAYHOFF, DCMUT, JTT, MTREV, WAG, RTREV, CPREV, VT, BLOSUM62, MTMAM, LG, GTR
+           With the optional "F" appendix you can specify if you want to use empirical base frequencies
+           Please note that for mixed models you can in addition specify the per-gene AA model in the mixed model file (see manual 
+           for details). Also note that if you estimate AA GTR parameters on a partitioned dataset, they will be linked
+	       estimated jointly) across all partitions to avoid over-parametrization
+
+	
+      [-o outGroupName1[,outGroupName2[,...]]] Specify the name of a single outgroup or a comma-separated list of outgroups, eg "-o Rat"
+               or "-o Rat,Mouse", in case that multiple outgroups are not monophyletic the first name in the list will be selected as 
+               outgroup, don't leave spaces between taxon names!
+
+
+      [-P proteinModel]      Specify the file name of a user-defined AA (Protein) substitution model. This file must contain
+               420 entries, the first 400 being the AA substitution rates (this must be a symmetric matrix) and the
+               last 20 are the empirical base frequencies
+
+      [-q multipleModelFileName]      Specify the file name which contains the assignment of models to alignment
+               partitions for multiple models of substitution. For the syntax of this file
+               please consult the manual.
+
+      [-r binaryConstraintTree]      Specify the file name of a binary constraint tree.
+               this tree does not need to be comprehensive, i.e. must not contain all taxa
+
+      [-S secondaryStructureFile] Specify the name of a secondary structure file. The file can contain "." for
+               alignment columns that do not form part of a stem and characters "()<>[]{}" to define
+               stem regions and pseudoknots
+
+	  [-t userStartingTree] Specify a user starting tree file name in Newick format
+
+      [-T numberOfThreads] PTHREADS VERSION ONLY! Specify the number of threads you want to run.
+               Make sure to set "-T" to at most the number of CPUs you have on your machine,
+               otherwise, there will be a huge performance decrease!
+
+      [-x rapidBootstrapRandomNumberSeed] Specify an integer number (random seed) and turn on rapid bootstrapping
+               CAUTION: unlike in version 7.0.4 RAxML will conduct rapid BS replicates under
+               the model of rate heterogeneity you specified via "-m" and not by default under CAT
+
+	  [-y]  If you want to only compute a parsimony starting tree with RAxML specify "-y",
+             the program will exit after computation of the starting tree
+             DEFAULT: OFF
+	   
+	  [-Y] Do a more thorough parsimony tree search using a parsimony ratchet and exit.
+               specify the number of ratchet searches via "-#" or "-N"
+               This has just been implemented for completeness, if you want a fast MP implementation use TNT
+               DEFAULT: OFF
+
+      [-z multipleTreesFile] Specify the file name of a file containing multiple trees e.g. from a bootstrap
+               that shall be used to draw bipartition values onto a tree provided with "-t",
+               It can also be used to compute per site log likelihoods in combination with "-f g"
+               and to read a bunch of trees for a couple of other options ("-f h", "-f m", "-f n").
+	
+	  [-#|-NnumberOfRuns|autoFC|autoMR|autoMRE|autoMRE_IGN] Specify the number of alternative runs on distinct starting trees
+              In combination with the "-b" option, this will invoke a multiple bootstrap analysis
+              Note that "-N" has been added as an alternative since "-#" sometimes caused problems
+              with certain MPI job submission systems, since "-#" is often used to start comments.
+              If you want to use the bootstopping criteria specify "-# autoMR" or "-# autoMRE" or "-# autoMRE_IGN"
+              for the majority-rule tree based criteria (see -I option) or "-# autoFC" for the frequency-based criterion.
+              Bootstopping will only work in combination with "-x" or "-b"
+              DEFAULT: 1 single analysis
+	
+		##########################################not supported #########################################
+	
+	[-a weightFileName]  	Specify a column weight file name to assign individual weights to each column of 
+									the alignment. Those weights must be integers separated by any type and number 
+									of whitespaces within a separate file, see file "example_weights" for an example.
+
+	[-C]      Conduct model parameter optimization on gappy, partitioned multi-gene alignments with per-partition
+              branch length estimates (-M enabled) using the fast method with pointer meshes described in:
+              Stamatakis and Ott: "Efficient computation of the phylogenetic likelihood function on multi-gene alignments and multi-core processors"
+              WARNING: We can not conduct any tree searches using this method yet! Does not work with Pthreads version.
+
+	[-d]													Start ML optimization from random starting tree 
+															DEFAULT: OFF
+
+    [-e likelihoodEpsilon] 							 set model optimization precision in log likelihood units for final optimization of tree topology under MIX/MIXI or GAMMA/GAMMAI
+															DEFAULT: 	0.1   for models not using proportion of invariant sites estimate
+																				0.001 for models using proportion of invariant sites estimate
+
+    [-f      select algorithm]:
+			"-f A":(usage not recommended) classify a bunch of environmental sequences into a reference tree with dynamic alignment under MP
+              you will need to start RAxML with a non-comprehensive reference tree and an alignment containing all sequences (reference + query)
+            "-f c":	check if the alignment can be properly read by RAxML
+            "-f e":	optimize model+branch lengths for given input tree under GAMMA/GAMMAI only
+            "-f g":	compute per site log Likelihoods for one or more trees passed via "-z" and write them to a file that can be read by CONSEL
+            "-f i":		perform a really thorough bootstrap, refinement of final BS tree under GAMMA and a more exhaustive algorithm
+            "-f j":		generate a bunch of bootstrapped alignment files
+            "-f o":	(will not implement) old and slower rapid hill-climbing 
+            "-f p":	perform pure stepwise MP addition of new sequences to an incomplete starting tree
+            "-f t":		do randomized tree searches on one fixed starting tree
+			"-f X":	(usage not recommended) classify a bunch of environmental sequences into a reference tree using the slow heuristics with dynamic alignment
+						you will need to start RAxML with a non-comprehensive reference tree and an alignment containing all sequences (reference + query)
+			"-f q":	(usage not recommended) classify a bunch of environmental sequences into a reference tree using the fast heuristics with 
+						dynamic alignment you will need to start RAxML with a non-comprehensive reference tree and an alignment containing all
+						sequences (reference + query)
+
+	[-h]				Display this help message
+
+    [ -j]    			Specifies if checkpoints will be written by the program. If checkpoints 
+						(intermediate tree topologies) shall be written by the program specify "-j". 
+						DEFAULT: OFF
+
+	[-k] 				Specifies that bootstrapped trees should be printed with branch lengths. The bootstraps will run a bit longer, because model parameters will be optimized at 
+						the end of each run under GAMMA or GAMMA+P-Invar respectively.
+						DEFAULT: OFF (old version said Use with CATMIX/PROTMIX or GAMMA/GAMMAI., check on this)
+
+    [-l sequenceSimilarityThreshold]		Specify a threshold for sequence similarity clustering. RAxML will then print out an alignment to a file called sequenceFileName.reducedBy.threshold that only contains sequences <= the specified threshold that must be between  0.0 and 1.0. RAxML uses the QT-clustering algorithm  to perform this task.	In addition, a file called RAxML_reducedList.outputFileName will be written that contains clustering information. DEFAULT: OFF
+	
+	[-M]				Switch on estimation of individual per-partition branch lengths. Only has effect when used in combination with "-q". Branch lengths for individual partitions will be printed to separate files
+						A weighted average of the branch lengths is computed by using the respective partition lengths
+						DEFAULT: OFF
+
+    [-p]      Specify a random number seed for the parsimony inferences. This allows you to reproduce your results
+               and will help me debug the program. This option HAS NO EFFECT in the parallel MPI version
+	
+    [-u]				Specify the number of multiple BS searches per replicate to obtain better ML trees for each replicate. 
+						DEFAULT: One ML search per BS replicate. Absent from raxml 7.2.0??
+
+	[-v]				Display version information
+
+
+	[-w workingDirectory]		Name of the working directory where RAxML will write its output files
+										DEFAULT: current directory
+ -->
+<!-- 
+##################################(added on 5/5/2009)#########################################################################
+
+mamiller made some changes top grouping, so parameters are written on the command line in the order specified by the manual
+
+	-E 	excludefile specify a range of characters to exclude
+
+###################################(modified 8/3/2009)########################################################################
+
+mamiller made the parsimony seed option invalid when the -y option is in force. 
+
+###########################################################################################################################
+	
+##################################(added on 9/1/2009)########################################################################
+
+mamiller exposed the -f h option in response to a user request	
+
+##################################(added on 10/31/2009)######################################################################
+
+mamiller repaired the -p option;
+	removed the superfluous -f d option and its preconds.
+Also, the preconds all had &amp; where they should have had &amp;&amp; this was repaired
+Some ctrl features were broken. I cant seem to fix them and made the best workarounds I could with other tools and trext.
+
+##################################(added on 12/31/2009)######################################################################
+	
+	
+we must remove some of the model  options that are no longer used (as of 7.1.0).
+this includes 
+
+         "-m GTRMIX"                      : Inference of the tree under GTRCAT
+                                            and thereafter evaluation of the final tree topology under GTRGAMMA	
+	     "-m GTRMIXI"                     : Same as GTRMIX, but with estimate of proportion of invariable sites 
+	     
+		 "-m GTRCAT_GAMMA"                : Inference of the tree with site-specific evolutionary rates.
+                                            However, here rates are categorized using the 4 discrete GAMMA rates.
+                                            Evaluation of the final tree topology under GTRGAMMA 
+	
+         "-m GTRCAT_GAMMAI"               : Same as GTRCAT_GAMMA, but with estimate of proportion of invariable sites 
+	
+these options are not supported:
+	     "-m GTRCAT_FLOAT"   : Same as above but uses single-precision floating point arithmetics instead of double-precision
+                                      Usage only recommend for testing, the code will run slower, but can save almost 50% of memory.
+                                      If you have problems with phylogenomic datasets and large memory requirements you may give it a shot.
+                                      Keep in mind that numerical stability seems to be okay but needs further testing.
+	
+	     "-m GTRCATI"               : Same as GTRCAT_GAMMA, but with estimate of proportion of invariable sites 
+	
+	     "-m GTRGAMMA_FLOAT" : Same as GTRGAMMA, but also with single-precision arithmetics, same cautionary notes as for  
+                                      GTRCAT_FLOAT apply.
+	
+	     "-m GTRGAMMAI"               : Same as GTRCAT_GAMMA, but with estimate of proportion of invariable sites 
+
+	change vdef to GTRCAT
+	
+from alexis:
+> 
+> Specifically, here is what I think is true (and I plan to write on our interface):
+> 
+> For RAxML versions 7.1.0 and later, the same flag GTRGAMMA (which 
+> creates the command line -m GTRGAMMA -x -f a) causes GTRGAMMA to be 
+> used both during the rapid bootstrapping AND inference of the best 
+> tree. This takes much longer than the previous method,
+
+Correct.
+
+> where GTRCAT is used to conduct the bootstrapping phase. In other 
+> words, if you want to run a bootstrapping experiment, choosing the model GTRCAT (-m GTRCAT -x -f a) is identical to 
+	choosing GTRGAMMA in RAxML 7.0.4 and below.
+
+Exactly.
+
+> In other words, the GTRCAT switch causes GTRCAT to be used during the rapid bootstrapping, but the program then 
+switches to GTRGAMMA for the ML search.
+
+Yes, but only in the very end, where an attempt is made to further improve the current ML tree using a 
+	more thorough version of SPR moves.
+
+> (BUT: I don't know what this means: 
+	"Final tree might be evaluated under GTRGAMMA, depending on the tree search option."
+
+For rapid bootstrapping the final ML tree will always be evaluated under GAMMA.
+
+> The GTRMIX option (which conducted inference under GRTCAT and calculated best tree under GTRGAMMA) is no longer offered for RAxML 7.1.0 and above. 
+
+Exactly.
+
+> (was gtrmix the same as bootstrapping with gtrgamma in the past? 
+
+Yes.
+
+> how should people who used that option accomplish the same analysis?
+> Was this not a useful option?)
+
+It was a useful option, GTRCAT now essentially does was GTRMIX used to do, I just designed the program like that, to keep users from inappropriately using CAT.
+
+############################################################################################################################
+User request for -f x
+
+I have been using raxml a fair bit recently and was wondering if you might be able to add a feature please?
+I'd like to be able to export a distance matrix.  I don't know the exact syntax for that, but the 7.0.4 manual has -f x: at the bottom of page 9.
+
+Also, it might avoid some confusion if there is some comment in the section on using a starting tree (Supply a starting tree (-t))that this is not available when doing rapid bootstrapping as raxml just gives an error message without really saying why it gave an error.
+
+#############################################################################################################################
+1/19/2010
+	mamiller added logic to help the program run well using the hybrid option
+	
+##############################################################################################################################
+	
+##############################################################################################################################
+9/25/2010
+	mamiller added new commands to update the interface for 7.2.7
+	the big change in this code is that bootstopping, automatic stopping of bootstraps, is not supported in the hybrid parallel code.
+	this new interface reflects the rules created by Wayne Pfeiffer for picking the number of nodes, MPI processes, and threads to use 
+	for  -N nnn, where nnn is not a number, but a bootstopping command. All of these bootstopping cases should use the same rules as for nnn >= 50.
+   
+	
+	   [-f c|E|F|i|I|J|o|p|R|s|S|t|U|v|] [-F]
+       [-g groupingFileName] [-G placementThreshold] [-h] [-H 
+placementThreshold]
+       [-i initialRearrangementSetting] [-I autoFC|autoMR|autoMRE|autoMRE_IGN]
+       [-j] [-J MR|MR_DROP|MRE|STRICT|STRICT_DROP] [-k] [-K] [-M]
+       [-o outGroupName1[,outGroupName2[,...]]] [-O checkPointInterval]
+       [-p parsimonyRandomSeed] [-P proteinModel]
+       [-q multipleModelFileName] [-r binaryConstraintTree]
+       [-R binaryModelParamFile] [-S secondaryStructureFile] [-t 
+userStartingTree]
+       [-T numberOfThreads] [-U] [-v] [-w outputDirectory] [-W 
+slidingWindowSize]
+       [-x rapidBootstrapRandomNumberSeed] [-y] [-Y]
+       [-z multipleTreesFile] [-#|-N 
+numberOfRuns|autoFC|autoMR|autoMRE|autoMRE_IGN]
+
+       -a      Specify a column weight file name to assign individual 
+weights to each column of
+               the alignment. Those weights must be integers separated 
+by any type and number
+               of whitespaces whithin a separate file, see file 
+"example_weights" for an example.
+
+       -A      Specify one of the secondary structure substitution 
+models implemented in RAxML.
+               The same nomenclature as in the PHASE manual is used, 
+available models:
+               S6A, S6B, S6C, S6D, S6E, S7A, S7B, S7C, S7D, S7E, S7F, 
+S16, S16A, S16B
+
+               DEFAULT: 16-state GTR model (S16)
+
+       -E      specify an exclude file name, that contains a 
+specification of alignment positions you wish to exclude.
+               Format is similar to Nexus, the file shall contain 
+entries like "100-200 300-400", to exclude a
+               single column write, e.g., "100-100", if you use a 
+mixed model, an appropriatly adapted model file
+               will be written.
+
+       -f      select algorithm:
+	   [-f J|p|R|S|U|v|] [-F]
+
+(not sure)     "-f J": Compute SH-like support values on a given tree passed via "-t".
+(not sure)     "-f p": perform pure stepwise MP addition of new sequences to an incomplete starting tree and exit
+(not sure)      "-f R": compute rogue taxa using new statistical method based on the evolutionary placement algorithm WARNING: this is experimental code
+(not sure)     "-f S": compute site-specific placement bias using a leave one out test inspired by the evolutionary placement algorithm
+(not sure)     "-f U": execute morphological wieght calibration using parsimony, this will return a weight vector.
+                       you need to provide a morphological alignment and a reference tree via "-t"
+(not sure)     "-f v": classify a bunch of environmental sequences into a reference tree using the slow heuristics without dynamic alignment
+                       you will need to start RAxML with a non-comprehensive reference tree and an alignment containing all sequences (reference + query)
+
+               DEFAULT for "-f": new rapid hill climbing
+
+(not supported)       -O      Enable checkpointing using the dmtcp library available at http://dmtcp.sourceforge.net/
+               This only works if you call the program by preceded by the command "dmtcp_checkpoint"
+               and if you compile a dedicated binary using the appropriate Makefile.
+               With "-O" you can specify the interval between checkpoints in seconds. DEFAULT: 3600.0 seconds
+
+(not supported)       -R      Specify the file name of a binary model parameter file that has previously been generated
+               with RAxML using the -f e tree evaluation option. The file name should be:
+               RAxML_binaryModelParameters.runID
+
+(not supported)      -U      Try to save memory by using SEV-based implementation for gap columns on large gappy alignments
+               WARNING: this will only work for DNA under GTRGAMMA and is still in an experimental state.
+
+(not sure) -W      Sliding window size for leave-one-out site-specific placement bias algorithm
+               only effective when used in combination with "-f S" DEFAULT: 100 sites
+-->
+<!-- 1/11/11 -->
+<!-- the interface was modified by mamiller to accomodate submission of jobs to both trestles and abe -->
+<!-- later shifted to trestles only -->
+<!-- 3/15/2011 upgrade to raxml 7.3.0, eliminates constraint issue -->
+<pise>
+	<head>
+		<title>RAxML-HPC2 on XSEDE I </title>
+		<version>7.3.2</version>
+		<description>Phylogenetic tree inference using maximum likelihood/rapid bootstrapping run on XSEDE</description>
+		<authors>Alexandros Stamatakis</authors>
+		<reference>Stamatakis A. RAxML-VI-HPC: maximum likelihood-based phylogenetic analyses with thousands of taxa and mixed models.Bioinformatics. 2006 Nov 1;22(21):2688-90</reference>
+		<category>Phylogeny / Alignment</category>
+		<doclink>http://icwww.epfl.ch/~stamatak/index-Dateien/countManual7.0.0.php</doclink>
+	</head>
+	<command>raxmlhpc2_tgbi</command>
+	
+	<parameters>
+<!-- new logic for the command line delivery revised by mamiller, 1/21/2010, based on new logic from Wayne Pfeiffer:
+
+For example, suppose -N nnn is specified with nnn < 20.  What I intended was the following.  Use one node with
+
+. 8 Pthreads **only if** -x xxx -f a is specified & nchar >= 2,000 or . 2 MPI processes and 4 Pthreads in all other cases.
+
+The other cases are
+
+   -x xxx -f a with nchar < 2,000
+   -x xxx -f d
+   -b bbb -f d  or
+   -f d.
+
+There is a similar dichotomy between 8 and 4 Pthreads for larger values of nnn.
+
+Upon reviewing my data more closely, I would like to change the nchar threshold to 2,000.  So here is the complete specification for nnn a number.
+
+			the logic considers four cases: 
+			1. the -f a -N nnn option is used, this selection implies -x  (hybridlogic1-3b); binning is based on nchar and boostop thresholds.
+			2. whenever the -N option is used to specify a number of bootstraps or identical runs to conduct, where -f d is the analysis (hybridlogic5-7b)
+				the logic change is to accomodate the fact that a best tree is not calculated, which is not efficient under mpi.
+			3. the case where automatic bootstoppiong is used: a programmatic tools halts bootstrapping (hybridlogic8)
+			4. all other analyses (-y, -f [other option] (hybridlogic8b)
+			In the first two cases, the number of chars and the value of -N is considered, the logic is identical, but I spilt them into
+			two groups because it made it easier for me, and presumably anyone who follows me. These run the hybrid code EXCEPT
+			the first case in each allows for using the pthreads only. 
+			In the third case, pthreads only code is used, and this is also true for the fourth case. 
+The logic is constructed  in pairs of cases, based on thresholds. Each threshold case is accompanied by a scheduler element.  The precond for each logic scheduler element is necessarily identical to the mate that precedes it-->	
+			
+<!--	hybridlogic1  (revised 1/21/2010)
+				For nnn < 20, use one node with
+				8 Pthreads (no MPI) if and only if -xxx -f a is specified & nchar >= 2,000 (pthreads only)	or
+				2 MPI processes and 4 Pthreads in all other cases, when  -x xxx -f a with nchar < 2,000,
+ --> 
+<!-- the first section considers only the cases where -f a is checked, and where bootstraps (=N, bootstop) 
+	 are specified, these are binned as a matrix of bootstrap number -->		
+
+
+<!--	hybridlogic2
+				For nnn < 50, use 1 node on trestles with
+				5 MPI processes & 6 Pthreads per process --> 
+<!--mamiller revised the logic on 1/18/2011 to accomodate new rules for running on trestles per wayne recommendations
+
+* Check whether the -N option is specified and, if so, what its value is.
+
+* If -N is not specified,
+
+   run the Pthreads-only version of RAxML on a single node of Abe with
+8 threads.
+   That is, use nodes=1:ppn=1 and -T 8.
+
+* If -N nnn is specified with nnn < 50,
+
+   run the hybrid parallel version of RAxML on a single node of Trestles using
+   5 MPI processes and 6 threads per process.
+   That is, use nodes=1:ppn=5, -np 5, and -T 6.
+
+* If -N nnn is specified with nnn >= 50 or nnn = autoFC or nnn = autoMR or nnn = autoMRE or nnn = autoMRE_IGN,
+
+   run the hybrid parallel version of RAxML on two nodes of Trestles using
+   10 MPI processes and 6 threads per process.
+   That is, use nodes=2:ppn=5, -np 10, and -T 6. -->
+		
+<!-- Start -N < 50  --> 
+					<parameter ishidden="1" type="String">
+						<name>raxmlhpc_hybridlogic2</name>
+						<attributes>
+							<format>
+								<language>perl</language>
+								<code>"raxmlHPC-HYBRID-7.3.1 -T 6"</code>
+							</format>
+							<precond>
+<!-- * If -N nnn is specified with nnn < 50, run the hybrid parallel version of RAxML on a single node of Trestles using
+ 5 MPI processes and 6 threads per process. That is, use nodes=1:ppn=5, -np 5, and -T 6. --> 
+								<language>perl</language>
+								<code>$specify_bootstraps &amp;&amp; $bootstop &lt; 50</code>
+							</precond>
+							<group>0</group>
+						</attributes>
+					</parameter>	
+					
+					<parameter ishidden="1" type="String">
+						<name>raxmlhpc_hybridlogic2_scheduler</name>
+						<attributes>
+							<paramfile>scheduler.conf</paramfile>
+							<format>
+								<language>perl</language>
+								<code>
+								<!-- RUN THESE JOBS ON Trestles -->
+									"jobtype=mpi\\n" .
+									"mpi_processes=5\\n" .
+									"threads_per_process=6\\n" .
+									"nodes=1\\n"
+								</code>
+							</format>
+							<precond>
+								<!-- -N (bootstop) less than 50 --> 
+								<language>perl</language>
+								<code>$specify_bootstraps &amp;&amp; $bootstop &lt; 50 </code>
+							</precond>
+							<group>0</group>
+						</attributes>
+					</parameter>	
+<!-- Stop -N < 50 --> 	
+<!-- Start $specify runs  --> 
+					<parameter ishidden="1" type="String">
+						<name>raxmlhpc_hybridlogic2b</name>
+						<attributes>
+							<format>
+								<language>perl</language>
+								<code>"raxmlHPC-HYBRID-7.3.1 -T 6"</code>
+							</format>
+							<precond>
+								<!-- * If -N nnn is specified with nnn < 50, run the hybrid parallel version of RAxML on a single node of Trestles using
+ 5 MPI processes and 6 threads per process. That is, use nodes=1:ppn=5, -np 5, and -T 6. --> 
+								<language>perl</language>
+								<code>$specify_runs</code>
+							</precond>
+							<group>0</group>
+						</attributes>
+					</parameter>	
+					
+					<parameter ishidden="1" type="String">
+						<name>raxmlhpc_hybridlogic2b_scheduler</name>
+						<attributes>
+							<paramfile>scheduler.conf</paramfile>
+							<format>
+								<language>perl</language>
+								<code>
+								<!-- RUN THESE JOBS ON Trestles -->
+									"jobtype=mpi\\n" .
+									"mpi_processes=5\\n" .
+									"threads_per_process=6\\n" .
+									"nodes=1\\n"
+								</code>
+							</format>
+							<precond>
+								<!-- -N (bootstop) less than 50 --> 
+								<language>perl</language>
+								<code>$specify_runs</code>
+							</precond>
+							<group>0</group>
+						</attributes>
+					</parameter>	
+<!-- Stop $specify runs --> 	
+					
+<!-- If -N nnn is specified with nnn >= 50 run the hybrid parallel version of RAxML on two nodes of Trestles using
+10 MPI processes and 6 threads per process. That is, use nodes=2:ppn=5, -np 10, and -T 6 -->
+
+<!-- Start  -N  >= 50 -->	
+					<parameter ishidden="1" type="String">
+						<name>raxmlhpc_hybridlogic3</name>
+						<attributes>
+							<format>
+								<language>perl</language>
+								<code>"raxmlHPC-HYBRID-7.3.1 -T 6 "</code>
+							</format>
+							<precond>
+								<!-- must be -N (bootstop >= 50 --> 
+								<language>perl</language>
+								<code>$specify_bootstraps  &amp;&amp; $bootstop &gt;= 50</code>
+							</precond>
+							<group>0</group>
+						</attributes>
+					</parameter>
+					
+					<parameter ishidden="1" type="String">
+						<name>raxmlhpc_hybridlogic3_scheduler</name>
+						<attributes>
+							<paramfile>scheduler.conf</paramfile>
+							<format>
+								<language>perl</language>
+								<code>
+								<!-- these jobs are run on Trestles If -N nnn is specified with nnn >= 50
+run the hybrid parallel version of RAxML on two nodes of Trestles using 10 MPI processes and 6 threads per process.
+That is, use nodes=2:ppn=5, -np 10, and -T 6 -->
+									"jobtype=mpi\\n" .
+									"mpi_processes=10\\n" .
+									"threads_per_process=6\\n" .
+									"nodes=2\\n"
+								</code>
+							</format>
+							<precond>
+								<!-- must be -f a AND -N (bootstop), and -N >= 50 --> 
+								<language>perl</language>
+								<code>$specify_bootstraps  &amp;&amp; $bootstop &gt;= 50</code>
+							</precond>
+							<group>0</group>
+						</attributes>
+					</parameter>
+<!-- Stop  -N  >= 50 -->					
+					
+<!--	hybridlogic11 
+For all options where bootstopping is automatic to be run on Trestles, use two nodes with 10 MPI processes and 6 Pthreads --> 
+					<parameter ishidden="1" type="String">
+						<name>raxmlhpc_hybridlogic11</name>
+						<attributes>
+							<format>
+								<language>perl</language>
+								<code>"raxmlHPC-HYBRID-7.3.1 -T 6 "</code>
+							</format>
+							<precond>
+								<!-- must use bootstopping of any kind --> 
+								<language>perl</language>
+								<code>$use_bootstopping </code>
+							</precond>
+							<group>0</group>
+						</attributes>
+					</parameter>
+		
+					<parameter ishidden="1" type="String">
+						<name>raxmlhpc_hybridlogic11_scheduler</name>
+						<attributes>
+							<paramfile>scheduler.conf</paramfile>
+							<format>
+								<language>perl</language>
+								<code>
+								<!-- these jobs are run on Trestles -->
+									"jobtype=mpi\\n" .
+									"mpi_processes=10\\n" .
+									"threads_per_process=6\\n" .
+									"nodes=2\\n"
+								</code>
+							</format>
+							<precond>
+								<!-- must use bootstopping of any kind --> 
+								<language>perl</language>
+								<code>$use_bootstopping </code>
+							</precond>
+							<group>0</group>
+						</attributes>
+					</parameter>
+		
+<!--	hybridlogic13
+				For all options where -N is not used (not -f d -x (bootstrap_seed) or -b (mulparambootstrap_seed xxx -N  nnn; 
+				and not -f d -N nnn (specify_runs) to be run on trestles in the shared queue, use pthreads version, 8 Pthreads in one node. -->
+<!-- RUN THESE JOBS ON trestles in the shared queue --> 
+					<parameter ishidden="1" type="String">
+						<name>raxmlhpc_hybridlogic13</name>
+						<attributes>
+							<format>
+								<language>perl</language>
+								<code>"raxmlHPC-PTHREADS-7.3.1 -T 8"</code>
+							</format>
+							<precond>
+								<!-- deliver this line for any option that does not involve -f a or -f d -->
+								<language>perl</language>
+								<code>!$mulparambootstrap_seed &amp;&amp; !$bootstrap_seed &amp;&amp; !$specify_runs</code>
+							</precond>
+							<group>0</group>
+						</attributes>
+					</parameter>
+		
+<!-- add a statement to run job on trestles in the shared queue-->		
+					<parameter ishidden="1" type="String">
+						<name>raxmlhpc_hybridlogic13b_scheduler</name>
+						<attributes>
+							<paramfile>scheduler.conf</paramfile>
+							<format>
+								<language>perl</language>
+								<code>
+								<!-- these jobs are run on trestles -->
+									"threads_per_process=8\\n" .
+									"nodes=1\\n"
+								</code>
+							</format>
+							<precond>
+								<!-- must be -f d -x or -b AND use_bootstopping --> 
+								<language>perl</language>
+								<code>!$mulparambootstrap_seed &amp;&amp; !$bootstrap_seed &amp;&amp; !$specify_runs</code>
+							</precond>
+							<group>0</group>
+						</attributes>
+					</parameter>	
+					
+<!-- required input file -->
+					<parameter ismandatory="1" issimple="1" isinput="1" type="InFile">
+						<name>infile</name>
+						<attributes>
+							<prompt>Sequences File (relaxed phylip format) (-s)</prompt>
+							<format>
+								<language>perl</language>
+								<code>" -s infile"</code>
+							</format>
+							<group>1</group>
+							<filenames>infile</filenames>
+						</attributes>
+					</parameter>
+		
+<!-- -n argument to specify output file suffix is required -->
+		<parameter type="String" ishidden="1">
+			<name>outsuffix</name>
+			<attributes>
+				<format>
+					<language>perl</language>
+					<code>" -n result"</code>
+				</format>
+				<group>1</group>
+			</attributes>
+		</parameter>
+		
+<!-- catchall to route std out to a log file -->
+<!--	the logfile isnt used on teragrid, it is replaced with std out
+		<parameter type="String" ishidden="1">
+			<name>out_logifle</name>
+			<attributes>
+				<format>
+					<language>perl</language>
+					<code>" > output.txt"</code>
+				</format>
+				<group>99</group>
+			</attributes>
+		</parameter> -->
+	
+<!-- Parameters with visible controls start here -->
+		<parameter type="Float" issimple="1" ismandatory="1">
+			<name>runtime</name>
+			<attributes>
+				<group>1</group>
+				<paramfile>scheduler.conf</paramfile>
+				<prompt>Maximum Hours to Run (click here for help setting this correctly)</prompt>
+				<vdef>
+					<value>0.25</value>
+				</vdef>
+				<ctrls>
+					<ctrl>
+						<message>Maximum Hours to Run must be less than 168</message>
+						<language>perl</language>
+						<code>$runtime &gt; 168.0</code>
+					</ctrl>
+				</ctrls>
+				<format>
+					<language>perl</language>
+					<code>"runhours=$value\\n"</code>
+				</format>
+<!-- added by mamiller to provide feedback on number of cpu hrs to be consumed -->
+							<warns>
+								<warn>
+									<message>The job will run on 32 processors as configured. If it runs for the entire configured time, it will consume 32 x $runtime cpu hours</message>
+									<language>perl</language>
+									<code>$specify_bootstraps  &amp;&amp; $bootstop&lt; 50</code>
+								</warn>
+								<warn>
+									<message>The job will run on 32 processors as configured. If it runs for the entire configured time, it will consume 32 x $runtime cpu hours</message>
+									<language>perl</language>
+									<code>$specify_runs</code>
+								</warn>
+								<warn>
+									<message>The job will run on 64 processors as configured. If it runs for the entire configured time, it will consume 64 x $runtime cpu hours</message>
+									<language>perl</language>
+									<code>$specify_bootstraps  &amp;&amp; $bootstop &gt;= 50</code>
+								</warn>
+								<warn>
+									<message>The job will run on 64 processors as configured. If it runs for the entire configured time, it will consume 64 x $runtime cpu hours</message>
+									<language>perl</language>
+									<code>$use_bootstopping</code>
+								</warn>
+								<warn>
+									<message>The job will run on 32 processors as configured. If it runs for the entire configured time, it will consume 32 x $runtime cpu hours</message>
+									<language>perl</language>
+									<code>!$mulparambootstrap_seed &amp;&amp; !$bootstrap_seed &amp;&amp; !$specify_runs</code>
+								</warn>
+							</warns>
+							<comment>
+<value>Estimate the maximum time your job will need to run. We recommend testimg initially with a &lt; 0.5hr test run because Jobs set for 0.5 h or less depedendably run immediately in the "debug" queue. 
+Once you are sure the configuration is correct, you then increase the time. The reason is that jobs &gt; 0.5 h are submitted to the "normal" queue, where jobs configured for 1 or a few hours times may
+run sooner than jobs configured for the full 168 hours. 
+</value>
+							</comment>
+			</attributes>
+		</parameter>
+		
+<!-- user enters nchar parameter this will help decide how to run -->
+		<parameter type="Integer" issimple="1">
+			<name>nchars</name>
+			<attributes>
+				<prompt>Number of chars in your dataset</prompt>
+				<vdef>
+					<value>1000</value>
+				</vdef>
+				<ctrls>
+					<ctrl>
+						<message>Please enter a value for the number of characters in your data matrix</message>
+						<language>perl</language>
+						<code>!defined $nchars</code>
+					</ctrl>
+					<ctrl>
+						<message>The number of characters in the matrix must 1 or greater.</message>
+						<language>perl</language>
+						<code>$nchars &lt; 1</code>
+					</ctrl>
+				</ctrls>
+				<group>15</group>
+				<comment>
+					<value>
+						Knowing the number of characters in your dataset helps us determine the most efficient way to run raxml.
+						We need to know the number of characters per row in the input data matrix.
+					</value>
+				</comment>
+			</attributes>
+		</parameter>
+
+<!-- is it protein or dna input ? -->
+		
+					<parameter type="Excl" issimple="1" ismandatory="1">
+						<name>datatype</name>
+						<attributes>
+							<prompt>Sequence Type</prompt>
+							<vlist>
+								<value>protein</value>
+								<label>Protein</label>
+								<value>dna</value>
+								<label>Nucleotide</label>
+								<value>rna</value>
+								<label>RNA Structure</label>
+								<value>binary</value>
+								<label>Binary Morphological</label>
+								<value>multi</value>
+								<label>Multi-State Morphological</label>
+							</vlist>
+							<vdef>
+								<value>dna</value>
+							</vdef>
+							<group>2</group>
+						</attributes>
+					</parameter>
+					
+		<!-- outgroup (-o) -->
+		<parameter type="String" issimple="1">
+			<name>outgroup</name>
+			<attributes>
+				<prompt>Outgroup (one or more comma-separated outgroups, see comment for syntax)</prompt>
+				<format>
+					<language>perl</language>
+					<code>(defined $value)? " -o $value " : "" </code>
+				</format>
+				<group>10</group>
+				<comment>
+<value>The correct syntax for the box is outgroup1,outgroup2,outgroupn. If white space is introduced (e.g. outgroup1, outgroup2, outgroupn) the program will fail with the message
+"Error, you must specify a model of substitution with the '-m' option"
+</value>					
+				</comment>
+			</attributes>
+		</parameter>
+		
+		<!-- rev 2 -->
+		<!--category (-c) -->
+					<parameter type="Integer" issimple="1" ismandatory="1">
+						<name>number_cats</name>
+						<attributes>
+							<prompt>Specify the number of distinct rate categories (-c)</prompt>
+							<format>
+								<language>perl</language>
+								<code>(defined $value)? " -c $value" : "" </code>
+							</format>
+							<vdef>
+								<value>25</value>
+							</vdef>
+							<group>2</group>
+							<precond>
+								<language>perl</language>
+								<code>($datatype eq "dna" &amp;&amp; $dna_gtrcat) || ($datatype eq "protein" &amp;&amp; $prot_sub_model eq "PROTCAT") || ($datatype eq "binary" &amp;&amp; $bin_model eq "BINCAT")</code>
+							</precond>
+							<comment>
+					<value>This option allows you to specify the number of distinct rate categories, into which the individually optimized rates for each individual site are thrown under -m GTRCAT. The default of -c 25 works fine in most practical cases.
+</value>
+							</comment>
+						</attributes>
+					</parameter>
+		
+		<!-- user supplied starting tree (-t) -->
+		
+					<parameter issimple="1" type="InFile">
+						<name>treetop</name>
+						<attributes>
+							<prompt>Supply a starting tree (Not available when doing rapid bootstrapping, -x) (-t)</prompt>
+							<precond>
+								<language>perl</language>
+								<code>!$bootstrap_seed</code>
+							</precond>
+							<format>
+								<language>perl</language>
+								<code>" -t start_tree.tre"</code>
+							</format>
+							<group>2</group>
+							<filenames>start_tree.tre</filenames>
+<!--							<ctrls>
+								<ctrl>
+									<message>Sorry, you can't specify a random seed AND supply a starting tree</message>
+									<language>perl</language>
+									<code>defined $value &amp;&amp; $provide_parsimony_seed</code>
+								</ctrl>
+							</ctrls> -->
+							<comment>
+<value>Specifies a user starting tree file in Newick format. Not available when doing rapid bootstrapping. Branch lengths of that tree will be ignored. Note that you can also specify a non-comprehensive (not containing all taxa in the alignment) starting tree now. This might be useful if newly aligned/sequenced taxa have been added to your alignment. Initially, taxa will be added to the tree using the MP criterion. The comprehensive tree will then be optimized
+under ML.</value>
+							</comment>
+						</attributes>
+					</parameter>
+
+					<!--PARSIMONY SEED VALUE FOR CONSTANT STARTING TREE-->
+					<!-- I split the seeds  into invocation, and number entry, due to command line conflicts -->
+					<parameter type="Switch" issimple="1" ismandatory="1">
+						<name>provide_parsimony_seed</name>
+						<attributes>
+							<prompt>Specify a random seed value for parsimony inferences (-p)</prompt>
+							<vdef>
+								<value>1</value>
+							</vdef>
+							<precond>
+								<language>perl</language>
+								<code>!$startingtreeonly &amp;&amp; !defined $treetop</code>
+							</precond> 
+							<ctrls>
+								<ctrl>
+									<message>Sorry, you cannot specify a starting tree (via the -t option above) and a random seed value</message>
+									<language>perl</language>
+									<code>defined $treetop</code>
+								</ctrl>
+							</ctrls>
+							<comment>
+								<value>Specify a random number seed. The -p option allows you and others to reproduce your results (reproducible/verifiable experiments) and will help Alexis debug the program. Do not use this option if you want to generate multiple different starting trees.</value>
+							</comment>
+						</attributes>
+					</parameter>
+
+					<parameter type="Integer" issimple="1"  ismandatory="1">
+						<name>parsimony_seed_val</name>
+						<attributes>
+							<prompt>Enter a random seed value for parsimony inferences (gives reproducible results from random starting tree)</prompt>
+							<format>
+								<language>perl</language>
+								<code>($value) ? " -p $value" : ""</code>
+							</format>
+							<vdef>
+								<value>12345</value>
+							</vdef>
+							<group>2</group>
+							<precond>
+								<language>perl</language>
+								<code>$provide_parsimony_seed</code>
+							</precond>
+							<ctrls>
+								<ctrl>
+									<message>Please enter a random seed for the -p option (eg 12345)</message>
+									<language>perl</language>
+									<code>$provide_parsimony_seed &amp;&amp; !defined $parsimony_seed_val</code>
+								</ctrl>
+							</ctrls>
+						</attributes>
+					</parameter>
+
+		<!-- rearrangement (-i) INVOCATION AND SPECIFICATION -->
+					<parameter type="Switch" issimple="1" ismandatory="1">
+						<name>rearrangement_yes</name>
+						<attributes>
+							<prompt>Specify an initial rearrangement setting (-i)</prompt>
+							<vdef>
+								<value>0</value>
+							</vdef>
+						</attributes>
+					</parameter>
+					
+					<parameter type="Integer" issimple="1" ismandatory="1">
+						<name>number_rearrange</name>
+						<attributes>
+							<prompt>Specify the distance from original pruning point (-i)</prompt>
+							<format>
+								<language>perl</language>
+								<code>(defined $value)? " -i $value" : "" </code>
+							</format>
+							<vdef>
+								<value>10</value>
+							</vdef>
+							<precond>
+								<language>perl</language>
+								<code>$rearrangement_yes</code>
+							</precond>
+							<ctrls>
+								<ctrl>
+									<message>Please specify the distance from original pruning point  (default would be 10)</message>
+									<language>perl</language>
+									<code>$rearrangement_yes &amp;&amp; !defined $number_rearrange</code>
+								</ctrl>
+							</ctrls>
+							<group>2</group>
+							<comment>
+<value>This option allows you to specify an initial rearrangement setting for the initial phase of the search algorithm. If you specify e.g. -i 10; the pruned subtrees will be inserted up to a distance of 10 nodes away from their original pruning point. If you dont specify -i; a "good" initial rearrangement setting will automatically be determined by RAxML.
+</value>
+							</comment>
+						</attributes>
+					</parameter>
+		<!-- rev 2 -->
+		<!-- constraint (-g) -->
+					<parameter type="InFile" issimple="1">
+						<name>constraint</name>
+						<attributes>
+							<precond>
+								<language>perl</language>
+								<code>!defined $binary_backbone &amp;&amp; !$startingtreeonly</code>
+							</precond>
+							<prompt>Constraint (-g)</prompt>
+							<filenames>constraint.tre</filenames>
+							<format>
+								<language>perl</language>
+					<!-- 
+						parameters of type Results are always processed so we need to check
+						whether we actually got a value entered.
+					-->
+								<code>defined $value ? " -g constraint.tre" : ""</code>
+							</format>
+							<group>2</group>
+<comment>
+					<value> This option allows you to specify an incomplete or comprehensive multifurcating constraint 
+					tree for the RAxML search in NEWICK format. Initially, multifurcations are resolved 
+					randomly. If the tree is incomplete (does not contain all taxa) the remaining taxa are added by 
+					using the MP criterion. Once a comprehensive (containing all taxa) bifurcating tree 
+					is computed, it is further optimized under ML respecting the given constraints. Important: If you 
+					specify a non-comprehensive constraint, e.g., a constraint tree that does not contain all taxa, 
+					RAxML will assume that any taxa that not found in the constraint topology 
+					are unconstrained, i.e., these taxa can be placed in any part of the tree.  As an example 
+					consider an alignment with 10 taxa: Loach, Chicken, Human, Cow, Mouse, Whale, Seal, Carp, 
+					Rat, Frog.  If, for example you would like Loach, Chicken, Human, Cow to be monophyletic you 
+					would specify the constraint tree as follows: </value>
+					<value> ((Loach, Chicken, Human, Cow),(Mouse, Whale, Seal, Carp, Rat, Frog)); </value>
+					<value> Moreover, if you would like Loach, Chicken, Human, Cow to be monophyletic and in 
+					addition Human, Cow to be monophyletic within that clade you could specify: </value>
+					<value> ((Loach, Chicken, (Human, Cow)),(Mouse, Whale, Seal, Carp, Rat, Frog)); </value>
+					<value> If you specify an incomplete constraint: </value>
+					<value> ((Loach, Chicken, Human, Cow),(Mouse, Whale, Seal, Carp)); </value>
+					<value> the two groups Loach, Chicken, Human, Cow and Mouse, Whale, Seal, Carp will be 
+					monophyletic, while Rat and Frog can end up anywhere in the tree.  </value>
+				</comment>
+						</attributes>
+					</parameter>
+		
+		<!-- binary backbone (-r) -->
+					<parameter type="InFile" issimple="1">
+						<name>binary_backbone</name>
+						<attributes>
+							<precond>
+								<language>perl</language>
+								<code>! defined $constraint</code>
+							</precond>
+							<prompt>Binary Backbone (-r)</prompt>
+							<filenames>binary_backbone.tre</filenames>
+							<format>
+								<language>perl</language>
+					<!-- 
+						parameters of type Results are always processed so we need to check
+						whether we actually got a value entered.
+					-->
+								<code>(defined $value) ? " -r binary_backbone.tre" : ""</code>
+							</format>
+							<group>2</group>
+							<comment>
+<value>This option allows you to pass a binary/bifurcating constraint/backbone tree in NEWICK format to RAxML. Note that using this option only makes sense if this tree contains fewer taxa than the input alignment. The remaining taxa will initially be added by using the MP criterion. Once a comprehensive tree with all taxa has been obtained it will be  optimized under ML respecting the restrictions of the constraint tree.
+</value>
+							</comment>
+						</attributes>
+					</parameter>
+		
+		<!-- Optional mixed  model file -->
+		<!-- If user doesn't enter a value the partition parameter won't be in the map that the web app sends the command renderer (which evaluates the perl for parameters that are present), so we don't need to worry about making the format code conditional since this parameter just won't be evaluated. Command renderer evaluates 3 types of parameters: 1) those that appear in the map coming from the gui, those that are	hidden, 3) those that are of type OutFile or Result. -->
+					<parameter type="InFile" issimple="1">
+						<name>partition</name>
+						<attributes>
+							<prompt>Use a mixed/partitioned model? (-q)</prompt>
+							<format>
+								<language>perl</language>
+								<code>" -q part"</code>
+							</format>
+							<group>2</group>
+							<filenames>part</filenames>
+							<comment>
+					<value>This parameter allows you to upload a file that specifies the regions of your alignment for which an individual model of nucleotide substitution should be estimated. This will typically be used to infer trees for long (in terms of base pairs) multi-gene alignments. If DNA and protein mixed models are used together (for example) you should choose a model option based on the model of rate heterogeneity you want to use. If you specify either -m GTRCAT or PROTCAT, the CAT model will be used, if you specify -m GTRGAMMA or -m BINGAMMA, the GAMMA model will be used ....
+For example, if -m GTRGAMMA is used, individual alpha-shape parameters, GTR-rates, and empirical base frequencies will be estimated and optimized for each partition. Since Raxml can now handles mixed Amino Acid and DNA alignments, you must specify the data type in the partition file, before the partition name. For DNA, this means you have to add DNA to each line in the partition. For AA data you must specify the transition matrices for each partition: 
+The AA substitution model must be the first entry in each line and must be separated by a comma from the gene name, just like the DNA token above. You can not assign different models of rate heterogeneity to different partitions, i.e. it will be either CAT, GAMMA, GAMMAI etc. for all partitions, as specified with -m. Finally, if you have a concatenated DNA and AA alignments, with DNA data at positions 1 - 500 and AA data at 501-1000 with the WAG model the partition file should look as follows:</value>
+<value>DNA, gene1 = 1-500</value> 
+<value>WAG gene2 = 501-1000</value>
+							</comment>
+						</attributes>
+					</parameter>
+					
+<!-- 		7.0.4			"-f s":	option can be used to split a multi-gene alignment into individual genes, provided a model file with -q. This might be useful to select best fitting models for individual partitions of an AA multi-gene alignment or to infer per-partition trees in order to analyze tree compatibility. Example: raxmlHPC -f s -q part -s alg -m GTRCAT -n TEST. -->
+<!--					<parameter type="Switch" issimple="1" ismandatory="1">
+						<name>split_multigene</name>
+						<attributes>
+							<prompt>Split a multi-gene alignment into individual genes (-f s)</prompt>
+							<precond>
+								<language>perl</language>
+								<code>defined $partition</code>
+							</precond>
+							<format>
+								<language>perl</language>
+								<code>($value) ? " -f s" : "" </code>
+							</format>
+							<ctrls>
+								<ctrl>
+									<message>In order to use this option, you must upload a set of bootstrapped trees using the -z option</message>
+									<language>perl</language>
+									<code>!defined $partition</code>
+								</ctrl>
+							</ctrls>
+							<vdef>
+								<value>0</value>
+							</vdef>
+							<comment>
+								<value>The -f s option can be used to split a multi-gene alignment into individual genes, provided a model file with -q. This might be useful to select best fitting models for individual partitions of an AA multi-gene alignment or to infer per-partition trees in order to analyze tree compatibility. Example: raxmlHPC -f s -q part -s alg -m GTRCAT -n TEST</value>
+							</comment>
+						</attributes>
+					</parameter> -->
+					
+		<!-- -M Switch on estimation of individual per-partition branch lengths. Only has effect when used in combination
+with -q and an alignment partition file. Branch lengths for individual partitions will be printed to separate
+files. A weighted average of the branch lengths is also computed by using the respective partition lengths
+(number of columns per partition). Note that, this does not take into account the "gappyness" of partitions,
+but I am currently not sure how to solve this problem. By default the -M option is turned off for partitioned
+analyses, i.e., RAxML will compute a joined branch length estimate.
+Example: raxmlHPC - alg -m GTRGAMMA -q part -M -n TEST.-->
+
+					<parameter type="Switch" issimple="1" ismandatory="1">
+						<name>estimate_perpartbrlen</name>
+						<attributes>
+							<prompt>Estimate individual per-partition branch lengths (-M)</prompt>
+							<precond>
+								<language>perl</language>
+								<code>defined $partition</code>
+							</precond>
+							<format>
+								<language>perl</language>
+								<code>($value) ? " -M" : "" </code>
+							</format>
+							<vdef>
+								<value>0</value>
+							</vdef>
+							<comment>
+								<value>The -M option switches on estimation of individual per-partition branch lengths. Only has effect when used in combination with -q and an alignment partition file. Branch lengths for individual partitions will be printed to separate files. A weighted average of the branch lengths is also computed by using the respective partition lengths (number of columns per partition). Note that, this does not take into account the "gappyness" of partitions, but I am currently not sure how to solve this problem. By default RAxML will compute a joined branch length estimate.</value>
+							</comment>
+						</attributes>
+					</parameter>
+
+
+					
+		<!-- Substitution matrix for protein datatype, datatype=protein is a precondition -->
+		<!-- Is used to build the -m model string -->
+		<!-- A value must be selected when datatype=protein, so I added a vdef, so users wont have a job fail accidentally; this also highlights where the value needs to be set by populating the box with text-->
+
+		<!-- Optional excludes these characters -->
+		<!-- If user doesn't enter a value, the parameter won't be in the map that the web app sends the command renderer (which evaluates the perl for parameters that are present), so we don't need to worry about making the format code conditional; if null, this parameter just won't be evaluated. Command renderer evaluates 3 types of parameters: 1) those that appear in the map coming from the gui, those that are hidden, 3) those that are of type OutFile or Result. -->
+					<parameter type="InFile" issimple="1">
+						<name>exclude_file</name>
+						<attributes>
+							<prompt>Create an input file that excludes the range of positions specifed in this file (-E)</prompt>
+							<format>
+								<language>perl</language>
+								<code>" -E excl"</code>
+							</format>
+							<group>2</group>
+				<filenames>excl</filenames>
+				<comment>
+					<value>This option is used to excludes specific positions in the matrix. For example, uploading a file
+					that contains the text: 100-200 300-400 will create a file that excludes all columns between positions
+					100 and 200 as well as all columns between positions 300 and 400. Note that the boundary numbers (positions 100, 200, 300, 
+					and 400) will also be excluded. To exclude a single column write (100-100). This option does not 
+					run an analysis but just prints an alignment file without the excluded columns. Save this file to your 
+					data area, and then run the real analysis. If you use a mixed model, an appropriately adapted model file 
+					will also be written. The ntax element of the phylip files is automatically corrected Example: raxmlHPC -E excl
+						-s infile -m GTRCAT -q part -n TEST. In this case the files with columns excluded will be named
+						infile.excl and part.excl. </value>
+				</comment>
+						</attributes>
+					</parameter>
+					
+	
+
+<!-- Nucleotides as sequences (not secondary structure -->
+<parameter type="Paragraph">
+	<paragraph>
+		<name>nucleic_opts</name>
+		<prompt>Nucleic Acid Options</prompt>
+		<parameters>
+<!--               NUCLEOTIDES:
+
+                "-m GTRCAT"         : GTR + Optimization of substitution rates + Optimization of site-specific
+                                      evolutionary rates which are categorized into numberOfCategories distinct 
+                                      rate categories for greater computational efficiency.  Final tree might be evaluated
+                                      under GTRGAMMA, depending on the tree search option
+  NOT SUPPORTED "-m GTRCAT_FLOAT"   : Same as above but uses single-precision floating point arithmetics instead of double-precision
+                                      Usage only recommend for testing, the code will run slower, but can save almost 50% of memory.
+                                      If you have problems with phylogenomic datasets and large memory requirements you may give it a shot.
+                                      Keep in mind that numerical stability seems to be okay but needs further testing.
+  NOT SUPPORTED "-m GTRCATI"        : GTR + Optimization of substitution rates + Optimization of site-specific
+                                      evolutionary rates which are categorized into numberOfCategories distinct 
+                                      rate categories for greater computational efficiency.  Final tree might be evaluated
+                                      under GTRGAMMAI, depending on the tree search option
+                "-m GTRGAMMA"       : GTR + Optimization of substitution rates + GAMMA model of rate 
+                                      heterogeneity (alpha parameter will be estimated)
+				
+  NOT SUPPORTED "-m GTRGAMMA_FLOAT" : Same as GTRGAMMA, but also with single-precision arithmetics, same cautionary notes as for  
+                                      GTRCAT_FLOAT apply.
+  NOT SUPPORTED "-m GTRGAMMAI"      : Same as GTRGAMMA, but with estimate of proportion of invariable sites -->
+                
+					<parameter type="Switch">
+						<name>dna_gtrcat</name>
+						<attributes>
+							<prompt>Use GTRCAT for the bootstrapping phase, and GTRGAMMA for the final tree inference (default)</prompt>
+							<format>
+								<language>perl</language>
+								<code>($value) ? "-m GTRCAT" : "" </code>
+							</format>
+							<vdef>
+								<value>1</value>
+							</vdef>
+							<group>2</group>
+							<precond>
+								<language>perl</language>
+								<code>!$dna_gtrgamma &amp;&amp; ($datatype eq "dna" || $datatype eq "rna")</code>
+							</precond>
+							<comment>
+								<value>The meaning of the model name GTRGAMMA used by RAxML 7.2.0 is exactly opposite that 
+									used in RAxML 7.0.4, so we have eliminated selection by model name. Instead we use a 
+									description of the  model analysis. This selection gives GTR + Optimization of substitution
+									 rates + Optimization of site-specific evolutionary rates which are categorized into "numberOfCategories" distinct
+									 rate categories for greater computational efficiency.  Final tree is evaluated under GTRGAMMA. 
+									GTRMIX  and GTRCAT_GAMMA have been eliminated as options. FLOAT options that are native in RAxML 7.2.3 are currently not supported here.
+								</value>
+							</comment>
+						</attributes>
+					</parameter>
+			
+					<parameter type="Switch">
+						<name>dna_gtrgamma</name>
+						<attributes>
+							<prompt>Use GTRGAMMA for the bootstrapping phase and GTRGAMMA for the final tree (takes longer)</prompt>
+							<format>
+								<language>perl</language>
+								<code>($value) ? "-m GTRGAMMA" : "" </code>
+							</format>
+							<vdef>
+								<value>0</value>
+							</vdef>
+							<group>2</group>
+							<precond>
+								<language>perl</language>
+								<code>!$dna_gtrcat &amp;&amp; ($datatype eq "dna" || $datatype eq "rna") </code>
+							</precond>
+							<ctrls>
+								<ctrl>
+									<message>Please choose a DNA model</message>
+									<language>perl</language>
+									<code>($datatype eq "dna" || $datatype eq "rna") &amp;&amp; !$dna_gtrgamma &amp;&amp; !$dna_gtrcat </code>
+								</ctrl>
+							</ctrls>
+							<comment>
+								<value>The meaning of the model names used by RAxML 7.2.0 are exactly opposite to those used in RAxML 7.0.4, 
+									so we have eliminated selection by model name. Instead we use a description of the model analysis. 
+									This option gives GTR + Optimization of substitution rates + GAMMA model of rate heterogeneity 
+									(alpha parameter will be estimated) for bootstrap AND final evaluation. An analysis run in this 
+									way will take a good deal longer than the alternative option (what used to be called GTRGAMMA in RAxML v.7.0.4).
+									 GTRMIX  and GTRCAT_GAMMA have been eliminated as options. FLOAT options that are native in RAxML 7.2.3 are currently not supported here.
+								</value>
+							</comment>
+						</attributes>
+					</parameter>
+				
+		</parameters>
+	</paragraph>
+</parameter>
+						
+			<parameter type="Paragraph">
+				<paragraph>
+					<name>protein_opts</name>
+					<prompt>Protein Analysis Options</prompt>
+					<parameters>		 
+					
+<!--               AMINO ACIDS:
+
+                "-m PROTCATmatrixName[F]"         : specified AA matrix + Optimization of substitution rates + Optimization of site-specific
+                                                    evolutionary rates which are categorized into numberOfCategories distinct 
+                                                    rate categories for greater computational efficiency.   Final tree might be evaluated
+                                                    automatically under PROTGAMMAmatrixName[f], depending on the tree search option
+                "-m PROTCATmatrixName[F]_FLOAT"   : PROTCAT with single precision arithmetics, same cautionary notes as for GTRCAT_FLOAT apply
+                "-m PROTCATImatrixName[F]"        : specified AA matrix + Optimization of substitution rates + Optimization of site-specific
+                                                    evolutionary rates which are categorized into numberOfCategories distinct 
+                                                    rate categories for greater computational efficiency.   Final tree might be evaluated
+                                                    automatically under PROTGAMMAImatrixName[f], depending on the tree search option
+                "-m PROTGAMMAmatrixName[F]"       : specified AA matrix + Optimization of substitution rates + GAMMA model of rate 
+                                                    heterogeneity (alpha parameter will be estimated)
+                "-m PROTGAMMAmatrixName[F]_FLOAT" : PROTGAMMA with single precision arithmetics, same cautionary notes as for GTRCAT_FLOAT apply
+                "-m PROTGAMMAImatrixName[F]"      : Same as PROTGAMMAmatrixName[F], but with estimate of proportion of invariable sites 
+
+                Available AA substitution models: DAYHOFF, DCMUT, JTT, MTREV, WAG, RTREV, CPREV, VT, BLOSUM62, MTMAM, LG, GTR
+                With the optional "F" appendix you can specify if you want to use empirical base frequencies
+                Please note that for mixed models you can in addition specify the per-gene AA model in
+                the mixed model file (see manual for details). Also note that if you estimate AA GTR parameters on a partitioned
+                dataset, they will be linked (estimated jointly) across all partitions to avoid over-parameterization -->
+   
+<!-- not sure if we should support cat or not -->             		
+					<parameter type="Excl" ismandatory="1">
+						<name>prot_sub_model</name>
+						<attributes>
+							<prompt>Choose GAMMA or CAT model:</prompt>
+							<precond>
+								<language>perl</language>
+								<code>$datatype eq "protein"</code>
+							</precond>
+							<vlist>
+								<value>PROTGAMMA</value>
+								<label>Protein GAMMA</label>
+								<value>PROTCAT</value>
+								<label>Protein CAT</label>
+							</vlist>
+							<flist>
+								<value>PROTGAMMA</value>
+								<code>"-m PROTGAMMA$invariable$prot_matrix_spec$use_emp_freqs"</code>
+								<value>PROTCAT</value>
+								<code>"-m PROTCAT$prot_matrix_spec$use_emp_freqs"</code>
+							</flist>
+							<vdef>
+								<value>PROTCAT</value>
+							</vdef>
+							<group>2</group>
+							<ctrls>
+								<ctrl>
+									<message>Please choose a protein model</message>
+									<language>perl</language>
+									<code>$datatype eq "protein" &amp;&amp; $prot_sub_model ne "PROTGAMMA" &amp;&amp; $prot_sub_model ne "PROTCAT" </code>
+								</ctrl>
+							</ctrls>
+						</attributes>
+					</parameter> 
+		
+				<parameter type="Excl" ismandatory="1">
+						<name>prot_matrix_spec</name>
+						<attributes>
+							<prompt>Protein Substitution Matrix</prompt>
+							<precond>
+								<language>perl</language>
+								<code>$datatype eq "protein"</code>
+							</precond>
+<!--New AA substitution models: MTART, MTZOA, PMB, HIVB, HIVW, JTTDCMUT, FLU 10/4/2010-->
+							<vlist>
+								<value>DAYHOFF</value>
+								<label>DAYHOFF</label>
+								<value>DCMUT</value>
+								<label>DCMUT</label>
+								<value>JTT</value>
+								<label>JTT</label>
+								<value>MTREV</value>
+								<label>MTREV</label>
+								<value>WAG</value>
+								<label>WAG</label>
+								<value>RTREV</value>
+								<label>RTREV</label>
+								<value>CPREV</value>
+								<label>CPREV</label>
+								<value>VT</value>
+								<label>VT</label>
+								<value>BLOSUM62</value>
+								<label>BLOSUM62</label>
+								<value>MTMAM</value>
+								<label>MTMAM</label>
+								<value>LG</value>
+								<label>LG</label>
+								<value>MTART</value>
+								<label>MTART</label>
+								<value>MTZOA</value>
+								<label>MTZOA</label>
+								<value>PMB</value>
+								<label>PMB</label>
+								<value>HIVB</value>
+								<label>HIVB</label>
+								<value>HIVW</value>
+								<label>HIVW</label>
+								<value>JTTDCMUT</value>
+								<label>JTTDCMUT</label>
+								<value>FLU</value>
+								<label>FLU</label>
+								<value>GTR</value>
+								<label>GTR</label>
+							</vlist>
+							<vdef>
+								<value>DAYHOFF</value>
+							</vdef>
+							<comment>
+<value>Note: FLOAT and invariable sites (I) options are not exposed here. If you require this option, please contact mmiller@sdsc.edu.</value>
+<value>-m PROTCATmatrixName: analyses using the specified AA matrix + Optimization of substitution rates + Optimization of site-specific evolutionary rates which are categorized into numberOfCategories distinct rate categories for greater computational efficiency. Final tree might be evaluated automatically under PROTGAMMAmatrixName[f], depending on the tree search option.
+</value>
+<value>-m PROTGAMMAmatrixName[F] analyses use the specified AA matrix + Optimization of substitution rates + GAMMA model of rate heterogeneity (alpha parameter will be estimated)</value>
+<value>Available AA substitution models: DAYHOFF, DCMUT, JTT, MTREV, WAG, RTREV, CPREV, VT, BLOSUM62, MTMAM, LG, GTR. You can specify if you want to use empirical base frequencies. Please note that for mixed models you can in addition specify the per-gene AA model in the mixed model file (see manual for details). Also note that if you estimate AA GTR parameters on a partitioned dataset, they will be linked (estimated jointly) across all partitions to avoid over-parametrization.</value>
+							</comment>
+						</attributes>
+					</parameter>
+						
+		<!-- rev 5 -->
+		<!-- Estimate proportion of invariable sites, mlsearch is a precondition  -->
+		<!-- The control should be of type switch, but I need the value of the parameter
+		to be either "I" or "", so I made it type Excl instead. -->
+		<!-- disabled 5/5/2009 based on information in the manual -->
+		
+					<parameter  type="Excl" ismandatory="1">
+						<name>invariable</name>
+						<attributes>
+							<prompt>Estimate proportion of invariable sites (GTRGAMMA + I)</prompt>
+							<precond>
+								<language>perl</language>
+								<code>$prot_sub_model eq "PROTGAMMA"</code>
+							</precond>
+							<vlist>
+								<value>I</value>
+								<label>yes</label>
+								<value></value>
+								<label>no</label>
+							</vlist>
+							<group>2</group>
+							<comment>
+								<value>This option is not recommended by the devloper. See the RAxML 7.0.4 manual.</value>
+							</comment>
+						</attributes>
+					</parameter>
+
+<!--[-P proteinModel] Specify the file name of a user-defined AA (Protein) substitution model. This file must contain 420 entries, the first 400 being the AA substitution rates (this must be a symmetric matrix) and the last 20 are the empirical base frequencies -->
+
+					<parameter type="InFile" >
+						<name>user_prot_matrix</name>
+						<attributes>
+							<prompt>Upload a Custom Protein Substitution Matrix</prompt>
+							<precond>
+								<language>perl</language>
+								<code>$datatype eq "protein"</code>
+							</precond>
+							<format>
+								<language>perl</language>
+								<code>"-P Userproteinmatrix.txt"</code>
+							</format>
+							<group>2</group>
+							<filenames>Userproteinmatrix.txt</filenames>
+							<comment>
+<value>Specify a file containing a user-defined Protein substitution model. This file must contain 420 entries, the first 400 entires are the AA substitution rates (this matrix must be symmetric) and the last 20 entries are the empirical base frequencies</value>
+							</comment>
+						</attributes>
+					</parameter>
+
+		<!-- Empirical Base Frequencies -->		
+					<parameter type="Excl">
+						<name>use_emp_freqs</name>
+						<attributes>
+							<prompt>Use empirical frequencies?</prompt>
+							<precond>
+								<language>perl</language>
+								<code>$datatype eq "protein"</code>
+							</precond>
+							<vlist>
+								<value>F</value>
+								<label>Yes</label>
+								<value></value>
+								<label>No</label>
+							</vlist>
+						</attributes>
+					</parameter> 
+
+		<!-- datatype=protein is a precondition, adds -F to end of -m model string -->
+				
+				</parameters>
+			</paragraph>
+		</parameter>
+		
+		<parameter type="Paragraph">
+			<paragraph>
+				<name>Sec_structure_opts</name>
+				<prompt>RNA Secondary Structure Options</prompt>
+				<parameters>
+<!--***************************************************************************************************************************************************************************-->
+<!-- ******************************THESE FEATURES ARE READY TO GO, BUT WHO KNOWS IF THEY WORK************************************************-->
+<!-- 	[-S secondaryStructureFile] Specify the name of a secondary structure file. The file can contain "." for  alignment columns that do not form part of a stem and characters. "()<>[]{}" to define stem regions and pseudoknots -->
+		 
+					<parameter type="InFile" >
+						<name>sec_str_file</name>
+						<attributes>
+						<precond>
+								<language>perl</language>
+								<code>$datatype eq "rna"</code>
+							</precond> 
+							<prompt>Upload a Secondary Structure File (-S)</prompt>
+							<filenames>sec_structure.txt</filenames>
+							<format>
+								<language>perl</language>
+								<code>(defined $value) ? " -S sec_structure.txt" : ""</code>
+							</format>
+							<group>2</group>
+							<comment>
+<value>This option allows you to provide a secondary structure file. The file can contain "." for  alignment columns that do not form part of a stem and characters, while  "(), [], and {}" are used to define stem regions and pseudoknots.</value>
+							</comment>
+						</attributes>
+					</parameter>	 
+		 
+<!--     [-A secondaryStructureSubstModel] 	Specify one of the RNA secondary structure substitution models implemented in RAxML.
+			The same nomenclature as in the PHASE manual is used, available models: 
+			S6A, S6B, S6C, S6D, S6E, S7A, S7B, S7C, S7D, S7E, S7F, S16, S16A, S16B
+			DEFAULT: 16-state GTR model (S16)
+			6 state model nomenclature: http://www.cs.manchester.ac.uk/ai/Software/phase/manual/node101.html 
+			7 state model nomenclature http://www.cs.manchester.ac.uk/ai/Software/phase/manual/node107.html
+			16 state model nomenclature http://www.cs.manchester.ac.uk/ai/Software/phase/manual/node114.html -->
+														  
+ 			<parameter type="Excl" ismandatory="1">
+						<name>rna_model</name>
+						<attributes>
+							<prompt>Use an RNA Secondary Structure Substitution Model (-A)</prompt>
+							<precond>
+								<language>perl</language>
+								<code>defined $sec_str_file</code>
+							</precond>
+							<vlist>
+								<value>S6A</value>
+								<label>Six State Model A</label>
+								<value>S6B</value>
+								<label>Six State Model B</label>
+								<value>S6C</value>
+								<label>Six State Model C</label>
+								<value>S6D</value>
+								<label>Six State Model D</label>
+								<value>S6E</value>
+								<label>Six State Model E</label>
+								<value>S7A</value>
+								<label>Seven State Model A</label>
+								<value>S7B</value>
+								<label>Seven State Model B</label>
+								<value>S7C</value>
+								<label>Seven State Model C</label>
+								<value>S7D</value>
+								<label>Seven State Model D</label>
+								<value>S7E</value>
+								<label>Seven State Model E</label>
+								<value>S7F</value>
+								<label>Seven State Model F</label>
+								<value>S16A</value>
+								<label>Sixteen State Model A</label>
+								<value>S16B</value>
+								<label>Sixteen State Model B</label>
+							</vlist>
+							<vdef>
+								<value>S16A</value>
+							</vdef>
+							<format>
+								<language>perl</language>
+								<code>"-A $value"</code>
+							</format>
+							<group>2</group>
+							<comment>
+<value>Use this option to specify one of the 6, 7, or 16 state RNA secondary structure substitution models.The nomenclature is identical to that used in the program PHASE. For more information, see PHASE documentation: 6 state model nomenclature: http://www.cs.manchester.ac.uk/ai/Software/phase/manual/node101.html; 7 state model nomenclature http://www.cs.manchester.ac.uk/ai/Software/phase/manual/node107.html; 16 state model nomenclature http://www.cs.manchester.ac.uk/ai/Software/phase/manual/node114.html</value>
+							</comment> 
+					</attributes> 
+					</parameter>
+		
+				</parameters>
+			</paragraph>
+		</parameter>
+		
+		<parameter type="Paragraph">
+			<paragraph>
+				<name>bin_opts</name>
+				<prompt>Binary Matrix Options</prompt>
+				<parameters>
+						<!-- -m argument to specify substitution model is required -->
+<!-- mmiller changed the way this is done  I exposed the other nucleic acid model options on 8/3/2009 -->
+		<!--             [ -m      Model of Binary (Morphological), Nucleotide or Amino Acid Substitution]: 
+
+            BINARY: (NEW for 7.2.0)
+
+                "-m BINCAT"         : Optimization of site-specific
+                                      evolutionary rates which are categorized into numberOfCategories distinct 
+                                      rate categories for greater computational efficiency. Final tree might be evaluated
+                                      automatically under BINGAMMA, depending on the tree search option
+                "-m BINCATI"        : Optimization of site-specific
+                                      evolutionary rates which are categorized into numberOfCategories distinct 
+                                      rate categories for greater computational efficiency. Final tree might be evaluated
+                                      automatically under BINGAMMAI, depending on the tree search option 
+                "-m BINGAMMA"       : GAMMA model of rate heterogeneity (alpha parameter will be estimated)
+                "-m BINGAMMAI"      : Same as BINGAMMA, but with estimate of proportion of invariable sites
+
+The I option is not added in this interface                                                                 -->
+					<parameter type="Excl" ismandatory="1">
+						<name>bin_model</name>
+						<attributes>
+							<prompt>Binary data model (-m)</prompt>
+							<precond>
+								<language>perl</language>
+								<code>$datatype eq "binary"</code>
+							</precond> 
+							<vlist>
+								<value>BINCAT</value>
+								<label>Binary CAT</label>
+								<value>BINGAMMA</value>
+								<label>Binary GAMMA</label>
+							</vlist>
+							<vdef>
+								<value>BINCAT</value>
+							</vdef>
+							<format>
+								<language>perl</language>
+								<code>"-m $value"</code>
+							</format>
+							<group>2</group>
+							<ctrls>
+								<ctrl>
+									<message>Please choose a binary model</message>
+									<language>perl</language>
+									<code>$datatype eq "binary" &amp;&amp; $bin_model ne "BINCAT" &amp;&amp; $bin_model ne "BINGAMMA" </code>
+								</ctrl>
+							</ctrls>
+							<comment>
+<value>Binary data is handled in RAXML 7.2.0. Binary CAT use optimization of site-specific evolutionary rates, which are categorized into numberOfCategories (option -c) distinct  rate categories for greater computational efficiency. Final tree might be evaluatedautomatically under BINGAMMA, depending on the tree search option. </value>
+<value>Binary GAMMA uses the GAMMA model of rate heterogeneity (alpha parameter will be estimated). The option for invariable sites is not provided at this time. The program's author supports the use of Gamma models.</value>
+							</comment> 
+						</attributes>
+					</parameter>
+				</parameters>
+			</paragraph>
+		</parameter>
+
+		<parameter type="Paragraph">
+			<paragraph>
+				<name>multi_opts</name>
+				<prompt>Multiple State Morphological Matrix Options</prompt>
+				<parameters>
+<!--             MULTI-STATE:
+
+                 "-m MULTICAT"         Optimization of site-specific evolutionary rates which are categorized into numberOfCategories distinct
+                                       rate categories for greater computational efficiency. Final tree might be evaluated automatically under MULTIGAMMA,
+	                                   depending on the tree search option
+                 "-m MULTICATI"        : Optimization of site-specific evolutionary rates which are categorized into numberOfCategories distinct
+                                       rate categories for greater computational efficiency. Final tree might be evaluated automatically under MULTIGAMMAI, depending on the 
+	                                   tree search option
+                 "-m MULTIGAMMA"       : GAMMA model of rate heterogeneity (alpha parameter will be estimated)
+                 "-m MULTIGAMMAI"      : Same as MULTIGAMMA, but with estimate of proportion of invariable sites
+	                                     You can use up to 32 distinct characters to encode multi-state regions, they must be used in the following 
+	                                     order:0, 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V
+                                         i.e., if you have 6 distinct characters you would use 0, 1, 2, 3, 4, 5 to encode these.
+                                         The substitution model for the multi-state regions can be selected via the "-K" option-->
+					<parameter type="Excl" ismandatory="1">
+						<name>multi_model</name>
+						<attributes>
+							<prompt>Multiple State Data Model (-m)</prompt>
+							<precond>
+								<language>perl</language>
+								<code>$datatype eq "multi"</code>
+							</precond> 
+							<vlist>
+								<value>MULTICAT</value>
+								<label>Multi-state CAT</label>
+								<value>MULTIGAMMA</value>
+								<label>Multi-state GAMMA</label>
+							</vlist>
+							<vdef>
+								<value>MULTICAT</value>
+							</vdef>
+							<format>
+								<language>perl</language>
+								<code>"-m $value"</code>
+							</format>
+							<group>2</group>
+							<ctrls>
+								<ctrl>
+									<message>Please choose a Multi-State model</message>
+									<language>perl</language>
+									<code>$datatype eq "multi" &amp;&amp; $multi_model ne "MULTICAT" &amp;&amp; $multi_model ne "MULTIGAMMA" </code>
+								</ctrl>
+							</ctrls>
+							<comment>
+<value>Multi-state morphological data are handled in RAXML at V. 7.3.0 and above. Multi-state CAT uses optimization of site-specific evolutionary rates which are categorized
+into numberOfCategories distinct rate categories for greater computational efficiency. Final tree might be evaluated automatically under MULTIGAMMA depending on the tree search option </value>
+<value>Mutli-state GAMMA uses the GAMMA model of rate heterogeneity (alpha parameter will be estimated). Invariable sites (I) options are not exposed here. 
+	If you require this option, please contact mmiller@sdsc.edu.</value>
+							</comment> 
+						</attributes>
+					</parameter>
+					
+					<parameter type="Excl" ismandatory="1">
+<!--	[-K] syntax?(not yet supported)Specify one of the multi-state substitution models (max 32 states) implemented in RAxML.
+              Available models are: ORDERED, MK, GTR
+              DEFAULT: GTR model -->
+						<name>choose_multi_model</name>
+						<attributes>
+							<prompt>Select a Multiple state data model (-K)</prompt>
+							<precond>
+								<language>perl</language>
+								<code>$datatype eq "multi"</code>
+							</precond> 
+							<vlist>
+								<value>ORDERED</value>
+								<label>Ordered</label>
+								<value>MK</value>
+								<label>MK</label>
+								<value>GTR</value>
+								<label>GTR</label>
+							</vlist>
+							<vdef>
+								<value>GTR</value>
+							</vdef>
+							<format>
+								<language>perl</language>
+								<code>"-K $value"</code>
+							</format>
+							<group>2</group>
+							<ctrls>
+								<ctrl>
+									<message>Please choose a Multi-State data model</message>
+									<language>perl</language>
+									<code>$datatype eq "multi" &amp;&amp; $choose_multi_model ne "ORDERED" &amp;&amp; $choose_multi_model ne "MK" &amp;&amp; $choose_multi_model ne "GTR" </code>
+								</ctrl>
+							</ctrls>
+							<comment>
+<value>Multi-state morphological data are handled in RAXML 7.3.0 and above. Multi-state CAT uses optimization of site-specific evolutionary rates which are categorized
+into numberOfCategories distinct rate categories for greater computational efficiency. Final tree might be evaluated automatically under MULTIGAMMA depending on the tree search option </value>
+<value>Mutli-state GAMMA uses the GAMMA model of rate heterogeneity (alpha parameter will be estimated). The program's author supports the use of Gamma models.</value>
+							</comment> 
+						</attributes>
+					</parameter>
+					
+					
+				</parameters>
+			</paragraph>
+		</parameter>
+		
+		<parameter type="Paragraph">
+			<paragraph>
+				<name>set_analysis</name>
+				<prompt>Select the Analysis</prompt>
+				<parameters>
+					<!-- rev 3 -->
+					<!-- added for jbmunro -->
+					<parameter type="Switch">
+						<name>startingtreeonly</name>
+						<attributes>
+							<prompt>Only compute a randomized parsimony starting tree (-y)</prompt>
+							<format>
+								<language>perl</language>
+								<code> ($value)?" -y":""</code>
+							</format>
+							<vdef>
+								<value>0</value>
+							</vdef>
+							<precond>
+								<language>perl</language>
+								<code>!$mulparambootstrap_seed &amp;&amp;!$bootstrap_seed &amp;&amp; !$bipartitions &amp;&amp; ! defined $constraint &amp;&amp; !$log_likelihood &amp;&amp;  !$compute_ml_distances &amp;&amp; !$specify_runs</code>
+							</precond>
+							<group>2</group>
+							<comment>
+								<value>If you want to only compute a randomized parsimony starting tree with RAxML and not execute an ML analysis of the tree specify -y. The program will exit after computation of the starting tree. This option can be useful if you want to assess the impact of randomized MP and Neighbor Joining starting trees on your search algorithm. They can also be used e.g. as starting trees for Derrick Zwickls GARLI program for ML inferences, which needs comparatively good starting trees to work well above approximately 500 taxa. </value>
+							</comment>
+						</attributes>
+					</parameter>
+					
+					<!-- added for jbmunro -->
+					<!-- -f d:	DEFAULT, RAxML will execute the new (as of version 2.2.1) and significantly faster rapid hill-climbing algorithm [3]. -->
+					<!-- added for jbmunro -->
+
+<!--					<parameter type="Switch">
+						<name>hillclimb</name>
+						<attributes>
+							<prompt>Use the new, faster rapid hill-climbing algorithm (-f d)</prompt>
+							<format>
+								<language>perl</language>
+								<code> ($value)?" -f d ":""</code>
+							</format>
+							<vdef>
+								<value>1</value>
+							</vdef>
+							<group>2</group>
+							<precond>
+								<language>perl</language>
+								<code>!$bipartitions &amp;&amp; !$startingtreeonly &amp;&amp; !$log_likelihood</code>
+							</precond>
+							<comment>
+								<value>This is the deault option. RAxML will execute the new (as of version 2.2.1) and significantly faster rapid hill-climbing algorithm</value>
+							</comment>
+						</attributes>
+					</parameter>  -->
+					
+<!-- -#|-N numberOfRuns Specifies the number of alternative runs on distinct starting trees, e.g., if -# 10 or -N 10 is specfied RAxML
+will compute 10 distinct ML trees starting from 10 distinct randomized maximum parsimony starting trees. -->
+					<parameter type="Switch" ismandatory="1">
+						<name>specify_runs</name>
+						<attributes>
+							<prompt>Specify the number alternative runs on distinct starting trees? (-#/-N)</prompt>
+							<precond>
+								<language>perl</language>
+								<code>!$bootstrap_seed &amp;&amp; !$mulparambootstrap_seed &amp;&amp; !$bipartitions &amp;&amp; !$startingtreeonly &amp;&amp; !$log_likelihood</code>
+							</precond> 
+							<comment>
+								<value>This option specifies the number of alternative runs on distinct starting trees. For example, if  -N 10 is specfied, RAxML
+will compute 10 distinct ML trees starting from 10 distinct randomized maximum parsimony starting trees. </value>
+							</comment>
+						</attributes>
+					</parameter>
+					
+					<parameter type="Integer" ismandatory="1">
+						<name>altrun_number</name>
+						<attributes>
+							<prompt>Enter number of number alternative runs</prompt>
+							<precond>
+								<language>perl</language>
+								<code>$specify_runs</code>
+							</precond>
+							<format>
+								<language>perl</language>
+								<code>"-f d -N $value"</code>
+							</format>
+							<group>15</group>
+							<ctrls>
+								<ctrl>
+									<message>Please specify how many runs you wish to execute  (eg 10)</message>
+									<language>perl</language>
+									<code>$specify_runs &amp;&amp; !defined $altrun_number</code>
+								</ctrl>
+								<ctrl>
+									<message>Sorry, the value for alternative runs must 50 or less</message>
+									<language>perl</language>
+									<code>$altrun_number &gt; 50</code>				
+								</ctrl>		
+							</ctrls>
+							<comment>
+								<value>if  -N 10 is specfied, RAxML will compute 10 distinct ML trees starting from 10 distinct randomized maximum parsimony starting trees.</value>
+							</comment>
+						</attributes>
+					</parameter>
+										
+					<!-- added for jbmunro -->
+					<parameter type="Switch">
+						<name>bipartitions</name>
+						<attributes>
+							<prompt>Draw bipartitions onto a single tree topology. (-f b)</prompt>
+							<format>
+								<language>perl</language>
+								<code> ($value)?" -f b ":""</code>
+							</format>
+							<vdef>
+								<value>0</value>
+							</vdef>
+							<group>2</group>
+							<precond>
+								<language>perl</language>
+								<code>!$mulparambootstrap_seed &amp;&amp;!$bootstrap_seed &amp;&amp; !$startingtreeonly &amp;&amp; !$log_likelihood &amp;&amp; !$compute_ml_distances  &amp;&amp; !$specify_runs</code>
+							</precond> 
+							<ctrls>
+								<ctrl>
+									<message>To use the -f b option you must specify a best tree with "-t" and file containing multiple trees with the "-z" option</message>
+									<language>perl</language>
+									<code>!$bootstrap_seed &amp;&amp; $bipartitions &amp;&amp; ( !defined $bunchotops || !defined $treetop)</code>
+									</ctrl>
+							</ctrls>
+							<comment>
+								<value>When this is specified, RAxML draws the bipartitions using a bunch of topologies (typically boot-strapped trees) specified with -z onto a single tree topology specified by -t (typically the best-scoring ML tree). </value>
+							</comment>
+						</attributes>
+					</parameter>
+					
+<!-- -f h:	RAxML will compute a log likelihood test (SH-test [21]) between a best tree passed via -t and a bunch of other trees passed via -z. Example: raxmlHPC -f h -t ref -z trees -s alg -m GTRGAMMA -n TEST. -->
+<!-- added for Ryan Lower  raxmlHPC   -->
+					<parameter type="Switch">
+						<name>log_likelihood</name>
+						<attributes>
+							<prompt>Compute a log likelihood test (-f h)</prompt>
+							<format>
+								<language>perl</language>
+								<code> ($value)?" -f h ":""</code>
+							</format>
+							<vdef>
+								<value>0</value>
+							</vdef>
+							<group>2</group>
+							<precond>
+								<language>perl</language>
+								<code>!$mulparambootstrap_seed &amp;&amp; !$bootstrap_seed &amp;&amp; !$startingtreeonly &amp;&amp; !$bipartitions &amp;&amp; !$compute_ml_distances  &amp;&amp; !$specify_runs</code>
+							</precond> 
+							<ctrls>
+								<ctrl>
+									<message>To use the compute a log likelihood test option you must specify a best tree with "-t" and file containing multiple trees with the "-z" option</message>
+									<language>perl</language>
+									<code>$log_likelihood &amp;&amp; (!defined $bunchotops || !defined $treetop)</code>
+								</ctrl>
+								<ctrl>
+									<message>Sorry, you cannot compute a log likelihood test with GTRCAT models, please use "GTRGAMMA for the bootstrapping phase and GTRGAMMA for the final tree"</message>
+									<language>perl</language>
+									<code>($datatype eq "dna" || $datatype eq "rna" ) &amp;&amp; $log_likelihood &amp;&amp; $dna_gtrcat</code>
+								</ctrl>
+								<ctrl>
+									<message>Sorry, you cannot compute a log likelihood test with GTRCAT models, please select PROTGAMMA for the model</message>
+									<language>perl</language>
+									<code>$datatype eq "protein" &amp;&amp; $log_likelihood &amp;&amp; $prot_sub_model eq "PROTCAT"</code>
+								</ctrl>
+								<ctrl>
+									<message>Sorry, you cannot compute a log likelihood test with GTRCAT models, please select BINGAMMA for the model</message>
+									<language>perl</language>
+									<code>$datatype eq "binary" &amp;&amp; $log_likelihood &amp;&amp; $bin_model eq "BINCAT"</code>
+								</ctrl>
+							</ctrls>
+							<comment>
+								<value>When this is specified,  RAxML will compute a log likelihood test (SH-test [21]) between a best tree passed via -t and a bunch of other trees passed via -z. Example: raxmlHPC -f h -t ref -z trees -s alg -m GTRGAMMA -n TEST</value>
+							</comment>
+						</attributes>
+					</parameter>
+					
+<!-- 	[-J MR|MRE] Compute majority rule consensus tree with "-J MR" or extended majority rule consensus tree with "-J MRE"
+                You will need to provide a tree file containing several trees via "-z"-->
+                	<parameter type="Switch" ismandatory="1">
+						<name>compute_mr</name>
+						<attributes>
+							<prompt>Compute majority rule consensus tree  (-J; GAMMA models only)</prompt>
+							<vdef>
+								<value>0</value>
+							</vdef>
+							<precond>
+								<language>perl</language>
+								<code>$dna_gtrgamma || $bin_model eq "BINGAMMA" || $prot_sub_model eq "PROTGAMMA"</code>
+							</precond>
+							<comment>
+								<value>This option allows the user to compute majority rule consensus tree or extended majority rule consensus tree from an uploaded file containing several trees (-z)</value>
+							</comment>
+						</attributes>
+					</parameter>
+                
+ 					<parameter type="Excl" ismandatory="1">
+						<name>specify_mr</name>
+						<attributes>
+							<prompt>Specify majority rule consensus tree (-J) technique </prompt>
+							<precond>
+								<language>perl</language>
+								<code>$compute_mr</code>
+							</precond>								
+							<format>
+								<language>perl</language>
+								<code>"-J $value"</code>
+							</format>
+							<vlist>
+								<value>MR</value>
+								<label>Majority rule</label>
+								<value>MRE</value>
+								<label>Extended majority rule</label>
+							</vlist>
+							<ctrls>
+								<ctrl>
+									<message>Please select a majority rule option: MR or MRE</message>
+									<language>perl</language>
+									<code>!$specify_mr</code>
+								</ctrl>
+								<ctrl>
+									<message>In order to use the -J option, you must upload a set of bootstrapped trees using the -z option</message>
+									<language>perl</language>
+									<code>$compute_mr &amp;&amp; !defined $bunchotops</code>
+								</ctrl>
+							</ctrls>
+							<comment>
+<value>A badly formatted tree file may produce an error like this: /u/ac/cipres/ngbw/contrib/tools/bin/wrap.sh: line 21: 31550 Segmentation fault      $*
+</value>
+								</comment>
+						</attributes>
+					</parameter>	
+					
+						
+	<!-- added for jbmunro -->
+					<parameter type="InFile">
+						<name>bunchotops</name>
+						<attributes>
+							<prompt>File with topologies for bipartitions or bootstopping (-z)</prompt>
+								<format>
+									<language>perl</language>
+									<code>" -z topologies_file.tre"</code>
+								</format>
+							<group>2</group>
+							<filenames>topologies_file.tre</filenames>
+							<precond>
+								<language>perl</language>
+								<code>($bipartitions || $log_likelihood || $compute_mr) &amp;&amp; !defined $apo_tops</code>
+							</precond>
+	<!--						<ctrls>
+								<ctrl>
+									<message>You must specify a starting tree (via the -t option above) to use the -z option</message>
+									<language>perl</language>
+									<code>$bunchotops &amp;&amp; !defined $treetop</code>
+								</ctrl>
+							</ctrls> -->
+							<comment>
+<value>The -z option is used in combination with the -f b,-f h,-f m,-f n options. The uploaded file should contain a number of trees in NEWICK format. The file should contain one tree per line without blank lines between trees. For example, you can directly read in a RAxML bootstrap result file.</value>
+							</comment>
+						</attributes>
+					</parameter>
+					
+<!--	  "-f x":	compute pair-wise ML distances, ML model parameters will be estimated on an MP starting tree or a user-defined tree passed via "-t"-->
+					<parameter type="Switch" ismandatory="1">
+						<name>compute_ml_distances</name>
+						<attributes>
+							<prompt>Compute pair-wise ML distances (-f x; GAMMA models only)</prompt>
+							<vdef>
+								<value>0</value>
+							</vdef>
+							<precond>
+								<language>perl</language>
+								<code>!$mulparambootstrap_seed &amp;&amp; !$bootstrap_seed &amp;&amp; !$bipartitions &amp;&amp; !$startingtreeonly &amp;&amp; !$log_likelihood  &amp;&amp; !$specify_runs</code>
+							</precond>
+							<format>
+								<language>perl</language>
+								<code> ($value)?" -f x ":""</code>
+							</format>
+							<ctrls>
+								<ctrl>
+									<message>You must specify a starting tree (via the -t option above) to use the -f x option</message>
+									<language>perl</language>
+									<code>$compute_ml_distances &amp;&amp; ! defined $treetop</code>
+								</ctrl>
+								<ctrl>
+									<message>Sorry, the -f x option is valid only with GAMMA models</message>
+									<language>perl</language>
+									<code>$compute_ml_distances &amp;&amp; !$dna_gtrgamma &amp;&amp; $bin_model ne "BINGAMMA" &amp;&amp; $prot_sub_model ne "PROTGAMMA"</code>
+								</ctrl>
+							</ctrls>
+							<comment>
+								<value>Compute pair-wise ML distances, ML model parameters will be estimated on an MP starting tree or a user-defined tree passed via "-t".</value>
+							</comment>
+						</attributes>
+					</parameter>
+					
+				</parameters>
+			</paragraph>
+		</parameter>
+
+	<!-- under development for large DS -->
+	<!-- 	[-D]													ML search convergence criterion. This will break off ML searches if the relative Robinson-Foulds distance
+		large trees													between the trees obtained from two consecutive lazy SPR cycles is smaller or equal to 1%. Usage recommended
+															for very large datasets in terms of taxa. On trees with more than 500 taxa this will yield execution time improvements
+															of approximately 50% while yielding only slightly worse trees.
+															DEFAULT: OFF -->
+	<!-- 
+	[-F]													enable ML tree searches under CAT model for very large trees without switching to GAMMA in the end (saves memory) and print out some additional files
+			(large trees)									with intermediate trees from the search.	This option can also be used with the GAMMA models in order to avoid the thorough optimization  of the best-scoring
+															ML tree in the end.
+															DEFAULT: OFF-->	
+	<!-- 
+	[-L sequenceSimilarityThreshold]     	Same functionality as "-l" above, but uses a less exhaustive and thus faster clustering algorithm. This is intended for very large datasets with more than 	
+			(large data sets)						20,000-30,000 sequences
+															DEFAULT: OFF-->
+	<!-- -->
+	
+		<parameter type="Paragraph">
+			<paragraph>
+				<name>bootstrap_config</name>
+				<prompt>Configure Bootstrapping</prompt>
+				<parameters>
+					<!--add for jbmunro-->
+					<!-- I split the seeds  into invocation, and number entry, due to command line conflicts -->
+					<parameter type="Switch" ismandatory="1">
+						<name>mulparambootstrap_seed</name>
+						<attributes>
+							<prompt>Conduct Multiparametric Bootstrapping? (-b)</prompt>
+							<vdef>
+								<value>0</value>
+							</vdef>
+							<precond>
+								<language>perl</language>
+								<code>!$bootstrap_seed &amp;&amp; !$startingtreeonly &amp;&amp; !$compute_ml_distances &amp;&amp; !$bipartitions &amp;&amp; !$log_likelihood &amp;&amp; !$compute_mr  &amp;&amp; !$specify_runs</code>
+							</precond>
+							<comment>
+								<value>This option allows you to turn on non-parametric bootstrapping. To allow for reproducibility of runs in the sequential program, you have to specify a random number seed. 
+</value>
+							</comment>
+						</attributes>
+					</parameter>
+					
+					<parameter type="Integer" ismandatory="1">
+						<name>mulparambootstrap_seed_val</name>
+						<attributes>
+							<prompt>Enter a random seed value for multi-parametric bootstrapping</prompt>
+							<format>
+								<language>perl</language>
+								<code>($value) ? " -b $value" : ""</code>
+							</format>
+							<vdef>
+								<value>12345</value>
+							</vdef>
+							<precond>
+								<language>perl</language>
+								<code>$mulparambootstrap_seed</code>
+							</precond>
+							<group>2</group>
+							<ctrls>
+								<ctrl>
+									<message>Please enter a random seed for the -b option (eg 12345)</message>
+									<language>perl</language>
+									<code>$mulparambootstrap_seed &amp;&amp; !defined $mulparambootstrap_seed_val</code>
+								</ctrl>
+							</ctrls>
+							<comment>
+								<value>This random number is provided to assure that there is comparability between runs.</value>
+							</comment>
+						</attributes>
+					</parameter>
+					<!--add for jbmunro-->
+					<!-- I split the seeds  into invocation, and number entry, due to command line conflicts -->
+					
+					<parameter type="Switch">
+						<name>bootstrap_seed</name>
+						<attributes>
+							<prompt>Conduct rapid bootstrapping? (-x)</prompt>
+							<vdef>
+								<value>1</value>
+							</vdef>
+							<precond>
+								<language>perl</language>
+								<code>!$mulparambootstrap_seed  &amp;&amp; !$startingtreeonly &amp;&amp; !$compute_ml_distances &amp;&amp; !$bipartitions &amp;&amp; !$log_likelihood &amp;&amp; !$compute_mr  &amp;&amp; !$specify_runs</code>
+							</precond>
+							<comment>
+								<value>This option offers a novel rapid Bootstrapping algorithm that is faster by at least one order of magnitude than all other current implementations (RAxML 2.2.3, GARLI, PHYML). The results obtained are qualitatively comparable to those obtained via the standard RAxML BS algorithm and, more importantly, the deviations in support values between the rapid and the standard RAxML BS algorithm are smaller than those induced by using a different search strategy, e.g. GARLI or PHYML. This rapid BS search can be combined with a rapid ML search on the original alignment and thus allows users to conduct a full ML analysis within one single program run.</value>
+							</comment>
+						</attributes>
+					</parameter>
+
+					<parameter type="Integer" ismandatory="1">
+						<name>bootstrap_seed_val</name>
+						<attributes>
+							<prompt>Enter a random seed value for rapid bootstrapping</prompt>
+							<format>
+								<language>perl</language>
+								<code>($value) ? " -x $value" : ""</code>
+							</format>
+							<vdef>
+								<value>12345</value>
+							</vdef>
+							<group>2</group>
+							<precond>
+								<language>perl</language>
+								<code>$bootstrap_seed &amp;&amp; !$mulparambootstrap_seed  &amp;&amp; !$startingtreeonly &amp;&amp; !$compute_ml_distances</code>
+							</precond>
+							<ctrls>
+								<ctrl>
+									<message>Please enter a random seed for the -x option (eg 12345)</message>
+									<language>perl</language>
+									<code>$bootstrap_seed &amp;&amp; !defined $bootstrap_seed_val</code>
+								</ctrl>
+							</ctrls>
+							<comment>
+<value>This random number is provided to assure that there is comparability between runs.</value>
+							</comment>
+						</attributes>
+					</parameter>
+					<!-- rev 6 -->
+					<!-- Do maximum likelihood search after bootstrap -->
+
+					<parameter type="Switch">
+						<name>mlsearch</name>
+						<attributes>
+							<prompt>Conduct a rapid Bootstrap analysis and search for the best-scoring ML tree in one single program run. (-f a)</prompt>
+							<format>
+								<language>perl</language>
+								<code> ($value)?" -f a ":""</code>
+							</format>
+							<vdef>
+								<value>0</value>
+							</vdef>
+							<group>2</group>
+							<comment>
+								<value>Tell RAxML to conduct a Rapid Bootstrap analysis (-x) and search for the best-scoring ML tree in one single program run.
+								</value>
+							</comment>
+							<precond>
+								<language>perl</language>
+								<code>!$bipartitions &amp;&amp; !$startingtreeonly &amp;&amp; $bootstrap_seed &amp;&amp; !$compute_ml_distances</code>
+							</precond>
+						</attributes>
+					</parameter>
+					
+<!-- 	[-k] 		Specifies that bootstrapped trees should be printed with branch lengths. The bootstraps will run a bit longer, because model parameters will be optimized at 
+					the end of each run under GAMMA or GAMMA+P-Invar respectively. DEFAULT: OFF (old version said Use with CATMIX/PROTMIX or GAMMA/GAMMAI., check on this)-->
+
+					<parameter type="Switch">
+						<name>printbrlength</name>
+						<attributes>
+							<prompt>Print branch lengths (-k)</prompt>
+							<format>
+								<language>perl</language>
+								<code> ($value)?" -k":""</code>
+							</format>
+							<vdef>
+								<value>0</value>
+							</vdef>
+							<group>2</group>
+							<comment>
+								<value>	The -k option causes bootstrapped trees to be printed with branch lengths. 
+The bootstraps will require a bit longer to run under this option because model parameters will be optimized at 
+					the end of each run under GAMMA or GAMMA+P-Invar respectively.
+								</value>
+							</comment>
+						</attributes>
+					</parameter>
+					
+					
+<!--	I replaced this with a split inference, so the parsimony tree alone will work ok.  
+				<parameter type="Integer" ismandatory="1">
+						<name>parsimony_seed_val</name>
+						<attributes>
+							<prompt>Specify a random number seed for the parsimony inferences.</prompt>
+							<format>
+								<language>perl</language>
+								<code>"-p $value"</code>
+							</format>
+							<vdef>
+								<value>12345</value>
+							</vdef>
+							<group>2</group>
+							<comment>
+								<value>A Maximum Parsimony starting tree is constructed if no user-defined tree is provided. This random number is provided to assure that there is comparability between runs by keeping a consistent starting tree.
+</value>
+							</comment>
+						</attributes>
+					</parameter> -->
+					
+					<!-- rev 6 -->
+					<!-- Bootstrap iterations, either 100 or auto -->
+					<!-- I split the seeds  into invocation, and number entry, due to command line conflicts -->
+					<parameter type="Switch" ismandatory="1">
+						<name>specify_bootstraps</name>
+						<attributes>
+							<prompt>Specify an Explicit Number of Bootstraps</prompt>
+							<vdef>
+								<value>1</value>
+							</vdef>
+							<precond>
+								<language>perl</language>
+								<code>($bootstrap_seed || $mulparambootstrap_seed) &amp;&amp; !$use_bootstopping</code>
+							</precond>
+						</attributes>
+					</parameter>
+
+					<parameter type="Integer" ismandatory="1">
+						<name>bootstop</name>
+						<attributes>
+							<prompt>Bootstrap iterations (-#|-N)</prompt>
+							<precond>
+								<language>perl</language>
+								<code>($bootstrap_seed || $mulparambootstrap_seed) &amp;&amp; !$use_bootstopping &amp;&amp; !$startingtreeonly</code>
+							</precond>
+							<format>
+								<language>perl</language>
+<!-- replaced -# with -N for TG -->
+								<code>" -N $value"</code>
+							</format>
+							<vdef>
+								<value>100</value>
+							</vdef>
+							<group>2</group>
+							<ctrls>
+								<ctrl>
+									<message>Please enter number of bootstrap reps desired (eg 100)</message>
+									<language>perl</language>
+									<code>$specify_bootstraps &amp;&amp; !defined $bootstop</code>
+								</ctrl>
+								<ctrl>
+									<message>Sorry, the value of bootstraps cannot exceed 1,000</message>
+									<language>perl</language>
+									<code>$bootstop &gt; 1000</code>
+								</ctrl>	
+							</ctrls>
+							<comment>
+								<value>Specifies the number of alternative runs on distinct starting trees. If 10, RAxML computes 10 distinct ML trees starting from 10 distinct randomized maximum parsimony starting trees. In combination with the Random seed for rapid bootstrap (-x) invoke a rapid BS analysis.
+</value>
+							</comment>
+						</attributes>
+					</parameter>
+
+<!-- Activate programmatic bootstopping -->					
+					<parameter type="Switch" ismandatory="1">
+						<name>use_bootstopping</name>
+						<attributes>
+							<prompt>Let RAxML halt bootstrapping automatically</prompt>
+							<precond>
+								<language>perl</language>
+								<code>($bootstrap_seed || $mulparambootstrap_seed) &amp;&amp; !$specify_bootstraps</code>
+							</precond>
+							<vdef>
+								<value>0</value>
+							</vdef>
+							<ctrls>
+								<ctrl>
+									<message>Please select to "specify bootstraps explicitly" or "automatically halt bootstrapping"</message>
+									<language>perl</language>
+									<code> ($bootstrap_seed || $mulparambootstrap_seed) &amp;&amp; (!$use_bootstopping  &amp;&amp; !$specify_bootstraps)</code>
+								</ctrl>
+							</ctrls>
+							<comment>
+<value>This option instructs Raxml to automatically halt bootstrapping when certain criteria are met, instead of specifying the number of bootstraps for an analysis. The exact criteria are specified/configured using subsequent entry fields.</value>
+							</comment>
+						</attributes>
+					</parameter>
+
+<!--                    <parameter type="Excl" ismandatory="1">
+						<name>select_bootstopping</name>
+						<attributes>
+							<prompt>Select Bootstopping Strategy</prompt>
+							<vdef>
+								<value>otf_bootstopping</value>
+							</vdef>
+							<vlist>
+								<value>otf_bootstopping</value>
+								<label>On-the-fly Bootstopping</label>
+								<value>apo_bootstopping</value>
+								<label>A posteriori bootstrapping</label>
+							</vlist>	
+							<precond>
+								<language>perl</language>
+								<code>($bootstrap_seed || $mulparambootstrap_seed) &amp;&amp; !$specify_bootstraps</code>
+							</precond>
+							<ctrls>
+								<ctrl>
+									<message>Please choose either on-the-fly or a posteriori bootstrapping</message>
+									<language>perl</language>
+									<code>$use_bootstopping &amp;&amp; ($select_bootstopping ne "otf_bootstopping" &amp;&amp; $select_bootstopping ne  "apo_bootstopping")</code>
+								</ctrl>
+							</ctrls>
+							<comment>
+<value>This option allows the user to let Raxml "decide" whether bootstrapping is stopped (i.e. "bootstopping") by criteria determined "on-the-fly" or based on a set of bootstrapped trees uploaded as a single file using the -z option.  Once this selection is made, the user must select whether the bootstopping threshold is determined using frequency criteria or majority rule criteria</value>
+							</comment>						
+						</attributes>
+					</parameter>  -->
+					
+<!--	  [-#|-N numberOfRuns|autoFC|autoMR|autoMRE|autoMRE_IGN] Specify the number of alternative runs on distinct starting trees
+              In combination with the "-b" option, this will invoke a multiple bootstrap analysis
+              Note that "-N" has been added as an alternative since "-#" sometimes caused problems
+              with certain MPI job submission systems, since "-#" is often used to start comments.
+
+              If you want to use the bootstopping criteria specify "-# autoMR" or "-# autoMRE" or "-# autoMRE_IGN"
+              for the majority-rule tree based criteria (see -I option) or "-# autoFC" for the frequency-based criterion.
+              Bootstopping will only work in combination with "-x" or "-b"
+              DEFAULT: 1 single analysis -->
+              					
+					<parameter type="Switch" ismandatory="1">
+						<name>freq_bootstopping</name>
+						<attributes>
+							<prompt>Stop Bootstrapping Automatically with Frequency Criterion</prompt>
+							<precond>
+								<language>perl</language>
+								<code>$use_bootstopping</code>
+							</precond>										
+							<format>
+								<language>perl</language> 
+					<!-- Replace -# with -N -->
+								<code>($value) ? "-N autoFC":""</code>
+							</format>
+							<vdef>
+								<value>0</value>
+							</vdef>
+							<ctrls>
+								<ctrl>
+									<message>Sorry, you cannot choose both majority rule and frequency criterion</message>
+									<language>perl</language>
+									<code>$mr_bootstopping &amp;&amp; $freq_bootstopping </code>
+								</ctrl>
+								<ctrl>
+									<message>Please choose either majority rule and frequency criterion</message>
+									<language>perl</language>
+									<code>$use_bootstopping  &amp;&amp; !$mr_bootstopping &amp;&amp; !$freq_bootstopping </code>
+								</ctrl>
+							</ctrls>
+							<comment>
+<value>If you want to use the bootstopping criteria specify "-# autoMR" or "-# autoMRE" or "-# autoMRE_IGN" for the majority-rule tree based criteria (see -I option) or "-# autoFC" for the frequency-based criterion. Bootstopping will only work in combination with "-x" or "-b"</value>
+							</comment>
+						</attributes>
+					</parameter>
+					
+					<parameter type="Switch" ismandatory="0">
+						<name>mr_bootstopping</name>
+						<attributes>
+							<prompt>Stop Bootstrapping Automatically with Majority Rule Criterion (recommended)</prompt>
+							<precond>
+								<language>perl</language>
+								<code>$use_bootstopping</code>
+							</precond>
+							<vdef>
+								<value>1</value>
+							</vdef>
+							<ctrls>
+								<ctrl>
+									<message>Sorry, you cannot choose both majority rule and frequency criterion</message>
+									<language>perl</language>
+									<code>$use_bootstopping  &amp;&amp; !$mr_bootstopping &amp;&amp; !$freq_bootstopping</code>
+								</ctrl>
+								<ctrl>
+									<message>Please choose either majority rule and frequency criterion</message>
+									<language>perl</language>
+									<code>!$mr_bootstopping &amp;&amp; !$freq_bootstopping </code>
+								</ctrl>
+							</ctrls>
+							<comment>
+<value>If you want to use the bootstopping criteria specify "-# autoMR" or "-# autoMRE" or "-# autoMRE_IGN" for the majority-rule tree based criteria (see -I option) or "-# autoFC" for the frequency-based criterion. Bootstopping will only work in combination with "-x" or "-b"</value>
+							</comment>
+						</attributes>
+					</parameter>
+					
+					<parameter type="Excl" ismandatory="1">
+						<name>mrbootstopping_type</name>
+						<attributes>
+							<prompt>Select Majority Rule Criterion: (autoMRE is recommended)</prompt>
+							<precond>
+								<language>perl</language>
+								<code>$mr_bootstopping &amp;&amp; !$specify_bootstraps &amp;&amp; $use_bootstopping</code>	
+							</precond>													
+							<format>
+								<language>perl</language>
+<!--replace -# with -N -->
+								<code>"-N $value"</code>
+							</format>
+							<vlist>
+								<value>autoMR</value>
+								<label>autoMR</label>
+								<value>autoMRE</value>
+								<label>autoMRE</label>
+								<value>autoMRE_IGN</value>
+								<label>autoMRE_IGN</label>
+							</vlist>
+							<vdef>
+								<value>autoMRE</value>
+							</vdef>
+							<ctrls>
+								<ctrl>
+									<message>Please choose a Majority Rule criterion</message>
+									<language>perl</language>
+									<code>$mr_bootstopping  &amp;&amp; !defined $mrbootstopping_type</code>
+								</ctrl>
+							</ctrls>
+						</attributes>
+					</parameter> 
+					
+<!-- The  [-B wcCriterionThreshold]	 feature is eliminated in 7.2.3. Specify a floating point number between 0.0 and 1.0 that will be used as cutoff threshold for the WC bootstopping criterion. The recommended setting is 0.03. 7.2.0 DEFAULT: 0.03 (recommended empirically determined setting)   -->
+										
+<!-- This option is used when a bootstrap analysis is already completed. Upload an input file, a tree, and bootstrapped trees
+	
+		[-I autoFC|autoMR|autoMRE|autoMRE_IGN] a posteriori bootstopping analysis. Use:
+             "-I autoFC" for the frequency-based criterion
+             "-I autoMR" for the majority-rule consensus tree criterion
+             "-I autoMRE" for the extended majority-rule consensus tree criterion
+             "-I autoMRE_IGN" for metrics similar to MRE, but include bipartitions under the threshold whether they are compatible
+             or not. This emulates MRE but is faster to compute. For any of these options, you also need to pass a tree file containing several bootstrap replicates via "-z" -->
+                    <parameter type="Switch">
+						<name>use_apobootstopping</name>
+						<attributes>
+							<prompt>Use a posteriori bootstrapping</prompt>
+							<vdef>
+								<value>0</value>
+							</vdef>	
+							<precond>
+								<language>perl</language>
+								<code>!$use_bootstopping</code>	
+							</precond>
+							<ctrls>
+								<ctrl>
+									<message>Sorry, you cannot use a posteriori bootstrapping with the -b or -x options</message>
+									<language>perl</language>
+									<code>$use_apobootstopping &amp;&amp; ($bootstrap_seed || $mulparambootstrap_seed)</code>
+								</ctrl>
+							</ctrls>
+							<comment>
+<value>This option is used when a bootstrap analysis is already completed. Upload an input file, a tree, and bootstrapped trees. You must upload a set of bootstrapped trees uploaded as a single file using the -z option.  Once this selection is made, the user must select whether the bootstopping threshold is determined using frequency criteria or majority rule criteria</value>
+							</comment>						
+						</attributes>
+					</parameter>
+					
+<!-- a priori bootstopping (-I) is mutually exclusive with on the fly bootstopping (-N) -->	
+					<parameter type="Excl" ismandatory="1">
+						<name>aposterior_bootstopping</name>
+						<attributes>
+							<prompt>Select the criterion for a posteriori bootstopping analysis</prompt>
+							<precond>
+								<language>perl</language>
+								<code>$use_apobootstopping</code>
+							</precond>								
+							<format>
+								<language>perl</language>
+								<code>"-I $value"</code>
+							</format>
+							<vlist>
+								<value>autoFC</value>
+								<label>autoFC</label>
+								<value>autoMR</value>
+								<label>autoMR</label>
+								<value>autoMRE</value>
+								<label>autoMRE</label>
+								<value>autoMRE_IGN</value>
+								<label>autoMRE_IGN</label>
+							</vlist>
+							<ctrls>
+								<ctrl>
+									<message>In order to use the a posteriori bootstrapping option, you must upload a set of bootstrapped trees below</message>
+									<language>perl</language>
+									<code>!defined $apo_tops</code>
+								</ctrl>
+							</ctrls>
+								<comment>
+<value>This option allows the user to conduct a posteriori bootstopping analysis based on a set of bootstrapped trees. Use: autoFC for the frequency-based criterion, autoMR for the majority-rule consensus tree criterion, autoMRE for the extended majority-rule consensus tree criterion
+and autoMRE_IGN for metrics similar to MRE, but include bipartitions under the threshold whether they are compatible or not. This emulates MRE but is faster to compute. For any of these options, you also need to upload a tree file containing several bootstrap replicates via "-z"</value>
+								</comment>
+						</attributes>
+					</parameter>
+					
+					<parameter type="InFile">
+						<name>apo_tops</name>
+						<attributes>
+							<prompt>File with topologies for a posteriori bootstopping (-z)</prompt>
+								<format>
+									<language>perl</language>
+									<code>" -z apotopologies_file.tre"</code>
+								</format>
+							<group>2</group>
+							<filenames>apotopologies_file.tre</filenames>
+							<precond>
+								<language>perl</language>
+								<code>$use_apobootstopping &amp;&amp; !defined $bunchotops</code>
+							</precond>
+							<comment>
+<value></value>
+							</comment>
+						</attributes>
+					</parameter>		
+					
+				</parameters>
+			</paragraph>
+		</parameter>
+		
+		<!-- When we're done with raxml, run consense on the bootstrapped trees to produce
+		a file with a consense tree in "outtree".  A file named outfile is also produced
+		by we don't want to return it to the user.
+		-->
+		<!--
+		<parameter type="String" ishidden="1">
+			<name>consense</name>
+			<attributes>
+				<group>99</group>
+				<format>
+					<language>perl</language>
+					<code>
+					"&amp;&amp; ( echo RAxML_bootstrap.result &gt; c.p; echo 1 &gt;&gt; c.p; echo 2 &gt;&gt; c.p; echo 3 &gt;&gt; c.p; echo Y &gt;&gt; c.p; consense &lt; c.p )"
+					</code>
+				</format>
+				<precond>
+					<language>perl</language>
+					<code>!startingtreeonly</code>
+				</precond>
+			</attributes>
+		</parameter>
+		-->
+		<!-- result of running consense -->
+		<!--
+		<parameter type="Results">
+			<name>consense_output</name>
+			<attributes>
+				<filenames>outtree</filenames>
+			</attributes>
+		</parameter>
+		-->
+		<!-- return all output files from raxml in one big mess -->
+		
+	 	<parameter type="Results">
+				<name>all_outputfiles</name>
+				<attributes>
+					<filenames>*</filenames>
+				</attributes>
+			</parameter>		
+		
+	<!-- 	<parameter type="Results">
+			<name>outputfile</name>
+			<attributes>
+				<filenames>*.result</filenames>
+			</attributes>
+		</parameter>
+		<parameter type="Results">
+			<name>all_commandline</name>
+			<attributes>
+				<filenames>COMMANDLINE</filenames>
+			</attributes>
+		</parameter>
+		<parameter type="Results">
+			<name>all_excludeFile</name>
+			<attributes>
+				<filenames>*.excl</filenames>
+			</attributes>
+		</parameter>
+		<parameter type="OutFile">
+			<name>results_files</name>
+			<attributes>
+				<filenames>RAxML_log.result</filenames>
+			</attributes>
+		</parameter>
+		<parameter type="OutFile">
+			<name>outresult</name>
+			<attributes>
+				<filenames>RAxML_result.result</filenames>
+			</attributes>
+		</parameter>
+		<parameter type="OutFile">
+			<name>outinfo</name>
+			<attributes>
+				<filenames>RAxML_info.result</filenames>
+			</attributes>
+		</parameter>
+		<parameter type="OutFile">
+			<name>outparsimonytree</name>
+			<attributes>
+				<filenames>RAxML_parsimonyTree.result</filenames>
+			</attributes>
+		</parameter>
+		<parameter type="OutFile">
+			<name>outrandomtree</name>
+			<attributes>
+				<filenames>RAxML_randomTree.result</filenames>
+			</attributes>
+		</parameter>
+		<parameter type="OutFile">
+			<name>outcheckpoint</name>
+			<attributes>
+				<filenames>RAxML_checkpoint.result</filenames>
+			</attributes>
+		</parameter>
+		<parameter type="OutFile">
+			<name>outbootstrap</name>
+			<attributes>
+				<filenames>RAxML_bootstrap.result</filenames>
+			</attributes>
+		</parameter>
+		<parameter type="OutFile">
+			<name>outbipartitions</name>
+			<attributes>
+				<filenames>RAxML_bipartitions.result</filenames>
+			</attributes>
+		</parameter>
+		<parameter type="OutFile">
+			<name>outreducedlist</name>
+			<attributes>
+				<filenames>RAxML_reducedList.result</filenames>
+			</attributes>
+		</parameter>
+		<parameter type="OutFile">
+			<name>outbipartitionfrequencies</name>
+			<attributes>
+				<filenames>RAxML_bipartitionFrequencies.result</filenames>
+			</attributes>
+		</parameter>
+		<parameter type="OutFile">
+			<name>outpersitells</name>
+			<attributes>
+				<filenames>RAxML_perSiteLLs.result</filenames>
+			</attributes>
+		</parameter>
+		<parameter type="OutFile">
+			<name>outbesttree</name>
+			<attributes>
+				<filenames>RAxML_bestTree.result</filenames>
+			</attributes>
+		</parameter>
+		<parameter type="OutFile">
+			<name>reduced_results</name>
+			<attributes>
+				<filenames>*.reduced</filenames>
+			</attributes>
+		</parameter>
+		<parameter type="OutFile">
+			<name>txt_results</name>
+			<attributes>
+				<filenames>*.txt</filenames>
+			</attributes>
+		</parameter> -->
+	</parameters>
+</pise>
+

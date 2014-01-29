@@ -1,0 +1,8 @@
+mysqldump \
+--defaults-extra-file=~/.myngbwalpha.cnf \
+--no-data=true \
+--add-drop-table=true \
+--set-gtid-purged=OFF \
+ngbwalpha
+
+
