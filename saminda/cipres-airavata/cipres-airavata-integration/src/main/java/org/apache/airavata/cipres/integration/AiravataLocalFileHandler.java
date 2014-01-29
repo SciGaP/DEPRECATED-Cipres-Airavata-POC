@@ -18,21 +18,21 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ngbw.sdk.api.tool.FileHandler;
-import org.ngbw.sdk.tool.LocalFileHandler;
 
 public class AiravataLocalFileHandler implements FileHandler{
-	private static final Log log = LogFactory.getLog(LocalFileHandler.class);
 
+	private static final Log log = LogFactory.getLog(AiravataLocalFileHandler.class);
+	private Map<String, String> cfg;
 	public void close() {;}
 
 
 	public boolean configure(Map<String, String> cfg) {
-		//TODO well there might be things to add like workspaces ect.
+		this.cfg=cfg;
 		return isConfigured();
 	}
 
 	public boolean isConfigured() {
-		return true;
+		return this.cfg!=null;
 	}
 
 	public boolean exists(final String path)
@@ -43,8 +43,8 @@ public class AiravataLocalFileHandler implements FileHandler{
 	public void createDirectory(String directory) {
 		if (directory == null)
 			throw new NullPointerException("Directory cannot be null!");
-		File dir = new File(directory);
-		if (dir.mkdir() == false)
+		File dir = getAbsolutePath(directory);
+		if (dir.mkdirs() == false)
 		{
 			log.debug("Unable to create directory " + dir.getAbsolutePath());
 			//throw new RuntimeException("The submitted 'directory' could not be created!");
@@ -52,11 +52,16 @@ public class AiravataLocalFileHandler implements FileHandler{
 		}
 	}
 
+
+	private File getAbsolutePath(String relativePath) {
+		return new File(new File(cfg.get("baseWorkingDir")),relativePath);
+	}
+
 	public void removeDirectory(String directory, boolean deleteContent)
 	{
 		if (directory == null)
 			throw new NullPointerException("Directory cannot be null!");
-		File dir = new File(directory);
+		File dir = getAbsolutePath(directory);
 		log.debug("absolute path is " + dir.getAbsolutePath());
 		if (dir.isFile())
 			throw new RuntimeException("The submitted 'directory' " + directory + " is actually a file!");
@@ -92,7 +97,7 @@ public class AiravataLocalFileHandler implements FileHandler{
 	public List<String> listSubdirectories(String directory) {
 		if (directory == null)
 			throw new NullPointerException("Directory cannot be null!");
-		File dir = new File(directory);
+		File dir = getAbsolutePath(directory);
 		List<String>  subdirNames = new ArrayList<String>();
 		for(File file : dir.listFiles()) {
 			if(file.isDirectory())
@@ -104,7 +109,7 @@ public class AiravataLocalFileHandler implements FileHandler{
 	public List<String> listFiles(String directory) {
 		if (directory == null)
 			throw new NullPointerException("Directory cannot be null!");
-		File dir = new File(directory);
+		File dir = getAbsolutePath(directory);
 		if (dir.exists() == false)
 			throw new RuntimeException(directory + " does not exist!");
 		if (dir.isFile())
@@ -120,7 +125,7 @@ public class AiravataLocalFileHandler implements FileHandler{
 	public List<FileHandler.FileAttributes> list(String directory) {
 		if (directory == null)
 			throw new NullPointerException("Directory cannot be null!");
-		File dir = new File(directory);
+		File dir = getAbsolutePath(directory);
 		if (dir.exists() == false)
 			throw new RuntimeException(directory + " does not exist!");
 		if (dir.isFile())
@@ -142,7 +147,7 @@ public class AiravataLocalFileHandler implements FileHandler{
 	public Map<String, List<String>> listFilesByExtension(String directory) {
 		if (directory == null)
 			throw new NullPointerException("Directory cannot be null!");
-		File dir = new File(directory);
+		File dir = getAbsolutePath(directory);
 		if (dir.exists() == false)
 			throw new RuntimeException(directory + " does not exist!");
 		if (dir.isFile())
@@ -167,7 +172,7 @@ public class AiravataLocalFileHandler implements FileHandler{
 	public void removeFile(String file) {
 		if (file == null)
 			throw new NullPointerException("File cannot be null!");
-		File myfile = new File(file);
+		File myfile = getAbsolutePath(file);
 		if (myfile.isDirectory())
 			throw new RuntimeException("The submitted 'file' " + file + " is actually a directory!");
 		if (myfile.exists() == false)
@@ -187,7 +192,7 @@ public class AiravataLocalFileHandler implements FileHandler{
 
 	public InputStream getInputStream(String fileName) throws Exception
 	{
-		return new FileInputStream(fileName);
+		return new FileInputStream(getAbsolutePath(fileName));
 	}
 
 	public void writeFile(String fileName, String content) {
@@ -197,7 +202,7 @@ public class AiravataLocalFileHandler implements FileHandler{
 			throw new NullPointerException("Content cannot be null!");
 		FileWriter fw = null;
 		try {
-			fw = new FileWriter(fileName);
+			fw = new FileWriter(getAbsolutePath(fileName));
 			fw.append(content);
 		} catch (IOException e) {
 			throw new RuntimeException("Can't write to file " + fileName, e);
@@ -213,7 +218,7 @@ public class AiravataLocalFileHandler implements FileHandler{
 			throw new NullPointerException("Content cannot be null!");
 	    FileOutputStream fos = null;
 	    try {
-	      fos = new FileOutputStream(fileName);
+	      fos = new FileOutputStream(getAbsolutePath(fileName));
 	      fos.write(content);
 
 	    } catch (IOException e) {
@@ -246,7 +251,7 @@ public class AiravataLocalFileHandler implements FileHandler{
 
 	public void writeFile(String fileName, InputStream inStream) throws IOException
 	{
-		OutputStream outStream = new BufferedOutputStream(new FileOutputStream(fileName));
+		OutputStream outStream = new BufferedOutputStream(new FileOutputStream(getAbsolutePath(fileName)));
 
 		try {
 			byte[] readBuffer = new byte[8192];
@@ -265,12 +270,12 @@ public class AiravataLocalFileHandler implements FileHandler{
 			throw new NullPointerException("Old directory name name cannot be null!");
 		if (newDirectoryName == null)
 			throw new NullPointerException("New directory name name cannot be null!");
-		File directory = new File(directoryName) ;
+		File directory = getAbsolutePath(directoryName) ;
 		if (directory.exists() == false)
 			throw new NullPointerException(directory + " does not exist!");
 		if (directory.canRead() == false)
 			throw new NullPointerException(directory + " cannot be read!");
-		File targetDirectory = new File(newDirectoryName) ;
+		File targetDirectory = getAbsolutePath(newDirectoryName) ;
 		directory.renameTo(targetDirectory);
 	}
 
@@ -279,27 +284,27 @@ public class AiravataLocalFileHandler implements FileHandler{
 			throw new NullPointerException("Old directory name name cannot be null!");
 		if (newFileName == null)
 			throw new NullPointerException("New directory name name cannot be null!");
-		File orgFile = new File(fileName) ;
+		File orgFile = getAbsolutePath(fileName) ;
 		if (orgFile.exists() == false)
 			throw new NullPointerException(orgFile + " does not exist!");
 		if (orgFile.canRead() == false)
 			throw new NullPointerException(orgFile + " cannot be read!");
-		File targetFile = new File(newFileName) ;
+		File targetFile = getAbsolutePath(newFileName) ;
 		orgFile.renameTo(targetFile);
 	}
 
 	public boolean isDirectory(String filename)
 	{
-		return new File(filename).isDirectory();
+		return getAbsolutePath(filename).isDirectory();
 	}
 
 	public long getSize(String filename)
 	{
-		return new File(filename).length();
+		return getAbsolutePath(filename).length();
 	}
 
 	public Date getMTime(String filename)
 	{
-		return new Date(new File(filename).lastModified());
+		return new Date(getAbsolutePath(filename).lastModified());
 	}
 }

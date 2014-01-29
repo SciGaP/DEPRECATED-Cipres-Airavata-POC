@@ -1,3 +1,0 @@
-#!/bin/sh
-mb_openmpi < $1
-

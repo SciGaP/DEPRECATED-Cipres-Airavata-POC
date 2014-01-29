@@ -1,8 +1,0 @@
-# See ~Readme.txt
-
-# no core files
-ulimit -c 0
-
-# No files larger than 500M can be created
-ulimit -f 512000
-
