@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
-import org.ngbw.sdk.Workbench;
+import org.ngbw.sdk.WorkbenchCIPRES;
 import org.ngbw.sdk.api.core.GenericDataRecordCollection;
 import org.ngbw.sdk.core.shared.IndexedDataRecord;
 import org.ngbw.sdk.core.types.DataFormat;
@@ -48,7 +48,7 @@ class DebugImporter {
 	private static final String SESSION_DIR_PREFIX = "^S\\.[0-9]\\.[0-9]_[0-9]+_";
 	private static final int MAX_LABEL_LENGTH = 1023;
 
-	private final Workbench m_workbench;
+	private final WorkbenchCIPRES m_workbench;
 
 
 	/**
@@ -56,7 +56,7 @@ class DebugImporter {
 	 *
 	 * @param workbench
 	 */
-	DebugImporter(Workbench workbench)
+	DebugImporter(WorkbenchCIPRES workbench)
 	{
 		m_workbench = workbench;
 	}
@@ -307,7 +307,7 @@ class DebugImporter {
 			if (args.length != 2)
 				throw new Exception("usage: DebugImporter ngbw_account bwb_account");
 
-			Workbench workbench = Workbench.getInstance();
+			WorkbenchCIPRES workbench = WorkbenchCIPRES.getInstance();
 			User owner = User.findUserByUsername(args[0]);
 			Folder target = null;
 

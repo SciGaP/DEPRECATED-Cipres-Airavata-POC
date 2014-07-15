@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.ngbw.sdk.Workbench;
+import org.ngbw.sdk.WorkbenchCIPRES;
 import org.ngbw.sdk.core.shared.SourceDocumentType;
 import org.ngbw.sdk.core.types.DataFormat;
 import org.ngbw.sdk.core.types.DataType;

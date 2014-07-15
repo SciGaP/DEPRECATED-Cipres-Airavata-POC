@@ -6,6 +6,7 @@ import javax.servlet.http.HttpSessionListener;
 
 import org.apache.log4j.Logger;
 import org.ngbw.sdk.Workbench;
+import org.ngbw.sdk.Factory;
 import org.ngbw.sdk.WorkbenchSession;
 import org.ngbw.web.actions.NgbwSupport;
 import org.ngbw.web.controllers.SessionController;
@@ -17,7 +18,7 @@ public class SessionListener implements HttpSessionListener
 	public static Logger logger = Logger.getLogger(SessionListener.class);
 	
 	public void sessionCreated(HttpSessionEvent event) {
-		Workbench.getInstance();
+		Factory.getWorkbench();
 		HttpSession session = event.getSession();
 		logger.debug("HTTP session " + session.getId() + " was created.");
 	}

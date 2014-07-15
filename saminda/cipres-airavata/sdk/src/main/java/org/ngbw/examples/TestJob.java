@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.ngbw.sdk.Workbench;
+import org.ngbw.sdk.WorkbenchCIPRES;
 import org.ngbw.sdk.WorkbenchSession;
 import org.ngbw.sdk.common.util.FileUtils;
 import org.ngbw.sdk.common.util.Resource;
@@ -49,7 +49,7 @@ public class TestJob
 	private static final String inputFile = "/testInput.properties";
 
 	//Workbench object instances
-	private static Workbench workbench = Workbench.getInstance();
+	private static WorkbenchCIPRES workbench = WorkbenchCIPRES.getInstance();
 
 	public static String runJob(User user, String path) throws DisabledResourceException, Exception
 	{

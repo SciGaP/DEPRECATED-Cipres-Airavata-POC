@@ -25,6 +25,7 @@ import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.ParameterAware;
 import org.apache.struts2.interceptor.SessionAware;
 import org.ngbw.sdk.Workbench;
+import org.ngbw.sdk.Factory;
 import org.ngbw.sdk.WorkbenchSession;
 import org.ngbw.sdk.database.Folder;
 import org.ngbw.sdk.database.User;
@@ -615,7 +616,7 @@ implements ParameterAware, SessionAware, ServletRequestAware, ServletResponseAwa
 		WorkbenchSession session = getWorkbenchSession();
 		try {
 			if (session == null)
-				return Workbench.getInstance();
+				return Factory.getWorkbench();
 			else return session.getWorkbench();
 		} catch (Throwable error) {
 			reportError(error, "Error retrieving Workbench");
@@ -1020,14 +1021,14 @@ implements ParameterAware, SessionAware, ServletRequestAware, ServletResponseAwa
 
 	public boolean isToolDisabled(String id)
 	{
-		Workbench wb = Workbench.getInstance(); 
+		Workbench wb = Factory.getWorkbench(); 
 		Tool tool = wb.getTool(id);
 		return tool.disabled() != null;
 	}
 
 	public String toolDisabledMessage(String id)
 	{
-		Workbench wb = Workbench.getInstance(); 
+		Workbench wb = Factory.getWorkbench(); 
 		Tool tool = wb.getTool(id);
 		return tool.disabled();
 	}

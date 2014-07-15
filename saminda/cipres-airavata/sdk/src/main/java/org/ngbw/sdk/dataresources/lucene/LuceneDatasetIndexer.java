@@ -12,7 +12,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexWriter;
-import org.ngbw.sdk.Workbench;
+import org.ngbw.sdk.WorkbenchCIPRES;
 import org.ngbw.sdk.api.conversion.ConversionService;
 import org.ngbw.sdk.api.conversion.RecordFilter;
 import org.ngbw.sdk.api.conversion.SourceDocumentReader;
@@ -47,9 +47,9 @@ public class LuceneDatasetIndexer {
 	private RecordSourceFilter sourceFilter;
 
 	private LuceneDataResourceConfig config;
-	private Workbench workbench;
+	private WorkbenchCIPRES workbench;
 
-	public LuceneDatasetIndexer(Workbench workbench) {
+	public LuceneDatasetIndexer(WorkbenchCIPRES workbench) {
 		if (workbench == null)
 			throw new NullPointerException("Workbench is null!");
 		this.workbench = workbench;
@@ -214,7 +214,7 @@ public class LuceneDatasetIndexer {
 
 	public static void main(String[] args) {
 		Dataset dataset = Dataset.valueOf(args[0]);
-		Workbench wb = Workbench.getInstance();
+		WorkbenchCIPRES wb = WorkbenchCIPRES.getInstance();
 		LuceneDatasetIndexer indexer = new LuceneDatasetIndexer(wb);
 		indexer.indexDataset(dataset);
 	}

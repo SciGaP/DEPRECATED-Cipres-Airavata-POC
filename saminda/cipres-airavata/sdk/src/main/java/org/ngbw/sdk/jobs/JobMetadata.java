@@ -5,7 +5,7 @@ package org.ngbw.sdk.jobs;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.ngbw.sdk.Workbench;
+import org.ngbw.sdk.WorkbenchCIPRES;
 import org.ngbw.sdk.WorkbenchException;
 import org.ngbw.sdk.WorkbenchSession;
 import java.util.Map;

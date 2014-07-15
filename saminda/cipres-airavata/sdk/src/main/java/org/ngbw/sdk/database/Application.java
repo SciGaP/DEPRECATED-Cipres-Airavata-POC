@@ -19,7 +19,7 @@ import java.util.TreeSet;
 import java.util.Date;
 import java.util.Calendar;
 
-import org.ngbw.sdk.Workbench;
+import org.ngbw.sdk.WorkbenchCIPRES;
 import org.ngbw.sdk.WorkbenchException;
 import org.ngbw.sdk.common.util.StringUtils;
 import org.apache.commons.logging.Log;

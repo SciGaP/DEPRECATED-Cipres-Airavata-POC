@@ -19,9 +19,9 @@ import org.ngbw.sdk.database.TaskInputSourceDocument;
 import org.ngbw.sdk.database.TaskOutputSourceDocument;
 import org.ngbw.sdk.database.User;
 import org.ngbw.sdk.database.Task;
-import org.ngbw.sdk.tool.TaskMonitor;
+import org.ngbw.sdk.tool.TaskMonitorWF;
 import org.ngbw.sdk.tool.Tool;
-import org.ngbw.sdk.Workbench;
+import org.ngbw.sdk.WorkbenchCIPRES;
 import org.ngbw.sdk.core.shared.TaskRunStage;
 import org.ngbw.sdk.tool.TaskValidator;
 import org.ngbw.sdk.api.tool.FieldError;
@@ -95,7 +95,7 @@ public class Job
 		{
 			throw new JobValidationException(errors);
 		}
-		Tool tool = new Tool(toolId, Workbench.getInstance().getServiceFactory().getToolRegistry());
+		Tool tool = new Tool(toolId, WorkbenchCIPRES.getInstance().getServiceFactory().getToolRegistry());
 
 		/*
 			Instantiates command renderer and evaulates perl precond and ctrl elements.
@@ -154,7 +154,7 @@ public class Job
 		task.properties().putAll(clientMetadata.toMap());
 		task.save();
 
-		Workbench.getInstance().submitTask(task);
+		WorkbenchCIPRES.getInstance().submitTask(task);
 		return task.getJobHandle();
 	}
 
@@ -228,7 +228,7 @@ public class Job
 		Task task = status.getTask();
 
 		// This sends "qdel" or similar command to remote host where job is queued or running.
-		TaskMonitor.cancelJob(task);
+		new TaskMonitorWF().cancelJob(task);
 
 		// This removes the task from our db and prevents loadResults from trying to transfer 
 		// any files back from the working directory.

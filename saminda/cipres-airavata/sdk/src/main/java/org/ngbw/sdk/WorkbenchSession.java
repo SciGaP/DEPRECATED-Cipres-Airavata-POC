@@ -12,11 +12,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.ngbw.sdk.api.tool.FileHandler;
-import org.ngbw.sdk.tool.TaskInitiate;
-import org.ngbw.sdk.tool.BaseProcessWorker;
-import org.ngbw.sdk.tool.TaskMonitor;
-import org.ngbw.sdk.tool.WorkingDirectory;
 import org.ngbw.sdk.common.util.StringUtils;
 import org.ngbw.sdk.core.shared.UserRole;
 import org.ngbw.sdk.database.Folder;
@@ -33,9 +31,10 @@ import org.ngbw.sdk.database.util.TaskComparator;
 import org.ngbw.sdk.database.util.TaskSortableField;
 import org.ngbw.sdk.database.util.UserDataItemComparator;
 import org.ngbw.sdk.database.util.UserDataItemSortableField;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.ngbw.sdk.tool.TaskInitiate;
+import org.ngbw.sdk.tool.TaskInitiateWF;
+import org.ngbw.sdk.tool.TaskMonitorWF;
+import org.ngbw.sdk.tool.WorkingDirectoryWF;
 
 
 /**
@@ -47,12 +46,12 @@ import org.apache.commons.logging.LogFactory;
 public class WorkbenchSession {
 	private static final Log log = LogFactory.getLog(WorkbenchSession.class);
 
-	private final Workbench workbench;
+	private final WorkbenchCIPRES workbench;
 	private final long userId;
 	private User user;
 
 
-	WorkbenchSession(User user, Workbench workbench)
+	WorkbenchSession(User user, WorkbenchCIPRES workbench)
 	{
 		this.userId = user.getUserId();
 		this.workbench = workbench;
@@ -63,7 +62,7 @@ public class WorkbenchSession {
 	 * 
 	 * @return workbench
 	 */
-	public Workbench getWorkbench() {
+	public WorkbenchCIPRES getWorkbench() {
 		return workbench;
 	}
 
@@ -575,7 +574,7 @@ public class WorkbenchSession {
 	public void deleteTask(Task task) throws IOException, SQLException, Exception {
 
 		// This talks to the remote queue'ing system and does "qdel" or similar.
-		TaskMonitor.cancelJob(task);
+		new TaskMonitorWF().cancelJob(task);
 
 		// Deletes the task from our database. This is what prevents us from trying to 
 		// transfer files back to our db when we see that the job has stopped running.
@@ -697,12 +696,12 @@ public class WorkbenchSession {
 
 	public TaskInitiate getTaskInitate()
 	{
-		return new TaskInitiate(workbench.getServiceFactory());
+		return new TaskInitiateWF(workbench.getServiceFactory());
 	}
 
-	public WorkingDirectory getWorkingDirectory(Task task)
+	public WorkingDirectoryWF getWorkingDirectory(Task task)
 	{
-		return new WorkingDirectory(workbench.getServiceFactory(), task);
+		return new WorkingDirectoryWF(workbench.getServiceFactory(), task);
 	}
 
 	public boolean workingDirectoryExists(Task task) throws Exception

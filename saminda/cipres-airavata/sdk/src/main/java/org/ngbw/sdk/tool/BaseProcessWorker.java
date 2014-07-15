@@ -21,7 +21,7 @@ import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.ngbw.sdk.Workbench;
+import org.ngbw.sdk.WorkbenchCIPRES;
 import org.ngbw.sdk.api.tool.FileHandler;
 import org.ngbw.sdk.api.tool.FileHandler.FileAttributes;
 import org.ngbw.sdk.api.tool.ToolRegistry;
@@ -44,7 +44,7 @@ public abstract class BaseProcessWorker
 	//private static final long MAX_DIR_SIZE =  20000L;
 
 	private static final Log log = LogFactory.getLog(BaseProcessWorker.class.getName());
-	protected ToolRegistry toolRegistry = Workbench.getInstance().getServiceFactory().getToolRegistry();
+	protected ToolRegistry toolRegistry = WorkbenchCIPRES.getInstance().getServiceFactory().getToolRegistry();
 
 	protected long m_taskId;
 	protected long m_jobTimeout; // in minutes.
@@ -534,13 +534,13 @@ public abstract class BaseProcessWorker
 			m_rc = param;
 		}
 		String callbackurl;
-		String pstr = Workbench.getInstance().getProperties().getProperty("use.rest.callback");
+		String pstr = WorkbenchCIPRES.getInstance().getProperties().getProperty("use.rest.callback");
 		if (pstr != null && pstr.trim().equals("true"))
 		{
-			callbackurl =  Workbench.getInstance().getProperties().getProperty("rest.callback.url"); 
+			callbackurl =  WorkbenchCIPRES.getInstance().getProperties().getProperty("rest.callback.url"); 
 		} else
 		{
-			callbackurl =  Workbench.getInstance().getProperties().getProperty("portal.callback.url"); 
+			callbackurl =  WorkbenchCIPRES.getInstance().getProperties().getProperty("portal.callback.url"); 
 		}
 		m_url = "'" + callbackurl + "?taskId=" + m_taskId + "\\&jh=" + m_jobHandle + "'"; 
 

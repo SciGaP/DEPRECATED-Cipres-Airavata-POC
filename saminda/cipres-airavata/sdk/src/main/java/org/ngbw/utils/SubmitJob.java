@@ -3,7 +3,7 @@ package org.ngbw.utils;
 import java.util.concurrent.*;
 import java.util.Date;
 import java.util.List;
-import org.ngbw.sdk.Workbench;
+import org.ngbw.sdk.WorkbenchCIPRES;
 import org.ngbw.sdk.database.RunningTask;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -51,7 +51,7 @@ public class SubmitJob
 	{
 		try
 		{
-			Workbench wb = Workbench.getInstance();
+			WorkbenchCIPRES wb = WorkbenchCIPRES.getInstance();
 
 			// This overrides db connection pool establised by Workbench.  
 			//ConnectionManager.getConnectionSource().close();

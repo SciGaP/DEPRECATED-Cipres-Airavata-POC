@@ -9,8 +9,8 @@ import org.ngbw.sdk.database.Task;
 import org.ngbw.sdk.api.tool.FileHandler;
 import org.ngbw.sdk.database.User;
 import org.ngbw.sdk.database.Task;
-import org.ngbw.sdk.tool.WorkingDirectory;
-import org.ngbw.sdk.Workbench;
+import org.ngbw.sdk.tool.WorkingDirectoryWF;
+import org.ngbw.sdk.WorkbenchCIPRES;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,7 @@ public class JobWorkingDir
 	private String jobHandle;
 	private User user;
 	private Task task;
-	private WorkingDirectory wd;
+	private WorkingDirectoryWF wd;
 
 	public JobWorkingDir(String jobHandle, User user)  throws Exception
 	{
@@ -41,7 +41,7 @@ public class JobWorkingDir
 		JobStatus jobStatus = new JobStatus(jobHandle, user);
 		task = jobStatus.getTask(); 
 		user = new User(task.getUserId());
-		wd = new WorkingDirectory(Workbench.getInstance().getServiceFactory(), task);
+		wd = new WorkingDirectoryWF(WorkbenchCIPRES.getInstance().getServiceFactory(), task);
 	}
 
 	public boolean fileExists(String filename) throws Exception

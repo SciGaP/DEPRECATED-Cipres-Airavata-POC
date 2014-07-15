@@ -1,9 +1,9 @@
 package org.ngbw.utils;
 import java.util.concurrent.*;
 
-import org.ngbw.sdk.Workbench;
+import org.ngbw.sdk.WorkbenchCIPRES;
 import org.ngbw.sdk.tool.BaseProcessWorker;
-import org.ngbw.sdk.tool.TaskMonitor;
+import org.ngbw.sdk.tool.TaskMonitorWF;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ngbw.sdk.database.ConnectionManager;
@@ -31,7 +31,7 @@ public class CheckJobs
 	{
 		try
 		{
-			Workbench wb = Workbench.getInstance();
+			WorkbenchCIPRES wb = WorkbenchCIPRES.getInstance();
 			log.debug("CHECK JOBS: workbench initialized.");
 
 			/*
@@ -72,7 +72,7 @@ public class CheckJobs
 
 			while (true)
 			{
-				TaskMonitor.checkJobs(m_submitter);
+				new TaskMonitorWF().checkJobs(m_submitter);
 				Thread.sleep(m_poll_interval * 1000);
 			}
 		}

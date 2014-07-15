@@ -12,7 +12,7 @@ import org.apache.commons.logging.LogFactory;
 import org.ngbw.sdk.api.tool.FileHandler;
 import org.ngbw.sdk.api.tool.ToolResource;
 import org.ngbw.sdk.api.tool.ToolResourceType;
-import org.ngbw.sdk.Workbench;
+import org.ngbw.sdk.WorkbenchCIPRES;
 import org.ngbw.sdk.common.util.FileUtils;
 import org.ngbw.sdk.database.RunningTask;
 import org.ngbw.sdk.database.TaskInputSourceDocument;

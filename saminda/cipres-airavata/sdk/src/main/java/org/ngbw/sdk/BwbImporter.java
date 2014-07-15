@@ -18,7 +18,7 @@ import java.util.concurrent.Future;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.ngbw.sdk.Workbench;
+import org.ngbw.sdk.WorkbenchCIPRES;
 import org.ngbw.sdk.api.core.GenericDataRecordCollection;
 import org.ngbw.sdk.core.shared.IndexedDataRecord;
 import org.ngbw.sdk.core.types.DataFormat;
@@ -51,7 +51,7 @@ class BwbImporter {
 	private static final int MAX_LABEL_LENGTH = 1023;
 	private static final Log m_log = LogFactory.getLog(BwbImporter.class);
 
-	private final Workbench m_workbench;
+	private final WorkbenchCIPRES m_workbench;
 
 
 	/**
@@ -59,7 +59,7 @@ class BwbImporter {
 	 *
 	 * @param workbench
 	 */
-	BwbImporter(Workbench workbench)
+	BwbImporter(WorkbenchCIPRES workbench)
 	{
 		m_workbench = workbench;
 	}

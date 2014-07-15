@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.ngbw.sdk.UserAuthenticationException;
 import org.ngbw.sdk.Workbench;
+import org.ngbw.sdk.Factory;
 import org.ngbw.sdk.WorkbenchSession;
 import org.ngbw.sdk.core.types.DataType;
 import org.ngbw.sdk.core.types.Dataset;
@@ -39,7 +40,7 @@ public class TestDatasetController
 	 * specified in this class, for the purposes of conducting automated tests such as this.
 	 */
 	@Before public void setUp() {
-		Workbench workbench = Workbench.getInstance();
+		Workbench workbench = Factory.getWorkbench();
 		if (workbench.hasActiveSession(USERNAME))
 			workbench.suspendSession(USERNAME);
 		WorkbenchSession session = null;

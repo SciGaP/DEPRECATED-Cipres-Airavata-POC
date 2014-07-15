@@ -1,7 +1,7 @@
 package org.ngbw.examples;
 
 
-import org.ngbw.sdk.Workbench;
+import org.ngbw.sdk.WorkbenchCIPRES;
 import org.ngbw.sdk.api.core.GenericDataRecordCollection;
 import org.ngbw.sdk.api.core.SourceDocumentTransformer;
 import org.ngbw.sdk.common.util.FileUtils;
@@ -24,7 +24,7 @@ public class BlastTransformation {
 	 */
 	public static void main(String[] args) {
 		try {
-			org.ngbw.sdk.Workbench workbench = Workbench.getInstance();
+			org.ngbw.sdk.WorkbenchCIPRES workbench = WorkbenchCIPRES.getInstance();
 			DataFormat dataFormat = DataFormat.BLAST_TEXT;
 			DataType dataType = DataType.BLAST_OUTPUT;
 			EntityType entityType = EntityType.NUCLEIC_ACID;

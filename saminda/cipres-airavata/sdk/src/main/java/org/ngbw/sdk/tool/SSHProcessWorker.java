@@ -102,7 +102,7 @@ public class SSHProcessWorker extends BaseProcessWorker
 		{
 			// neither of these throws exceptions.
 			closeSession(sshSession);
-			TaskMonitor.notifyJobComplete(m_rt.getTask(), "");
+			new TaskMonitorWF().notifyJobComplete(m_rt.getTask(), "");
 		}
 	}
 

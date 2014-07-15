@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.ngbw.sdk.Workbench;
+import org.ngbw.sdk.WorkbenchCIPRES;
 import org.ngbw.sdk.WorkbenchSession;
 import org.ngbw.sdk.common.util.FileUtils;
 import org.ngbw.sdk.core.types.DataFormat;
@@ -33,7 +33,7 @@ public class WorkbenchSessionClient {
 		try {
 			String username = "t"; 
 			String password = "t";
-			Workbench wb = Workbench.getInstance();
+			WorkbenchCIPRES wb = WorkbenchCIPRES.getInstance();
 			WorkbenchSession session = wb.getSession(username, password);
 			User user = session.getUser();
 			String label = "Test Folder";

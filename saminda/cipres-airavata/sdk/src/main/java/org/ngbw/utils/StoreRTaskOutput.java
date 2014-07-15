@@ -2,11 +2,11 @@ package org.ngbw.utils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.ngbw.sdk.Workbench;
+import org.ngbw.sdk.WorkbenchCIPRES;
 import org.ngbw.sdk.database.RunningTask;
 import org.ngbw.sdk.database.Task;
 import org.ngbw.sdk.tool.BaseProcessWorker;
-import org.ngbw.sdk.tool.TaskMonitor;
+import org.ngbw.sdk.tool.TaskMonitorWF;
 
 /**
 	Stand alone program to retrieve the results for a single task using
@@ -20,7 +20,7 @@ public class StoreRTaskOutput
 	{
 		try
 		{
-			Workbench.getInstance();
+			WorkbenchCIPRES.getInstance();
 			if (args.length != 1)
 				throw new Exception("usage: StoreRTaskOutput jobhandle");
 			String jobhandle = args[0];
@@ -30,7 +30,7 @@ public class StoreRTaskOutput
 			// retries.  We always attempt to load Results and only inc retries
 			// and check it's value oafter failing.  When we detect that we've
 			// exceeded the specified number of retries we set status = STATUS_FAILED.
-			TaskMonitor.getResults(RunningTask.find(jobhandle),  null);
+			new TaskMonitorWF().getResults(RunningTask.find(jobhandle),  null);
 		}
 		catch(Exception e)
 		{

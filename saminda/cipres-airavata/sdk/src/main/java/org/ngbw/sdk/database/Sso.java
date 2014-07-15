@@ -19,7 +19,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import org.ngbw.sdk.database.User;
 
-import org.ngbw.sdk.Workbench;
+import org.ngbw.sdk.WorkbenchCIPRES;
 import org.ngbw.sdk.WorkbenchException;
 import org.ngbw.sdk.common.util.StringUtils;
 import org.apache.commons.logging.Log;

@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.ngbw.sdk.Workbench;
+import org.ngbw.sdk.WorkbenchCIPRES;
 
 
 /**
@@ -127,7 +127,7 @@ public class RayTraceDispatcher extends HttpServlet {
 			command[7] = ">& " + outputFile2;
 			
 			// execute the command
-			Workbench workbench = Workbench.getInstance();
+			WorkbenchCIPRES workbench = WorkbenchCIPRES.getInstance();
 			/*
 			Map<String, Map<String, byte[]>> outputMap = workbench.runCommand(toolId, command, inputMap, output, false);
 			

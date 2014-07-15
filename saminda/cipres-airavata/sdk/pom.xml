@@ -46,6 +46,7 @@
         <bouncy.castle.version>1.45</bouncy.castle.version>
         <jglobus.version>2.0.6</jglobus.version>
         <ebay.cors.filter>1.0.0</ebay.cors.filter>
+        <airavata.version>0.13-SNAPSHOT</airavata.version>
 	</properties>
 
 	<prerequisites>
@@ -363,94 +364,16 @@
 			<artifactId>myproxy</artifactId>
 			<version>2.0.6</version>
 		</dependency>
-<!-- AIRAVATA modules -->
+        <!-- Airavata libraries -->
         <dependency>
-            <groupId>org.apache.airavata</groupId>
-            <artifactId>airavata-client-api</artifactId>
-            <version>0.11</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.airavata</groupId>
-            <artifactId>airavata-workflow-model-core</artifactId>
-            <version>0.11</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.airavata</groupId>
-            <artifactId>airavata-workflow-model-component</artifactId>
-            <version>0.11</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.airavata</groupId>
-            <artifactId>airavata-common-utils</artifactId>
-            <version>0.11</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.airavata</groupId>
-            <artifactId>airavata-registry-api</artifactId>
-            <version>0.11</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.airavata</groupId>
-            <artifactId>airavata-rest-client</artifactId>
-            <version>0.11</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.airavata</groupId>
-            <artifactId>airavata-workflow-tracking</artifactId>
-            <version>0.11</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.airavata</groupId>
-            <artifactId>airavata-gfac-schema-utils</artifactId>
-            <version>0.11</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.airavata</groupId>
-            <artifactId>airavata-gfac-core</artifactId>
-            <version>0.11</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${org.slf4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jcl-over-slf4j</artifactId>
-            <version>${org.slf4j.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>${org.slf4j.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.airavata</groupId>
-            <artifactId>airavata-workflow-execution-context</artifactId>
-            <version>0.11</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.3</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpcore</artifactId>
-            <version>4.3</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.airavata</groupId>
-            <artifactId>airavata-message-monitor</artifactId>
-            <version>0.11</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.airavata</groupId>
-            <artifactId>airavata-message-broker</artifactId>
-            <version>0.11</version>
-        </dependency>
+			<groupId>org.apache.airavata</groupId>
+			<artifactId>airavata-api-stubs</artifactId>
+			<version>${airavata.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.airavata</groupId>
+			<artifactId>airavata-data-models</artifactId>
+			<version>${airavata.version}</version>
+		</dependency>
 </dependencies>
 </project>

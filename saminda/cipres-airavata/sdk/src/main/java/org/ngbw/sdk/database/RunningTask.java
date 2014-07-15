@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.ngbw.sdk.Workbench;
+import org.ngbw.sdk.WorkbenchCIPRES;
 import org.ngbw.sdk.WorkbenchException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -791,7 +791,7 @@ public class RunningTask extends Row implements Comparable<RunningTask> {
 	*/
 	private static void unlockBatch(List<RunningTask> list) throws Exception
 	{
-		String hostname = Workbench.getInstance().getProperties().getProperty("hostname");
+		String hostname = WorkbenchCIPRES.getInstance().getProperties().getProperty("hostname");
 		for (RunningTask rt : list)
 		{
 			log.debug("Checking lock on " + rt.getJobhandle() + ", " + rt.getHostname() + ", " + rt.getPid());
@@ -1063,8 +1063,8 @@ public class RunningTask extends Row implements Comparable<RunningTask> {
 	// ###
 	public static boolean lock(String jobhandle) throws Exception
 	{
-		String hostname = Workbench.getInstance().getProperties().getProperty("hostname");
-		long pid = Long.parseLong(Workbench.getInstance().getProperties().getProperty("pid"));
+		String hostname = WorkbenchCIPRES.getInstance().getProperties().getProperty("hostname");
+		long pid = Long.parseLong(WorkbenchCIPRES.getInstance().getProperties().getProperty("pid"));
 
 		StringBuilder stmtBuilder = new StringBuilder();
 

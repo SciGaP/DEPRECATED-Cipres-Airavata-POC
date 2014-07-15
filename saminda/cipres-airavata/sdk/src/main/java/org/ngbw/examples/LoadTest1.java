@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.ngbw.sdk.UserAuthenticationException;
-import org.ngbw.sdk.Workbench;
+import org.ngbw.sdk.WorkbenchCIPRES;
 import org.ngbw.sdk.WorkbenchSession;
 import org.ngbw.sdk.common.util.ValidationResult;
 import org.ngbw.sdk.core.shared.UserRole;
@@ -45,7 +45,7 @@ public class LoadTest1 extends Thread
 		public boolean isFailed;
 		public String jobspec;
 	}
-	private static Workbench wb = null;
+	private static WorkbenchCIPRES wb = null;
 	private static User user = null;
 	private static String[] jobspecArray = null;
 
@@ -101,7 +101,7 @@ public class LoadTest1 extends Thread
 			System.exit(-1);
 		}
 
-		wb = Workbench.getInstance();
+		wb = WorkbenchCIPRES.getInstance();
 		int numberOfFailedJobs = 0;
 		try
 		{

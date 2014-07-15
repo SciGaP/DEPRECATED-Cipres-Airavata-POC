@@ -4,40 +4,23 @@
 package org.ngbw.sdk;
 
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Properties;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Future;
+import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.ngbw.sdk.api.conversion.ConversionService;
-import org.ngbw.sdk.api.conversion.RecordFilter;
-import org.ngbw.sdk.api.core.CoreRegistry;
 import org.ngbw.sdk.api.core.GenericDataRecordCollection;
 import org.ngbw.sdk.api.core.SourceDocumentTransformer;
 import org.ngbw.sdk.api.data.SimpleSearchMetaQuery;
-import org.ngbw.sdk.common.util.Resource;
-import org.ngbw.sdk.common.util.ResourceNotFoundException;
-import org.ngbw.sdk.common.util.StringUtils;
 import org.ngbw.sdk.common.util.ValidationResult;
-import org.ngbw.sdk.core.configuration.Configuration;
 import org.ngbw.sdk.core.configuration.ServiceFactory;
 import org.ngbw.sdk.core.shared.IndexedDataRecord;
-import org.ngbw.sdk.core.shared.SourceDocumentBean;
 import org.ngbw.sdk.core.shared.SourceDocumentType;
 import org.ngbw.sdk.core.types.DataFormat;
 import org.ngbw.sdk.core.types.DataType;
@@ -45,19 +28,14 @@ import org.ngbw.sdk.core.types.Dataset;
 import org.ngbw.sdk.core.types.EntityType;
 import org.ngbw.sdk.core.types.RecordFieldType;
 import org.ngbw.sdk.core.types.RecordType;
-import org.ngbw.sdk.database.ConnectionManager;
-import org.ngbw.sdk.database.ConnectionSource;
 import org.ngbw.sdk.database.Folder;
 import org.ngbw.sdk.database.Group;
 import org.ngbw.sdk.database.SourceDocument;
 import org.ngbw.sdk.database.Task;
 import org.ngbw.sdk.database.User;
 import org.ngbw.sdk.database.UserDataItem;
-import org.ngbw.sdk.api.tool.ToolResource;
-import org.ngbw.sdk.tool.Tool;
-import org.ngbw.sdk.tool.TaskInitiate;
 import org.ngbw.sdk.tool.DisabledResourceException;
-import org.ngbw.sdk.common.util.ProcessUtils;
+import org.ngbw.sdk.tool.Tool;
 
 
 /**
@@ -73,107 +51,13 @@ import org.ngbw.sdk.common.util.ProcessUtils;
  * @author Paul Hoover
  * 
  */
-public class Workbench {
-
-	private static Workbench SINGLETON;
-
-	private static final Log log = LogFactory.getLog(Workbench.class);
-	private final ServiceFactory serviceFactory;
-	private final ConcurrentHashMap<String, WorkbenchSession> activeSessions = new ConcurrentHashMap<String, WorkbenchSession>();
-	private Properties properties;
-
-
-	/**
-	 * @return Workbench
-	 */
-	public static synchronized Workbench getInstance() {
-		if (SINGLETON == null)
-			SINGLETON = new Workbench();
-		return SINGLETON;
-	}
-
-	/**
-	 * @param cfg
-	 * @return Workbench
-	 */
-	public static synchronized Workbench getInstance(Resource cfg) {
-		if (SINGLETON != null)
-			throw new WorkbenchException(
-					"A workbench instance already exists. Use getInstance() for follow up calls!");
-		SINGLETON = new Workbench(cfg);
-		return SINGLETON;
-	}
-
-	/**
-	 * @param serviceFactory
-	 * @return Workbench
-	 */
-	public static synchronized Workbench getInstance(ServiceFactory serviceFactory) {
-		if (SINGLETON != null)
-			throw new WorkbenchException(
-					"A workbench instance already exists. Use getInstance() for follow up calls!");
-		SINGLETON = new Workbench(serviceFactory);
-		return SINGLETON;
-	}
-
-	protected Workbench() {
-		this(new Configuration().configure().buildServiceFactory());
-	}
-
-	protected Workbench(Resource cfg) {
-		this(new Configuration().configure(cfg).buildServiceFactory());
-	}
-
-	protected Workbench(ServiceFactory factory) 
-	{
-		try
-		{
-			Resource pr  = Resource.getResource("workbench.properties");
-			properties = pr.getProperties();
-			
-		}
-		catch (ResourceNotFoundException e)
-		{
-			properties = new Properties();
-		}
-
-		serviceFactory = factory;
-
-		try {
-			ConnectionManager.setConnectionSource();
-			String hostname = ProcessUtils.getMyHostname();
-			long pid = ProcessUtils.getMyPid();
-			properties.setProperty("hostname", hostname);
-			properties.setProperty("pid", String.valueOf(pid));
-		}
-		catch (Exception err) {
-			log.error("", err);
-			throw new WorkbenchException(err);
-		}
-	}
+public interface Workbench {
 
 	/**
 		Get properties loaded from workbench.properties on the classpath.
 		Should be treated as read-only.
 	*/
-	public Properties getProperties()
-	{
-		return this.properties;
-	}
-
-	@Override
-	protected void finalize()
-	{
-		try {
-			ConnectionSource connSource = ConnectionManager.getConnectionSource();
-
-			if (connSource != null)
-				connSource.close();
-		}
-		catch (SQLException sqlErr) {
-			log.error("Caught an exception during finalization", sqlErr);
-		}
-	}
+	public Properties getProperties();
 
 	/* Workbench Basic Methods */
 
@@ -183,9 +67,7 @@ public class Workbench {
 	 * 
 	 * @return serviceFactory
 	 */
-	public ServiceFactory getServiceFactory() {
-		return serviceFactory;
-	}
+	public ServiceFactory getServiceFactory();
 
 	/* Session Management */
 
@@ -200,47 +82,9 @@ public class Workbench {
 	 * @throws SQLException 
 	 * @throws IOException 
 	 */
-	public WorkbenchSession getSession(String username, String password) throws UserAuthenticationException, IOException, SQLException {
-		if (hasActiveSession(username))
-			throw new RuntimeException("User " + username + " already has an active session");
-
-		// this may be a case insensitive search
-		User user = User.findUserByUsername(username);
-
-		if (user == null || !user.getUsername().equals(username))
-			throw new UserAuthenticationException("User does not exist!");
-
-		String hash = StringUtils.getMD5HexString(password);
-
-		if (!user.getPassword().equals(hash))
-			throw new UserAuthenticationException("Passwords don't match!");
-
-		WorkbenchSession session = new WorkbenchSession(user, this);
-
-		// make sure the key in our map has the same case as the username in the db.
-		activeSessions.put(username, session);
-
-		return session;
-	}
-
-	public WorkbenchSession getSession(String username) throws UserAuthenticationException, IOException, SQLException 
-	{
-		if (hasActiveSession(username))
-			throw new RuntimeException("User " + username + " already has an active session");
-
-		// this may be a case insensitive search
-		User user = User.findUserByUsername(username);
-
-		if (user == null || !user.getUsername().equals(username))
-			throw new UserAuthenticationException("User does not exist!");
-
-		WorkbenchSession session = new WorkbenchSession(user, this);
-
-		// make sure the key in our map has the same case as the username in the db.
-		activeSessions.put(username, session);
-
-		return session;
-	}
+	public WorkbenchSession getSession(String username, String password) throws UserAuthenticationException, IOException, SQLException;
+	
+	public WorkbenchSession getSession(String username) throws UserAuthenticationException, IOException, SQLException; 
 
 	/**
 	 * Returns the active <code>WorkbenchSession</code> object for the indicated user. A <code>WorkbenchSession</code>
@@ -254,29 +98,15 @@ public class Workbench {
 	 * @throws SQLException
 	 * @throws UserAuthenticationException
 	 */
-	public WorkbenchSession getActiveSession(String username, String encryptedPassword) throws IOException, SQLException, UserAuthenticationException {
-		WorkbenchSession session = activeSessions.get(username);
-
-		if (session == null)
-			return null;
-
-		if (!session.getUser().getPassword().equals(encryptedPassword))
-			throw new UserAuthenticationException("Passwords don't match!");
-
-		return session;
-	}
-
+	public WorkbenchSession getActiveSession(String username, String encryptedPassword) throws IOException, SQLException, UserAuthenticationException;
+	
 	/**
 		This is for internal use by the sdk.  There are cases where some code is initiated from
 		a workbench session, but the session isn't passed to all methods that need it.  Those
 		methods can get the session by using this method.
 	*/
-	public WorkbenchSession retrieveActiveSession(long userID) throws Exception
-	{
-		User user = new User(userID);
-		return activeSessions.get(user.getUsername());
-	}
-
+	public WorkbenchSession retrieveActiveSession(long userID) throws Exception;
+	
 	/**
 	 * A temporary measure to enable interaction with the Sirius applet.
 	 * 
@@ -287,36 +117,15 @@ public class Workbench {
 	 * @throws SQLException
 	 * @throws UserAuthenticationException
 	 */
-	public WorkbenchSession getSessionForApplet(String username, String encryptedPassword) throws IOException, SQLException, UserAuthenticationException {
-		WorkbenchSession session = getActiveSession(username, encryptedPassword);
-
-		if (session != null)
-			return session;
-
-		User user = User.findUserByUsername(username);
-
-		if (user == null || !user.getUsername().equals(username))
-			throw new UserAuthenticationException("User does not exist!");
-
-		if (!user.getPassword().equals(encryptedPassword))
-			throw new UserAuthenticationException("Passwords don't match!");
-
-		session = new WorkbenchSession(user, this);
-
-		activeSessions.put(username, session);
-
-		return session;
-	}
-
+	public WorkbenchSession getSessionForApplet(String username, String encryptedPassword) throws IOException, SQLException, UserAuthenticationException;
+	
 	/**
 	 * Suspends the WorkbenchSession for the user with the submitted username by
 	 * removing is from the active session map.
 	 * 
 	 * @param username
 	 */
-	public void suspendSession(String username) {
-		activeSessions.remove(username);
-	}
+	public void suspendSession(String username);
 
 	/**
 	 * Method checks whether the user with the submitted username already has an
@@ -325,9 +134,7 @@ public class Workbench {
 	 * @param username
 	 * @return hasActiveSession
 	 */
-	public boolean hasActiveSession(String username) {
-		return getActiveUsers().contains(username);
-	}
+	public boolean hasActiveSession(String username);
 
 	/**
 	 * Method returns a set of all usernames from Users with an active
@@ -335,9 +142,7 @@ public class Workbench {
 	 * 
 	 * @return activeUsers
 	 */
-	public Set<String> getActiveUsers() {
-		return activeSessions.keySet();
-	}
+	public Set<String> getActiveUsers();
 
 	/* MetaController Methods */
 
@@ -348,9 +153,7 @@ public class Workbench {
 	 * @param type
 	 * @return hasTransformer
 	 */
-	public boolean hasTransformer(SourceDocumentType type, RecordType targetType) {
-		return serviceFactory.getCoreRegistry().hasTransformerClass(type, targetType);
-	}
+	public boolean hasTransformer(SourceDocumentType type, RecordType targetType);
 	
 	/**
 	 * Method returns the set of RecordTypes that a SourceDocuemnt of the submitted
@@ -359,9 +162,7 @@ public class Workbench {
 	 * @param type
 	 * @return targetTypes
 	 */
-	public Set<RecordType> getTransformationTargetRecordTypes(SourceDocumentType type) {
-		return serviceFactory.getCoreRegistry().getTransformationTargetRecordTypes(type);
-	}
+	public Set<RecordType> getTransformationTargetRecordTypes(SourceDocumentType type);
 
 	/**
 	 * Return the SourceDocumentTransformer for the
@@ -374,21 +175,8 @@ public class Workbench {
 	 * @throws InvocationTargetException 
 	 * @throws NoSuchMethodException 
 	 */
-	public SourceDocumentTransformer getTransformer(SourceDocument sourceDocument, RecordType targetType) throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-		if (sourceDocument == null)
-			throw new NullPointerException("SourceDocument cannot be null!");
-		if (targetType == null)
-			throw new NullPointerException("RecordType cannot be null!");
-		Class<SourceDocumentTransformer> transformerClass =
-			serviceFactory.getCoreRegistry().getTransformerClass(sourceDocument.getType(), targetType);
-		SourceDocumentTransformer transformer;
-
-		transformer = transformerClass.getConstructor(ServiceFactory.class, SourceDocument.class, RecordType.class)
-			.newInstance(serviceFactory, sourceDocument, targetType);
-
-		return transformer;
-	}
-
+	public SourceDocumentTransformer getTransformer(SourceDocument sourceDocument, RecordType targetType) throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException;
+	
 	/**
 	 * Retrieve all user data records associated with the submitted data item.
 	 * The DataRecord is a view that gives direct access to parsed out metadata
@@ -402,11 +190,8 @@ public class Workbench {
 	 * @throws IOException 
 	 * @throws ParseException 
 	 */
-	public GenericDataRecordCollection<IndexedDataRecord> extractDataRecords(UserDataItem dataItem) throws IOException, SQLException, ParseException {
-		if (dataItem == null)
-			throw new NullPointerException("UserDataItem cannot be null!");
-		return serviceFactory.getConversionService().read(dataItem);
-	}
+	public GenericDataRecordCollection<IndexedDataRecord> extractDataRecords(UserDataItem dataItem) throws IOException, SQLException, ParseException;
+	
 
 	/**
 	 * Method extract the DataRecords for each UserDataItem in the submitted list.
@@ -417,28 +202,7 @@ public class Workbench {
 	 * @return dataRecordCollections
 	 */
 	public Map<UserDataItem, GenericDataRecordCollection<IndexedDataRecord>> extractDataRecordCollections(
-			List<UserDataItem> dataItems) {
-		if (dataItems == null)
-			throw new NullPointerException("UserDataItems cannot be null!");
-		Map<UserDataItem, GenericDataRecordCollection<IndexedDataRecord>> dataRecordCollections =
-			new HashMap<UserDataItem, GenericDataRecordCollection<IndexedDataRecord>>();
-		for (UserDataItem dataItem : dataItems) {
-			// Note to Hannes: I added the following try-catch block to allow processing
-			// to continue even if a UserDataItem is encountered whose DataRecords cannot
-			// be extracted.  This will often be the case, since users can upload data
-			// with Unknown record type.  Please feel free to change this error handling
-			// to whatever you feel is appropriate.
-			// - Jeremy
-			try {
-				dataRecordCollections.put(dataItem, extractDataRecords(dataItem));
-			} catch (Exception e) {
-				if (log.isDebugEnabled())
-					log.debug("Error extracting DataRecordCollection from UserDataItem " +
-						dataItem.getUserDataId() + ": " + e.getMessage());
-			}
-		}
-		return dataRecordCollections;
-	}
+			List<UserDataItem> dataItems);
 	
 	/**
 	 * Method extracts the individual record portion from SourceDocument associated
@@ -451,12 +215,7 @@ public class Workbench {
 	 * @throws SQLException 
 	 * @throws IOException 
 	 */
-	public SourceDocument extractSubSourceDocument(UserDataItem dataItem, int dataRecordIndex) throws IOException, SQLException {
-		if (dataItem == null)
-			throw new NullPointerException("UserDataItem cannot be null!");
-		List<SourceDocument> sourceDocuments = splitSourceDocument(dataItem);
-		return sourceDocuments.get(dataRecordIndex);
-	}
+	public SourceDocument extractSubSourceDocument(UserDataItem dataItem, int dataRecordIndex) throws IOException, SQLException;
 	
 	/**
 	 * Method extracts the individual record portion from the submitted 
@@ -469,12 +228,7 @@ public class Workbench {
 	 * @throws SQLException 
 	 * @throws IOException 
 	 */
-	public SourceDocument extractSubSourceDocument(SourceDocument sourceDocument, int dataRecordIndex) throws IOException, SQLException {
-		if (sourceDocument == null)
-			throw new NullPointerException("SourceDocument cannot be null!");
-		List<SourceDocument> sourceDocuments = splitSourceDocument(sourceDocument);
-		return sourceDocuments.get(dataRecordIndex);
-	}
+	public SourceDocument extractSubSourceDocument(SourceDocument sourceDocument, int dataRecordIndex) throws IOException, SQLException;
 	
 	/**
 	 * Method extracts the individual record portions from SourceDocument associated
@@ -487,15 +241,7 @@ public class Workbench {
 	 * @throws SQLException 
 	 * @throws IOException 
 	 */
-	public List<SourceDocument> extractSubSourceDocuments(UserDataItem dataItem, int[] dataRecordIndices) throws IOException, SQLException {
-		if (dataItem == null)
-			throw new NullPointerException("UserDataItem cannot be null!");
-		List<SourceDocument> sourceDocuments = splitSourceDocument(dataItem);
-		List<SourceDocument> filteredSourceDocuments = new ArrayList<SourceDocument>(dataRecordIndices.length);
-		for (int index : dataRecordIndices)
-			filteredSourceDocuments.add(sourceDocuments.get(index));
-		return filteredSourceDocuments;
-	}
+	public List<SourceDocument> extractSubSourceDocuments(UserDataItem dataItem, int[] dataRecordIndices) throws IOException, SQLException;
 	
 	/**
 	 * Method separates all UserDataItems in the submitted folders into RecordTypes
@@ -505,20 +251,7 @@ public class Workbench {
 	 * @throws SQLException 
 	 * @throws IOException 
 	 */
-	public Map<RecordType, List<UserDataItem>> sortDataItemsByRecordType(Folder folder) throws IOException, SQLException {
-		CoreRegistry coreRegistry = serviceFactory.getCoreRegistry();
-		Map<RecordType, List<UserDataItem>> typedLists = new HashMap<RecordType, List<UserDataItem>>();
-		for (UserDataItem dataItem : folder.findDataItems()) {
-			SourceDocumentType sdt = dataItem.getType();
-			RecordType rt = coreRegistry.getRecordType(sdt.getEntityType(), sdt.getDataType());
-			if (rt == null)
-				rt = RecordType.UNKNOWN;
-			if (typedLists.containsKey(rt) == false)
-				typedLists.put(rt, new ArrayList<UserDataItem>());
-			typedLists.get(rt).add(dataItem);
-		}
-		return typedLists;
-	}
+	public Map<RecordType, List<UserDataItem>> sortDataItemsByRecordType(Folder folder) throws IOException, SQLException ;
 
 	/**
 	 * Method separates all UserDataItems in the submitted folders into DataFormat
@@ -529,26 +262,7 @@ public class Workbench {
 	 * @throws SQLException 
 	 * @throws IOException 
 	 */
-	public Map<DataFormat, List<UserDataItem>> sortDataItemsByDataFormat(Folder folder) throws IOException, SQLException
-	{
-		Map<DataFormat, List<UserDataItem>> typedLists = new HashMap<DataFormat, List<UserDataItem>>();
-
-		for (UserDataItem dataItem : folder.findDataItems()) {
-			DataFormat format = dataItem.getDataFormat();
-
-			if (typedLists.containsKey(format) == false) {
-				List<UserDataItem> newList = new ArrayList<UserDataItem>();
-
-				newList.add(dataItem);
-
-				typedLists.put(format, newList);
-			}
-			else
-				typedLists.get(format).add(dataItem);
-		}
-
-		return typedLists;
-	}
+	public Map<DataFormat, List<UserDataItem>> sortDataItemsByDataFormat(Folder folder) throws IOException, SQLException;
 
 	/* TaskAgent Support Methods */
 	/**
@@ -586,20 +300,10 @@ public class Workbench {
 	 * @throws IOException 
 	 */
 	public String submitTask(Task task, Boolean loggedInViaIPlant) 
-		throws Exception, DisabledResourceException
-	{
-		if (task == null)
-			throw new NullPointerException("task");
-
-		long userId =  task.getUserId();
-		return (new TaskInitiate(serviceFactory)).queueTask(task, loggedInViaIPlant);
-	}
+		throws Exception, DisabledResourceException;
 
 	public String submitTask(Task task) 
-			throws Exception, DisabledResourceException
-	{
-		return submitTask(task, false);
-	}
+			throws Exception, DisabledResourceException;
 
 	/**
 	 * Method allows you to submit a transient task. Before submission the task
@@ -613,27 +317,10 @@ public class Workbench {
 	 * @returns unique jobHandle
 	 */
 	public String saveAndSubmitTask(Task task, Folder folder, Boolean loggedInViaIPlant) 
-		throws Exception, DisabledResourceException
-	{
-
-		if (task == null)
-			throw new NullPointerException("task");
-
-		task.setEnclosingFolder(folder);
-
-		task.save();
-
-		long userId =  task.getUserId();
-
-		return (new TaskInitiate(serviceFactory)).queueTask(task, loggedInViaIPlant);
-	}
+		throws Exception, DisabledResourceException;
 
 	public String saveAndSubmitTask(Task task, Folder folder) 
-		throws Exception, DisabledResourceException
-	{
-		return saveAndSubmitTask(task, folder, false);
-	}
-
+		throws Exception, DisabledResourceException;
 
 	/**
 		Run already rendered commands synchronously.  Does so by inserting a Task that
@@ -678,9 +365,7 @@ public class Workbench {
 	 * 
 	 * @return Set<EntityType>
 	 */
-	public Set<EntityType> getEntityTypes() {
-		return serviceFactory.getCoreRegistry().getEntityTypes();
-	}
+	public Set<EntityType> getEntityTypes() ;
 
 	/**
 	 * Return all registered EntityTypes (such as PROTEIN, NUCLEIC_ACID,
@@ -688,9 +373,7 @@ public class Workbench {
 	 * 
 	 * @return Set<EntityType>
 	 */
-	public Set<EntityType> getAllEntityTypes() {
-		return serviceFactory.getCoreRegistry().getAllEntityTypes();
-	}
+	public Set<EntityType> getAllEntityTypes();
 
 	/**
 	 * Return all registered DataTypes  that are mapped to non-abstract
@@ -698,9 +381,7 @@ public class Workbench {
 	 * 
 	 * @return Set<DataType>
 	 */
-	public Set<DataType> getDataTypes() {
-		return serviceFactory.getCoreRegistry().getDataTypes();
-	}
+	public Set<DataType> getDataTypes();
 
 	/**
 	 * Return all registered DataTypes (SEQUENCE, STRUCTURE, SEQUENCE_ALIGNMENT
@@ -708,9 +389,7 @@ public class Workbench {
 	 * 
 	 * @return Set<DataType>
 	 */
-	public Set<DataType> getAllDataTypes() {
-		return serviceFactory.getCoreRegistry().getAllDataTypes();
-	}
+	public Set<DataType> getAllDataTypes();
 
 	/**
 	 * Return all registered RecordTypes (such as PROTEIN_SEQUENCE,
@@ -718,9 +397,7 @@ public class Workbench {
 	 * 
 	 * @return Set<RecordType>
 	 */
-	public Set<RecordType> getRecordTypes() {
-		return serviceFactory.getCoreRegistry().getRecordTypes();
-	}
+	public Set<RecordType> getRecordTypes();
 
 	/**
 	 * Return all registered RecordTypes for the submitted EntityType (such as
@@ -729,9 +406,7 @@ public class Workbench {
 	 * @param entityType
 	 * @return Set<RecordType>
 	 */
-	public Set<RecordType> getRecordTypes(EntityType entityType) {
-		return serviceFactory.getCoreRegistry().getRecordTypes(entityType);
-	}
+	public Set<RecordType> getRecordTypes(EntityType entityType);
 
 	/**
 	 * Return all registered RecordTypes for the submitted DataType (such as
@@ -740,9 +415,7 @@ public class Workbench {
 	 * @param dataType
 	 * @return Set<RecordType>
 	 */
-	public Set<RecordType> getRecordTypes(DataType dataType) {
-		return serviceFactory.getCoreRegistry().getRecordTypes(dataType);
-	}
+	public Set<RecordType> getRecordTypes(DataType dataType);
 
 	/**
 	 * Returns the registered RecordType for the submitted EntityType and DataType.
@@ -751,9 +424,7 @@ public class Workbench {
 	 * @param dataType
 	 * @return RecordType
 	 */
-	public RecordType getRecordType(EntityType entityType, DataType dataType) {
-		return serviceFactory.getCoreRegistry().getRecordType(entityType, dataType);
-	}
+	public RecordType getRecordType(EntityType entityType, DataType dataType);
 	
 	/**
 	 * Method returns the DataType of the submitted RecordType.
@@ -761,9 +432,7 @@ public class Workbench {
 	 * @param recordType
 	 * @return dataType
 	 */
-	public DataType getDataType(RecordType recordType) {
-		return serviceFactory.getCoreRegistry().getDataType(recordType);
-	}
+	public DataType getDataType(RecordType recordType);
 	
 	/**
 	 * Method returns the EntityType of the submitted RecordType.
@@ -771,9 +440,7 @@ public class Workbench {
 	 * @param recordType
 	 * @return entityType
 	 */
-	public EntityType getEntityType(RecordType recordType) {
-		return serviceFactory.getCoreRegistry().getEntityType(recordType);
-	}
+	public EntityType getEntityType(RecordType recordType);
 	
 	/**
 	 * Method returns all RecordFields for the submitted RecordType.
@@ -781,9 +448,7 @@ public class Workbench {
 	 * @param recordType
 	 * @return recordFields
 	 */
-	public Set<RecordFieldType> getRecordFields(RecordType recordType) {
-		return serviceFactory.getCoreRegistry().getRecordFields(recordType);
-	}
+	public Set<RecordFieldType> getRecordFields(RecordType recordType);
 
 	/* ConversionService Methods */
 
@@ -797,22 +462,7 @@ public class Workbench {
 	 * @throws SQLException 
 	 * @throws IOException 
 	 */
-	public List<SourceDocument> splitSourceDocument(SourceDocument sourceDocument) throws IOException, SQLException {
-		if (sourceDocument == null)
-			throw new NullPointerException("SourceDocument cannot be null!");
-		ConversionService cs = serviceFactory.getConversionService();
-		List<SourceDocument> splitSourceDocuments = new ArrayList<SourceDocument>();
-		RecordFilter filter = cs.getRecordFilter(sourceDocument.getDataFormat());
-		BufferedReader br = new BufferedReader(new StringReader(new String(sourceDocument.getData())));
-		filter.setInput(br);
-		SourceDocumentType sdt = sourceDocument.getType();
-		while(filter.hasNext()) {
-			SourceDocument sd = new SourceDocumentBean(sdt, filter.next().getBytes());
-			splitSourceDocuments.add(sd);
-		}
-		filter.close();
-		return splitSourceDocuments;
-	}
+	public List<SourceDocument> splitSourceDocument(SourceDocument sourceDocument) throws IOException, SQLException;
 
 	/**
 	 * Method returns all registered DataFormats that can be read into a
@@ -823,15 +473,7 @@ public class Workbench {
 	 * 
 	 * @return dataFormats
 	 */
-	public Set<DataFormat> getRegisteredDataFormats() {
-		Set<SourceDocumentType> registeredTypes = serviceFactory
-				.getConversionService().getConversionRegistry()
-				.getRegisteredDocumentTypes();
-		Set<DataFormat> dataFormats = new HashSet<DataFormat>();
-		for (SourceDocumentType sourceDocumentType : registeredTypes)
-			dataFormats.add(sourceDocumentType.getDataFormat());
-		return dataFormats;
-	}
+	public Set<DataFormat> getRegisteredDataFormats();
 
 	/**
 	 * Method returns all registered DataFormats for the submitted RecordType
@@ -841,20 +483,7 @@ public class Workbench {
 	 * @param recordType
 	 * @return dataFormats
 	 */
-	public Set<DataFormat> getRegisteredDataFormats(RecordType recordType) {
-		CoreRegistry coreRegistry = serviceFactory.getCoreRegistry();
-		Set<SourceDocumentType> registeredTypes = serviceFactory
-				.getConversionService().getConversionRegistry()
-				.getRegisteredDocumentTypes();
-		Set<DataFormat> dataFormats = new HashSet<DataFormat>();
-		for (SourceDocumentType sourceDocumentType : registeredTypes) {
-			RecordType rt = coreRegistry.getRecordType(sourceDocumentType.getEntityType(), sourceDocumentType.getDataType());
-			if (rt == null) continue;
-			if (rt.equals(recordType))
-				dataFormats.add(sourceDocumentType.getDataFormat());
-		}
-		return dataFormats;
-	}
+	public Set<DataFormat> getRegisteredDataFormats(RecordType recordType);
 
 	/**
 	 * Parse a SourceDocument instance that contains a one or more entries (eg.
@@ -866,9 +495,7 @@ public class Workbench {
 	 * @throws IOException 
 	 * @throws ParseException 
 	 */
-	public GenericDataRecordCollection<IndexedDataRecord> read(SourceDocument srcDocument) throws IOException, SQLException, ParseException {
-		return serviceFactory.getConversionService().read(srcDocument);
-	}
+	public GenericDataRecordCollection<IndexedDataRecord> read(SourceDocument srcDocument) throws IOException, SQLException, ParseException;
 
 	/**
 	 * This method will parse a SourceDocument and reassemble the data into the
@@ -884,10 +511,7 @@ public class Workbench {
 	 * @throws ParseException 
 	 */
 	public SourceDocument convert(SourceDocument srcDocument,
-			SourceDocumentType targetKey) throws IOException, SQLException, ParseException {
-		return serviceFactory.getConversionService().convert(srcDocument,
-				targetKey);
-	}
+			SourceDocumentType targetKey) throws IOException, SQLException, ParseException;
 
 	/**
 	 * This method will parse all SourceDocuments of the submitted input
@@ -904,10 +528,7 @@ public class Workbench {
 	 * @throws ParseException 
 	 */
 	public SourceDocument convert(Collection<SourceDocument> srcDocuments,
-			SourceDocumentType targetKey) throws IOException, SQLException, ParseException {
-		return serviceFactory.getConversionService().convert(srcDocuments,
-				targetKey);
-	}
+			SourceDocumentType targetKey) throws IOException, SQLException, ParseException;
 
 	/**
 	 * Method returns all target SemanticKeys that the submitted source
@@ -917,10 +538,7 @@ public class Workbench {
 	 * @return targetSemanticKeys
 	 */
 	public Set<SourceDocumentType> getSourceDocumentTypes(
-			SourceDocumentType sourceDocumentType) {
-		return serviceFactory.getConversionService().getTargetSourceDocumentTypes(
-				sourceDocumentType);
-	}
+			SourceDocumentType sourceDocumentType) ;
 
 	/**
 	 * Method checks whether there is a SourceDocumentReader registered in the
@@ -929,10 +547,7 @@ public class Workbench {
 	 * @param sourceDocumentType
 	 * @return canRead
 	 */
-	public boolean canRead(SourceDocumentType sourceDocumentType) {
-		return serviceFactory.getConversionService()
-				.canRead(sourceDocumentType);
-	}
+	public boolean canRead(SourceDocumentType sourceDocumentType) ;
 
 	/**
 	 * Method checks the submitted SourceDocument whether the data are indeed
@@ -944,9 +559,7 @@ public class Workbench {
 	 * @throws SQLException 
 	 * @throws IOException 
 	 */
-	public boolean validate(SourceDocument srcDocument) throws IOException, SQLException {
-		return serviceFactory.getConversionService().validate(srcDocument);
-	}
+	public boolean validate(SourceDocument srcDocument) throws IOException, SQLException;
 
 	/**
 	 * Method checks whether there is a converter registered in the
@@ -959,10 +572,7 @@ public class Workbench {
 	 *         format.
 	 */
 	public boolean canConvert(SourceDocumentType sourceKey,
-			SourceDocumentType targetKey) {
-		return serviceFactory.getConversionService().canConvert(sourceKey,
-				targetKey);
-	}
+			SourceDocumentType targetKey) ;
 
 	/* ************ DatasetService Methods ********** */
 
@@ -972,9 +582,7 @@ public class Workbench {
 	 * 
 	 * @return recordTypes
 	 */
-	public Set<RecordType> getSearchableRecordTypes() {
-		return serviceFactory.getDatasetService().getSearchableRecordTypes();
-	}
+	public Set<RecordType> getSearchableRecordTypes();
 	
 	/**
 	 * Method returns all EntityTypes that have at least one Dataset
@@ -982,9 +590,7 @@ public class Workbench {
 	 * 
 	 * @return entityTypes
 	 */
-	public Set<EntityType> getSearchableEntityTypes() {
-		return serviceFactory.getDatasetService().getSearchableEntityTypes();
-	}
+	public Set<EntityType> getSearchableEntityTypes();
 	
 	/**
 	 * Method returns all DataTypes that have at least one Dataset
@@ -992,18 +598,14 @@ public class Workbench {
 	 * 
 	 * @return dataTypes
 	 */
-	public Set<DataType> getSearchableDataTypes() {
-		return serviceFactory.getDatasetService().getSearchableDataTypes();
-	}
+	public Set<DataType> getSearchableDataTypes();
 	
 	/**
 	 * Method returns all registered Datasets.
 	 * 
 	 * @return datasets
 	 */
-	public Set<Dataset> getDatasets() {
-		return serviceFactory.getDatasetService().getDatasets();
-	}
+	public Set<Dataset> getDatasets();
 
 	/**
 	 * Method returns all registered Datasets for the submitted DataType and
@@ -1013,10 +615,7 @@ public class Workbench {
 	 * @param dataType
 	 * @return datasets
 	 */
-	public Set<Dataset> getDatasets(EntityType entityType, DataType dataType) {
-		return serviceFactory.getDatasetService().getDatasets(entityType,
-				dataType);
-	}
+	public Set<Dataset> getDatasets(EntityType entityType, DataType dataType);
 
 	/**
 	 * Method returns all registered Datasets for the submitted RecordType.
@@ -1024,14 +623,7 @@ public class Workbench {
 	 * @param recordType
 	 * @return datasets
 	 */
-	public Set<Dataset> getDatasets(RecordType recordType) {
-		EntityType entityType = serviceFactory.getCoreRegistry().getEntityType(
-				recordType);
-		DataType dataType = serviceFactory.getCoreRegistry().getDataType(
-				recordType);
-		return serviceFactory.getDatasetService().getDatasets(entityType,
-				dataType);
-	}
+	public Set<Dataset> getDatasets(RecordType recordType);
 
 	/**
 	 * Method returns the SourceDocumentType for the submitted Dataset.
@@ -1039,10 +631,7 @@ public class Workbench {
 	 * @param dataset
 	 * @return sourceDocumentType
 	 */
-	public SourceDocumentType getSourceDocumentType(Dataset dataset) {
-		return serviceFactory.getDatasetService()
-				.getSourceDocumentType(dataset);
-	}
+	public SourceDocumentType getSourceDocumentType(Dataset dataset);
 
 	/**
 	 * Method returns the RecordType for the submitted Dataset.
@@ -1050,9 +639,7 @@ public class Workbench {
 	 * @param dataset
 	 * @return recordType
 	 */
-	public RecordType getRecordType(Dataset dataset) {
-		return serviceFactory.getDatasetService().getRecordType(dataset);
-	}
+	public RecordType getRecordType(Dataset dataset) ;
 
 	/* Query Methods */
 
@@ -1064,9 +651,7 @@ public class Workbench {
 	 * @param dataset
 	 * @return SimpleSearchMetaQuery for the dataset parameter
 	 */
-	public SimpleSearchMetaQuery getSimpleSearchQuery(Dataset dataset) {
-		return serviceFactory.getDatasetService().getSimpleSearchQuery(dataset);
-	}
+	public SimpleSearchMetaQuery getSimpleSearchQuery(Dataset dataset);
 
 	/**
 	 * Get a SimpleSearchMetaQuery for the submitted Datasets. A
@@ -1076,10 +661,7 @@ public class Workbench {
 	 * @param datasets
 	 * @return SimpleSearchMetaQuery for the datasets parameter
 	 */
-	public SimpleSearchMetaQuery getSimpleSearchQuery(Set<Dataset> datasets) {
-		return serviceFactory.getDatasetService()
-				.getSimpleSearchQuery(datasets);
-	}
+	public SimpleSearchMetaQuery getSimpleSearchQuery(Set<Dataset> datasets);
 
 	/* ************ ToolService Methods ********** */
 
@@ -1088,17 +670,13 @@ public class Workbench {
 	 * 
 	 * @return Set<Tool>
 	 */
-	public Set<String> getToolIds() {
-		return serviceFactory.getToolRegistry().getToolIds();
-	}
+	public Set<String> getToolIds();
 
 	/*
 		Return all registered tools that don't have an inactive=true attribute.
 
 	*/
-	public Set<String> getActiveToolIds() {
-		return serviceFactory.getToolRegistry().getActiveToolIds();
-	}
+	public Set<String> getActiveToolIds();
 
 	/* User and UserData Administrative Methods */
 
@@ -1112,25 +690,7 @@ public class Workbench {
 	 * @throws SQLException 
 	 * @throws IOException 
 	 */
-	public ValidationResult registerNewUser(User user) throws IOException, SQLException {
-		ValidationResult result = new ValidationResult();
-
-		if (User.findUserByUsername(user.getUsername()) != null) {
-			result.addError("Username " + user.getUsername() + " is not available!");
-
-			return result;
-		}
-
-		if (User.findUserByEmail(user.getEmail()) != null) {
-			result.addError("A user with this email: " + user.getEmail() + " already exists!");
-
-			return result;
-		}
-
-		user.save();
-
-		return result;
-	}
+	public ValidationResult registerNewUser(User user) throws IOException, SQLException;
 
 	/**
 	 * Method allows a client to fully register a guest user account. The method
@@ -1143,9 +703,7 @@ public class Workbench {
 	 * @throws SQLException 
 	 * @throws IOException 
 	 */
-	public ValidationResult registerGuestUser(User user) throws IOException, SQLException {
-		return registerNewUser(user);
-	}
+	public ValidationResult registerGuestUser(User user) throws IOException, SQLException;
 
 	/**
 	 * Method allows a client to update user information. The method checks that
@@ -1156,11 +714,7 @@ public class Workbench {
 	 * @throws SQLException 
 	 * @throws IOException 
 	 */
-	public ValidationResult updateUser(User user) throws IOException, SQLException {
-		user.save();
-
-		return new ValidationResult();
-	}
+	public ValidationResult updateUser(User user) throws IOException, SQLException;
 
 	/**
 	 * Method allows an administrator to reset a user password without knowing
@@ -1171,16 +725,7 @@ public class Workbench {
 	 * @throws SQLException 
 	 * @throws IOException 
 	 */
-	public void resetPasswordAdmin(String username, String newPassword) throws IOException, SQLException {
-		User user = User.findUserByUsername(username);
-
-		if (user == null || !user.getUsername().equals(username))
-			throw new WorkbenchException("User does not exist!");
-
-		user.setPassword(newPassword);
-
-		user.save();
-	}
+	public void resetPasswordAdmin(String username, String newPassword) throws IOException, SQLException ;
 
 	/**
 	 * Method saves the submitted group and assigns the user with the submitted
@@ -1192,13 +737,7 @@ public class Workbench {
 	 * @throws SQLException 
 	 * @throws IOException 
 	 */
-	public Group saveNewGroup(Group group, User administrator) throws IOException, SQLException {
-		group.setAdministrator(administrator);
-
-		group.save();
-
-		return group;
-	}
+	public Group saveNewGroup(Group group, User administrator) throws IOException, SQLException;
 
 	// Factory methods
 
@@ -1207,27 +746,17 @@ public class Workbench {
 	 * 
 	 * @return user
 	 */
-	public User getNewUserInstance() {
-		return new User();
-	}
+	public User getNewUserInstance();
 
 	/**
 	 * Method returns a new transient Group instance.
 	 * 
 	 * @return group
 	 */
-	public Group getNewGroupInstance() {
-		return new Group();
-	}
+	public Group getNewGroupInstance();
 
-	public Tool getTool(String toolId)
-	{
-		return new Tool(toolId, serviceFactory.getToolRegistry());
-	}
+	public Tool getTool(String toolId);
 
-	public static void convertEncoding(File file) throws Exception
-	{
-		org.ngbw.sdk.common.util.ConvertEncoding.convertInPlace(file);
-	}
-	
+	public void convertEncoding(File file) throws Exception;
+
 }

@@ -20,7 +20,7 @@ import java.util.TreeSet;
 import java.util.Date;
 import java.util.Calendar;
 
-import org.ngbw.sdk.Workbench;
+import org.ngbw.sdk.WorkbenchCIPRES;
 import org.ngbw.sdk.WorkbenchException;
 import org.ngbw.sdk.common.util.StringUtils;
 import org.ngbw.sdk.core.shared.UserRole;
@@ -1123,7 +1123,7 @@ public class User extends VersionedRow implements Comparable<User> {
 	{
 		if (accountingPeriodStart == null)
 		{
-			accountingPeriodStart = Workbench.getInstance().getProperties().getProperty("accounting.period.start");
+			accountingPeriodStart = WorkbenchCIPRES.getInstance().getProperties().getProperty("accounting.period.start");
 			if (accountingPeriodStart == null)
 			{
 				throw new Exception("Unable to retrieve accounting.period.start from workbench.properties");

@@ -14,7 +14,7 @@ import java.util.Properties;
 import java.util.concurrent.Future;
 
 import org.ngbw.sdk.UserAuthenticationException;
-import org.ngbw.sdk.Workbench;
+import org.ngbw.sdk.WorkbenchCIPRES;
 import org.ngbw.sdk.WorkbenchSession;
 import org.ngbw.sdk.common.util.Resource;
 import org.ngbw.sdk.common.util.ResourceNotFoundException;
@@ -49,7 +49,7 @@ public class TestSSHProcessRunner
 	private static final Log log = LogFactory.getLog(TestSSHProcessRunner.class.getName());
 	public static void main(String[] args)
 	{
-		Workbench wb = Workbench.getInstance();
+		WorkbenchCIPRES wb = WorkbenchCIPRES.getInstance();
 
 		try
 		{

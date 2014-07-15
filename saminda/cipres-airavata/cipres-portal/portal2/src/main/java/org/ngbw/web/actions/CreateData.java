@@ -19,6 +19,7 @@ import org.ngbw.sdk.database.UserDataItem;
 import org.ngbw.web.controllers.FolderController;
 import org.ngbw.sdk.DataDetails;
 import org.ngbw.sdk.Workbench;
+import org.ngbw.sdk.Factory;
 import org.ngbw.sdk.WorkbenchException;
 
 /*
@@ -659,7 +660,7 @@ public class CreateData extends DataManager
 			FileInputStream is;
 			try 
 			{
-				Workbench.convertEncoding(upload);
+				Factory.getWorkbench().convertEncoding(upload);
 				is = new FileInputStream(upload);
 				dataItem.setData(is);
 			} catch (Exception e) 

@@ -13,7 +13,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.ngbw.sdk.Workbench;
+import org.ngbw.sdk.WorkbenchCIPRES;
 import org.ngbw.sdk.common.util.StringUtils;
 import org.ngbw.sdk.core.shared.TaskRunStage;
 import org.ngbw.sdk.database.RunningTask;
@@ -43,7 +43,7 @@ public class WorkQueue
         RunningTask rt = new RunningTask(
 								task, 
 								tool.getToolResource().getId(), 
-								Workbench.getInstance().getProperties().getProperty("application.instance"),
+								WorkbenchCIPRES.getInstance().getProperties().getProperty("application.instance"),
 								chargeNumber);
 		TaskLogMessage newMessage = new TaskLogMessage(task);
 		newMessage.setStage(TaskRunStage.QUEUE);

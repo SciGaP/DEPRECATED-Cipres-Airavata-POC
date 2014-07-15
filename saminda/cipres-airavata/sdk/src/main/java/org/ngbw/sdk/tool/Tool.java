@@ -23,7 +23,7 @@ import java.text.SimpleDateFormat;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.ngbw.sdk.Workbench;
+import org.ngbw.sdk.WorkbenchCIPRES;
 import org.ngbw.sdk.WorkbenchException;
 import org.ngbw.sdk.api.tool.CommandRenderer;
 import org.ngbw.sdk.api.tool.FileHandler;
@@ -167,7 +167,7 @@ public class Tool {
 		String chargeNumber= null;
 		String accountGroup = toolResource.getAccountGroup();
 		//log.debug("accountGroup for this tool is " + accountGroup + ", and userId is " + user.getUserId());
-		String iplantChargeNumber = (String)Workbench.getInstance().getProperties().get("iplant.charge.number");
+		String iplantChargeNumber = (String)WorkbenchCIPRES.getInstance().getProperties().get("iplant.charge.number");
 		if (accountGroup != null)
 		{
 			if (loggedInViaIplant && accountGroup.equals("teragrid"))
@@ -308,7 +308,7 @@ public class Tool {
 
 	static String readDisabledResourceFile(String name)
 	{
-		String dpath = Workbench.getInstance().getProperties().getProperty("disabled.resources.file");
+		String dpath = WorkbenchCIPRES.getInstance().getProperties().getProperty("disabled.resources.file");
 		if (dpath == null)
 		{
 			return null;

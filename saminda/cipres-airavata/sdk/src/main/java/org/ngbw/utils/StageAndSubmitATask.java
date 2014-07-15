@@ -2,15 +2,11 @@ package org.ngbw.utils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.ngbw.sdk.Workbench;
-import org.ngbw.sdk.tool.TaskInitiate;
-import org.ngbw.sdk.core.configuration.ServiceFactory;
-import org.ngbw.sdk.tool.RenderedCommand;
+import org.ngbw.sdk.WorkbenchCIPRES;
 import org.ngbw.sdk.core.configuration.ServiceFactory;
 import org.ngbw.sdk.database.RunningTask;
-import org.ngbw.sdk.database.Task;
-import org.ngbw.sdk.tool.BaseProcessWorker;
 import org.ngbw.sdk.tool.TaskInitiate;
+import org.ngbw.sdk.tool.TaskInitiateWF;
 
 /**
 	Stand alone program to stage and submit a single task using
@@ -22,10 +18,10 @@ public class StageAndSubmitATask
 
 	public static void stageAndSubmit(String jobhandle) throws Exception
 	{
-		ServiceFactory factory = Workbench.getInstance().getServiceFactory();
+		ServiceFactory factory = WorkbenchCIPRES.getInstance().getServiceFactory();
 		RunningTask rt = RunningTask.find(jobhandle);
 
-		TaskInitiate runner= new TaskInitiate(factory);
+		TaskInitiate runner= new TaskInitiateWF(factory);
 
 		/* 
 			TaskInitiate.runTask() will log any exception that occurs before rethrowing it.

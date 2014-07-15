@@ -3,7 +3,7 @@ package org.ngbw.utils;
 import java.util.concurrent.*;
 import java.util.Date;
 import java.util.List;
-import org.ngbw.sdk.Workbench;
+import org.ngbw.sdk.WorkbenchCIPRES;
 import org.ngbw.sdk.database.RunningTask;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -11,7 +11,7 @@ import org.apache.log4j.NDC;
 import java.util.Vector;
 import org.ngbw.sdk.database.ConnectionManager;
 import org.ngbw.sdk.database.DriverConnectionSource;
-import org.ngbw.sdk.tool.TaskMonitor;
+import org.ngbw.sdk.tool.TaskMonitorWF;
 
 
 /**
@@ -69,7 +69,7 @@ public class LoadResults
 	{
 		try
 		{
-			Workbench wb = Workbench.getInstance();
+			WorkbenchCIPRES wb = WorkbenchCIPRES.getInstance();
 			m_default_submitter = wb.getProperties().getProperty("application.instance");
 			String p;
 			p = wb.getProperties().getProperty("loadResults.poll.seconds");
@@ -275,7 +275,7 @@ public class LoadResults
 					return;
 				} 
 				log.debug("Loading Results for " + m_jobhandle);
-				TaskMonitor.getResults(rt,  m_local);
+				new TaskMonitorWF().getResults(rt,  m_local);
 			}
 			catch(Exception e)
 			{

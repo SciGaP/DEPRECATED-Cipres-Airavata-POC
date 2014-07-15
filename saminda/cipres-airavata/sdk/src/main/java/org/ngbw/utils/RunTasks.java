@@ -2,7 +2,7 @@ package org.ngbw.utils;
 
 import java.util.concurrent.*;
 import java.util.List;
-import org.ngbw.sdk.Workbench;
+import org.ngbw.sdk.WorkbenchCIPRES;
 import org.ngbw.sdk.database.Task;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -21,11 +21,11 @@ public class RunTasks
 	private static final Log log = LogFactory.getLog(RunTasks.class.getName());
 	long taskId;
 	int number;
-	Workbench wb;
+	WorkbenchCIPRES wb;
 
 	public RunTasks() throws Exception
 	{
-		wb = Workbench.getInstance();
+		wb = WorkbenchCIPRES.getInstance();
 
 		String tmp;
 		tmp = System.getProperty("taskId");

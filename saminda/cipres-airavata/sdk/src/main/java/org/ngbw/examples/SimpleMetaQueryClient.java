@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.ngbw.sdk.Workbench;
+import org.ngbw.sdk.WorkbenchCIPRES;
 import org.ngbw.sdk.WorkbenchSession;
 import org.ngbw.sdk.api.core.GenericDataRecordCollection;
 import org.ngbw.sdk.api.data.SimpleSearchMetaQuery;
@@ -29,7 +29,7 @@ public class SimpleMetaQueryClient {
 	public static void main(String[] args) {
 		
 		try {
-			Workbench wb = Workbench.getInstance();
+			WorkbenchCIPRES wb = WorkbenchCIPRES.getInstance();
 			WorkbenchSession session = wb.getSession("t", "t");
 			User user = session.getUser();
 			String folderLabel = "Test Folder";

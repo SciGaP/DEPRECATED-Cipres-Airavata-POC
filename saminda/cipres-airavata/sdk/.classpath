@@ -33,19 +33,6 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/airavata-client-api-0.11.jar"/>
-	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/airavata-common-utils-0.11.jar"/>
-	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/airavata-gfac-schema-utils-0.11.jar"/>
-	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/airavata-interpreter-service-client-0.11.jar"/>
-	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/airavata-jpa-registry-0.11.jar"/>
-	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/airavata-message-monitor-0.11.jar"/>
-	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/airavata-messenger-client-0.11.jar"/>
-	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/airavata-messenger-commons-0.11.jar"/>
-	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/airavata-registry-api-0.11.jar"/>
-	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/airavata-rest-client-0.11.jar"/>
-	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/airavata-rest-mappings-0.11.jar"/>
-	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/airavata-workflow-execution-context-0.11.jar"/>
-	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/airavata-workflow-model-core-0.11.jar"/>
 	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/atomixmiser-0.9.4.jar"/>
 	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/axiom-api-1.2.8.jar"/>
 	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/axiom-impl-1.2.8.jar"/>
@@ -94,5 +81,9 @@
 	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/xpp5-1.2.8.jar"/>
 	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/xsul5-1.2.7.jar"/>
 	<classpathentry kind="lib" path="/mnt/dev/testbed/0.11-RC3/apache-airavata-client-0.11/lib/xsul-2.10.7.jar"/>
+	<classpathentry kind="lib" path="/home/samindaw/.m2/repository/com/trilead/trilead-ssh2/213/trilead-ssh2-213.jar"/>
+	<classpathentry kind="lib" path="/home/samindaw/.m2/repository/org/jglobus/myproxy/2.0.6/myproxy-2.0.6.jar"/>
+	<classpathentry kind="lib" path="/home/samindaw/.m2/repository/org/jglobus/ssl-proxies/2.0.6/ssl-proxies-2.0.6.jar"/>
+	<classpathentry kind="lib" path="/home/samindaw/.m2/repository/javax/servlet/servlet-api/2.5/servlet-api-2.5.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

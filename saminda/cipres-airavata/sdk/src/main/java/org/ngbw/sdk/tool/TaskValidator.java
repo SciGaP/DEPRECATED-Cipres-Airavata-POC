@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.ngbw.sdk.Workbench;
+import org.ngbw.sdk.WorkbenchCIPRES;
 import org.ngbw.sdk.common.util.MapUtil;
 import org.ngbw.sdk.database.SourceDocument;
 import org.ngbw.sdk.database.Task;
@@ -27,7 +27,7 @@ public class TaskValidator
 
 	public TaskValidator(String tool) throws Exception
 	{
-		Set<String> toolIds = Workbench.getInstance().getActiveToolIds();
+		Set<String> toolIds = WorkbenchCIPRES.getInstance().getActiveToolIds();
 		if (!toolIds.contains(tool))
 		{
 			throw new Exception(tool + " is not in the active tool registry.");

@@ -4,14 +4,14 @@
 */
 package org.ngbw.examples;
 
-import org.ngbw.sdk.Workbench;
+import org.ngbw.sdk.WorkbenchCIPRES;
 import org.ngbw.sdk.database.User;
 
 public class TestSdk 
 {
 
 	//Workbench object instances
-	private static Workbench workbench = Workbench.getInstance();
+	private static WorkbenchCIPRES workbench = WorkbenchCIPRES.getInstance();
 
 	
 	public static void main(String[] args) throws Exception

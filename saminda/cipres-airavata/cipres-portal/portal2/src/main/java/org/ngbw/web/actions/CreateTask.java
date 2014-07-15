@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 
 import org.apache.struts2.interceptor.validation.SkipValidation;
 import org.ngbw.sdk.Workbench;
+import org.ngbw.sdk.Factory;
 import org.ngbw.sdk.tool.Tool;
 import org.ngbw.sdk.tool.DisabledResourceException;
 import org.ngbw.sdk.WorkbenchSession;
@@ -211,7 +212,7 @@ public class CreateTask extends ManageTasks
 		Tool tool = null;
 		try
 		{
-			tool = Workbench.getInstance().getTool(toolid);
+			tool = Factory.getWorkbench().getTool(toolid);
 		}
 		catch (NullPointerException ne)
 		{

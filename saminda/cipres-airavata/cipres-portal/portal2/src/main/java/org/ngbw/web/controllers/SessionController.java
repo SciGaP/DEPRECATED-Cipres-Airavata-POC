@@ -6,6 +6,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.ngbw.sdk.UserAuthenticationException;
 import org.ngbw.sdk.Workbench;
+import org.ngbw.sdk.Factory;
 import org.ngbw.sdk.WorkbenchSession;
 import org.ngbw.sdk.common.util.ValidationResult;
 import org.ngbw.sdk.core.shared.UserRole;
@@ -97,7 +98,7 @@ public class SessionController
 		try {
 			WorkbenchSession session = getWorkbenchSession();
 			if (session == null)
-				return Workbench.getInstance();
+				return Factory.getWorkbench();
 			else return session.getWorkbench();
 		} catch (Throwable error) {
 			reportError(error, "Error retrieving Workbench");
