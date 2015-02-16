@@ -1,4 +1,4 @@
-SciGaP
+Proof of Concept Evaluation
 ======
 
-SciGaP Parent Repo
+A repo to evalue cipres-airavata integration
